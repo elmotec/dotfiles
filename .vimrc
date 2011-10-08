@@ -31,7 +31,10 @@ if has("gui_running")
   noremap <c-Up> <c-w>k
   noremap <c-Right> <c-w>l
   noremap <c-Left> <c-w>h
+else
+  set term=builtin_ansi
 endif
+colorscheme desert
 
 " Sets visual bell instead of the beep 
 set vb
@@ -67,15 +70,18 @@ set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the font for windows.
 if has ("gui_win32")
-  set guifont=Courier_New:h12
+  set guifont=Lucida\ Console:h12
 endif
 
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
 
+" Mimics Visual Studio interface.
 " Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
 noremap <c-Tab> :bn<CR>
 noremap <c-s-Tab> :bp<CR>
+" Control S saves current file.
+noremap <c-S> :w<CR>
 
 " Additional key mappings based on , combination.
 let mapleader = "," 
@@ -95,10 +101,9 @@ nmap <Leader>s :set hlsearch!<CR>
 " Starts file explorer.
 nmap <Leader>e :Ex<CR>
 " Reload .vimrc
-nmap <Leader>v :so $HOME/.vimrc<CR>
+nmap <Leader>sv :so $HOME/.vimrc<CR>
+nmap <Leader>ev :e $HOME/.vimrc<CR>
 " Loops through tags instead of sticking to the first one.
-nmap  :tprev<CR><z><z>
-nmap  :tnext<CR><z><z>
 nmap <c-T> <c-T><z><z>
 
 " Only do this part when compiled with support for autocommands.
