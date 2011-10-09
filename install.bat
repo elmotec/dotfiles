@@ -1,4 +1,6 @@
 @echo off
+@rem The install.bat script copies the files using robocopy. It seemed to be
+@rem the best compromise between portability (with XP in mind) and convenience.
 
 SET HOME=%USERPROFILE%
 SET SRCDIR=%~dp0

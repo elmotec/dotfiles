@@ -1,8 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
-let g:netrw_dirhist_1='C:\Users\jlecomte\Documents\python\estimate'
-let g:netrw_dirhist_2='C:\Users\jlecomte'
-let g:netrw_dirhist_3='C:/Users/jlecomte/Applications'
-let g:netrw_dirhist_4='C:/Users/jlecomte/vimfiles'
-let g:netrw_dirhist_5='C:/Users/jlecomte/vimfiles/after'
-let g:netrw_dirhist_6='C:/Users/jlecomte/vimfiles/after/ftplugin'
