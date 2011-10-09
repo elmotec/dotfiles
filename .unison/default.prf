@@ -1,0 +1,7 @@
+# roots 
+root = ssh://strasbourg//cygdrive/c/Users/jlecomte
+root = /cygdrive/c/Users/jlecomte
+
+include common
+
+fastcheck = true
