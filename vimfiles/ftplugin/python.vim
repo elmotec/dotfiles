@@ -11,7 +11,7 @@ set foldlevel=99
 
 compiler pyunit
 " MakeGreen function expects makeprg to be defined as python (not python\ %).
-set makeprg=python.exe\ 
+set makeprg=python.exe 
 
 " Auto completion
 set omnifunc=pythoncomplete#Complete

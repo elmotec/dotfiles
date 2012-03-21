@@ -3,6 +3,10 @@
 " For debugging purpose if needed.
 " set verbose=9
 
+" Uses pathogen to set up vim extensions in vimfiles/bundles
+call pathogen#infect()
+call pathogen#helptags()
+
 " Use Vim settings, rather then Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
@@ -92,8 +96,6 @@ nmap <Leader>w :set wrap!<CR>
 nmap <Leader>n :set number!<CR>
 " Show task list (FIXME, TODO, ...). Requires TaskList.vim plugin.
 nmap <Leader>l <Plug>TaskList
-" Diffs last saved version to current.
-nmap <Leader>d :DiffOrig<CR>
 " Lists all buffers.
 nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
@@ -136,6 +138,8 @@ if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 		  \ | wincmd p | diffthis
 endif
+" Diffs last saved version to current.
+nmap <Leader>d :DiffOrig<CR>
 
 " Enhanced file choices. 
 set wildmenu

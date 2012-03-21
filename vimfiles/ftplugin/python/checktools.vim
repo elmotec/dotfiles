@@ -43,8 +43,9 @@ function! Pep8()
 endfunction
 
 function! Pylint()
-    call <SID>Pygrep('pylint','pylint --output-format=parseable --report=n','%f:%l:%m')
+    call <SID>Pygrep('pylint','pylint --output-format=parseable -i yes --report=n','%f:%l:%m')
 endfunction
 
 :nnoremap <Leader>pl :call Pylint()<CR><CR>
 :nnoremap <Leader>p8 :call Pep8()<CR><CR>
+:nnoremap <Leader>pd :call Pydoc()<CR><CR>
