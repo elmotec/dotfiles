@@ -11,6 +11,9 @@ call pathogen#helptags()
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" No need for backup.
+set nobackup
+
 " Change tabulation to 2 spaces
 set tabstop=4
 
