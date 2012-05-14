@@ -5,3 +5,6 @@ root = /cygdrive/c/Users/jlecomte
 include common
 
 fastcheck = true
+perms = 0
+sshargs = -C
+

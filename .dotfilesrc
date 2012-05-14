@@ -3,4 +3,6 @@ repository = ~\Documents\dotfiles
 ignore = [
     '.git',
     '.gitignore',
-    '*.swp']
+    '*.swp',
+    '.unison/ar*'
+    '.unison/fp*']
