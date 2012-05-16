@@ -3,3 +3,4 @@ tags
 .unison/ar*
 .unison/fp*
 vimfiles/.*
+*.tmp
