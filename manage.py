@@ -36,6 +36,7 @@ import difflib
 import types
 import glob
 import filecmp
+import itertools
 
 
 logger = logging.getLogger(__name__)
@@ -51,39 +52,38 @@ class DotfileError(RuntimeError):
 class Dotfile(object):
     """Abstraction for a (possible) link between repository and home dir."""
 
-    synced='synced'
-    external='external'
-    missing='missing'
-    conflict='conflict'
-    same='same'
+    synced = 'synced'  # symbolic link to dotfile
+    external = 'external'  # symbolic link to other file
+    missing = 'missing'  # not in home directory
+    conflict = 'conflict'  # different from dotfile
+    same = 'same'  # identical but distinct file
 
-    def __init__(self, dotfile, status=None):
-        self.dotfile = dotfile
+    def __init__(self, name, status=None):
+        self.name = name
         self.status = status
 
     def __repr__(self):
         return "<{}: {}>".format(self.__class__.__name__, vars(self))
 
     def __eq__(self, rhs):
-        return self.dotfile == rhs.dotfile and \
+        return self.name == rhs.name and \
                 self.status == rhs.status
+
 
 class DotfileManager(object):
     """Manages dotfiles."""
 
-    valid_commands = ['help', 'report']
-
     def __init__(self, home_dir=None, dotfiles_dir=None):
         """Sets variable that will be needed by the manager.
-      
+
         Post conditions:
         self.home_dir exists and is a directory.
         self.dotfiles_dir exists and is a directory.
         """
         self.home_dir = os.path.expanduser("~")
         if home_dir:
-            self.home_dir = home_dir 
-        self.dotfiles_dir = os.path.join(self.home_dir, 'dotfiles')
+            self.home_dir = home_dir
+        self.dotfiles_dir = os.getcwd()
         if dotfiles_dir:
             self.dotfiles_dir = dotfiles_dir
         assert(self.invariants())
@@ -92,10 +92,9 @@ class DotfileManager(object):
         """Self check the class. Called with assert(invariants())."""
         assert(os.path.exists(self.home_dir))
         assert(os.path.isdir(self.home_dir))
-        #assert(os.path.exists(self.dotfiles_dir) or 
-                #os.path.exists(os.path.join(self.home_dir, self.dotfiles_dir)))
-        #assert(os.path.isdir(self.dotfiles_dir) or
-                #os.path.exists(os.path.join(self.home_dir, self.dotfiles_dir)))
+        if self.dotfiles_dir:
+            assert(os.path.exists(self.get_dotfiles_abspath()))
+            assert(os.path.isdir(self.get_dotfiles_abspath()))
         return True
 
     def get_dotfiles_abspath(self):
@@ -106,37 +105,57 @@ class DotfileManager(object):
 
     def get_dotfiles(self):
         """Gets a generator that loops through the dotfiles."""
-        for root, dirnames, filenames in os.walk(self.get_dotfiles_abspath()):
-            for filename in filenames:
-                home_filename = os.path.join(self.home_dir, filename)
-                dotfile_name = os.path.join(
-                        self.get_dotfiles_abspath(), filename)
-                if os.path.islink(home_filename):
-                    target = os.readlink(home_filename)
-                    if target == dotfile_name:
-                        status = Dotfile.synced
-                    else:
-                        status = Dotfile.external
-                elif not os.path.exists(home_filename):
-                    home_filename = None
-                    status = Dotfile.missing
-                elif filecmp.cmp(dotfile_name, home_filename):
-                    status = Dotfile.same
+        for filename in os.listdir(self.get_dotfiles_abspath()):
+            home_filename = os.path.join(self.home_dir, filename)
+            dotfile_name = os.path.join(
+                    self.get_dotfiles_abspath(), filename)
+            if os.path.islink(home_filename):
+                #if os.path.samefile(target, dotfile_name): # *ix only ! 
+                target = os.readlink(home_filename)
+                if target == dotfile_name:
+                    status = Dotfile.synced
                 else:
-                    status = Dotfile.conflict
-                yield Dotfile(filename, status=status) 
-    
+                    status = Dotfile.external
+            elif not os.path.exists(home_filename):
+                home_filename = None
+                status = Dotfile.missing
+            elif filecmp.cmp(dotfile_name, home_filename):
+                status = Dotfile.same
+            else:
+                status = Dotfile.conflict
+            yield Dotfile(filename, status=status)
+
+
+class DotfilesInterface(object):
+    """Interface for the DotfileManager. Provides higher level commands."""
+    def __init__(self, manager):
+        self.manager = manager
+
+    def get_valid_commands(self):
+        """Introspectively list the methods other than __init__ and itself"""
+        import inspect
+        command_methods = [ name for (name, value) in inspect.getmembers(
+            self, predicate=inspect.ismethod)
+                if name not in ('__init__', 'get_valid_commands')]
+        return command_methods
+
     def help(self):
         """This help"""
-        print("valid commands are:")
-        for command in self.valid_commands:
-            print("  {:<10}: {}".format(command, 
+        print("Valid commands are:")
+        commands = list(self.get_valid_commands())
+        for command in self.get_valid_commands():
+            print("{:<8}: {}".format(command,
                 getattr(self, command).__doc__))
 
     def report(self):
         """Displays the status of the dotfiles"""
-        pass  # FIXME 
-        
+        dotfiles = sorted(self.manager.get_dotfiles(), 
+                key=lambda df: df.status + df.name)
+        for status, dotfiles in itertools.groupby(
+                dotfiles, lambda df: df.status):
+            if dotfiles:
+                print("{}:".format(status))
+                print("".join(["  {}\n".format(df.name) for df in dotfiles]))
 
 def get_verbosity(verbose_count):
     """Helper to convert a count of verbosity level to a logging level."""
@@ -177,7 +196,7 @@ def command_line(argv):
             action="count", default=0,
             help="increases log verbosity (can be specified multiple times)")
     parser.add_argument('command', metavar="command",
-            help="command to exexute")
+            help="command to execute")
     parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
             help="dot files to process. See commands.")
     arguments = parser.parse_args(argv[1:])
@@ -187,9 +206,9 @@ def command_line(argv):
     if sys.platform == 'win32':
         dotfiles = expand_wildcards(dotfiles)
     if arguments.command == 'help':
-        manager.help()
+        DotfilesInterface(manager).help()
     if arguments.command == 'report':
-        manager.report()
+        DotfilesInterface(manager).report()
     return 1
 
 
@@ -202,5 +221,3 @@ if __name__ == "__main__":
     finally:
         logging.shutdown()
     sys.exit(os_status)
-
-

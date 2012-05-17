@@ -26,7 +26,7 @@ import unittest
 import tempfile
 import os.path
 
-from manage import Dotfile, DotfileManager
+from manage import Dotfile, DotfileManager, logger
 
 class DotfileManagerTest(unittest.TestCase):
     def setUp(self):
@@ -40,16 +40,19 @@ class DotfileManagerTest(unittest.TestCase):
         os.mkdir(dotfiles_dir) 
         self.dfm = DotfileManager(home_dir=home_dir,
                 dotfiles_dir=os.path.basename(dotfiles_dir))
-        self.file_names = []
+        self.files = []
         self.directories = [dotfiles_dir, home_dir]  # order matters!
         self.file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, self.file_name, "[dotfile]") 
 
     def tearDown(self):
         """Cleans up test home and dotfiles directories."""
-        for filename in self.file_names:
+        for filename in self.files:
             os.remove(filename)
         for directory in self.directories:
+            for file in os.listdir(directory):
+                logger.warning("found {} in {}. rmdir will fail...".format(
+                            file, directory))
             os.rmdir(directory)
 
     def assertExists(self, path):
@@ -68,12 +71,19 @@ class DotfileManagerTest(unittest.TestCase):
         filepath = os.path.join(dirname, filename)
         with open(filepath, 'w') as fh:
             fh.write(content)
-        self.file_names.append(filepath)
+        self.files.insert(0, filepath)
+
+    def create_dir(self, dirname, newdirname):
+        if not os.path.exists(dirname):
+            dirname = os.path.join(self.dfm.home_dir, dirname)
+        dirpath = os.path.join(dirname, newdirname)
+        os.mkdir(dirpath)
+        self.directories.insert(0, dirpath)
 
     def create_symlink(self, dirname, filename, target):
         filepath = os.path.join(dirname, filename)
         os.symlink(target, filepath)
-        self.file_names.append(filepath)
+        self.files.append(filepath)
 
     def test_home_dir_exists(self):
         """Checks the home directory is set up and is a directory."""
@@ -114,7 +124,15 @@ class DotfileManagerTest(unittest.TestCase):
         dotfiles = list(self.dfm.get_dotfiles())
         expected_dotfile = Dotfile(self.file_name, status=Dotfile.synced) 
 
+    def test_report_dir_synced(self):
+        dir_name = 'somedir'
+        self.create_dir(self.dfm.dotfiles_dir, dir_name)
+        target = os.path.join(self.dfm.dotfiles_dir, dir_name)
+        self.create_symlink(self.dfm.home_dir, dir_name, target)
+        dotfiles = list(self.dfm.get_dotfiles())
+        expected_dotfile = Dotfile(self.file_name, status=Dotfile.synced) 
 
+        
 if __name__ == '__main__':
     unittest.main()
 
