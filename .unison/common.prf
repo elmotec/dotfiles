@@ -37,6 +37,7 @@ ignore = Name CVS
 ignore = Name Default.rdp
 ignore = Name deleteme
 ignore = Name desktop.ini
+ignore = Name dotfiles
 ignore = Name estimate
 ignore = Name estimate-www
 ignore = Name htmlcov
