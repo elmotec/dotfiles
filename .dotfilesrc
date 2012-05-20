@@ -4,5 +4,7 @@ ignore = [
     '.git',
     '.gitignore',
     '*.swp',
+    'dotfiles.py',
+    'README.rst',
     '.unison/ar*'
     '.unison/fp*']
