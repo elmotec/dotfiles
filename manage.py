@@ -36,6 +36,7 @@ import difflib
 import types
 import glob
 import filecmp
+import fnmatch
 import itertools
 
 
@@ -103,9 +104,12 @@ class DotfileManager(object):
             return self.dotfiles_dir
         return os.path.join(self.home_dir, self.dotfiles_dir)
 
-    def get_dotfiles(self):
+    def get_dotfiles(self, *pats):
         """Gets a generator that loops through the dotfiles."""
         for filename in os.listdir(self.get_dotfiles_abspath()):
+            if pats and pats[0]:  # patterns to match
+                if not [p for p in pats[0] if fnmatch.fnmatch(filename, p)]:
+                    continue
             home_filename = os.path.join(self.home_dir, filename)
             dotfile_name = os.path.join(
                     self.get_dotfiles_abspath(), filename)
@@ -113,7 +117,9 @@ class DotfileManager(object):
                 #if os.path.samefile(target, dotfile_name): # *ix only ! 
                 target = os.readlink(home_filename)
                 if target == dotfile_name:
-                    status = Dotfile.synced
+                    status = Dotfile.synced  # absolute symlink
+                elif os.path.join(self.home_dir, target) == dotfile_name:
+                    status = Dotfile.synced  # relative symlink
                 else:
                     status = Dotfile.external
             elif not os.path.exists(home_filename):
@@ -147,15 +153,12 @@ class DotfilesInterface(object):
             print("{:<8}: {}".format(command,
                 getattr(self, command).__doc__))
 
-    def report(self):
+    def report(self, files):
         """Displays the status of the dotfiles"""
-        dotfiles = sorted(self.manager.get_dotfiles(), 
+        dotfiles = sorted(self.manager.get_dotfiles(files), 
                 key=lambda df: df.status + df.name)
-        for status, dotfiles in itertools.groupby(
-                dotfiles, lambda df: df.status):
-            if dotfiles:
-                print("{}:".format(status))
-                print("".join(["  {}\n".format(df.name) for df in dotfiles]))
+        for df in dotfiles:
+            print("{:<20} {}".format(df.name, df.status))
 
 def get_verbosity(verbose_count):
     """Helper to convert a count of verbosity level to a logging level."""
@@ -203,12 +206,12 @@ def command_line(argv):
     setup_logger(int(arguments.verbose_count))
     manager = DotfileManager()
     dotfiles = arguments.dotfiles
-    if sys.platform == 'win32':
-        dotfiles = expand_wildcards(dotfiles)
+    #if sys.platform == 'win32':
+        #dotfiles = expand_wildcards(dotfiles)
     if arguments.command == 'help':
         DotfilesInterface(manager).help()
     if arguments.command == 'report':
-        DotfilesInterface(manager).report()
+        DotfilesInterface(manager).report(dotfiles)
     return 1
 
 

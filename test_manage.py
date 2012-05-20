@@ -35,15 +35,15 @@ class DotfileManagerTest(unittest.TestCase):
         Creates a fake home directory to work with and have a dot file
         manager object set up with it.
         """
-        home_dir = tempfile.mkdtemp()
+        tmp_dir = tempfile.mkdtemp()
+        home_dir = os.path.join(tmp_dir, 'home')
+        os.mkdir(home_dir)
         dotfiles_dir = os.path.join(home_dir, 'dotfiles')
-        os.mkdir(dotfiles_dir) 
+        os.mkdir(dotfiles_dir)
         self.dfm = DotfileManager(home_dir=home_dir,
                 dotfiles_dir=os.path.basename(dotfiles_dir))
         self.files = []
-        self.directories = [dotfiles_dir, home_dir]  # order matters!
-        self.file_name = '.dotfilerc'
-        self.create_file(self.dfm.dotfiles_dir, self.file_name, "[dotfile]") 
+        self.directories = [dotfiles_dir, home_dir, tmp_dir]  # order matters!
 
     def tearDown(self):
         """Cleans up test home and dotfiles directories."""
@@ -94,43 +94,55 @@ class DotfileManagerTest(unittest.TestCase):
         self.assertDirExists(self.dfm.get_dotfiles_abspath())
 
     def test_report_missing(self):
+        file_name = '.dotfilerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status='missing')
+        expected_dotfile = Dotfile(file_name, status='missing')
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
     def test_report_same(self):
-        self.create_file(self.dfm.home_dir, self.file_name, "[dotfile]")
+        file_name = '.dotfilerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
+        self.create_file(self.dfm.home_dir, file_name, "[dotfile]")
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status=Dotfile.same)
+        expected_dotfile = Dotfile(file_name, status=Dotfile.same)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
     def test_report_conflict(self):
-        self.create_file(self.dfm.home_dir, self.file_name, "[dotfiles]")
+        file_name = '.dotfilerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
+        self.create_file(self.dfm.home_dir, file_name, "[dotfiles]")
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status=Dotfile.conflict) 
+        expected_dotfile = Dotfile(file_name, status=Dotfile.conflict) 
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
     def test_report_external(self):
+        file_name = '.dotfilerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
         dotfiles_dir = os.path.basename(self.dfm.home_dir)
-        target = os.path.join(dotfiles_dir, self.file_name)
-        self.create_symlink(self.dfm.home_dir, self.file_name, 'bogus')
+        target = os.path.join(dotfiles_dir, file_name)
+        self.create_symlink(self.dfm.home_dir, file_name, 'bogus')
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status=Dotfile.external) 
+        expected_dotfile = Dotfile(file_name, status=Dotfile.external) 
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
     def test_report_synced(self):
-        target = os.path.join(self.dfm.dotfiles_dir, self.file_name)
-        self.create_symlink(self.dfm.home_dir, self.file_name, target)
+        file_name = '.dotfilerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
+        target = os.path.join(self.dfm.dotfiles_dir, file_name)
+        self.create_symlink(self.dfm.home_dir, file_name, target)
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status=Dotfile.synced) 
+        expected_dotfile = Dotfile(file_name, status=Dotfile.synced) 
+        self.assertEqual(dotfiles, [expected_dotfile])
 
     def test_report_dir_synced(self):
-        dir_name = 'somedir'
-        self.create_dir(self.dfm.dotfiles_dir, dir_name)
-        target = os.path.join(self.dfm.dotfiles_dir, dir_name)
-        self.create_symlink(self.dfm.home_dir, dir_name, target)
+        subdir_name = 'subdir'
+        self.create_dir(self.dfm.dotfiles_dir, subdir_name)
+        target = os.path.join(self.dfm.dotfiles_dir, subdir_name)
+        self.create_symlink(self.dfm.home_dir, subdir_name, target)
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(self.file_name, status=Dotfile.synced) 
+        expected_dotfile = Dotfile(subdir_name, status=Dotfile.synced) 
+        self.assertEqual(dotfiles, [expected_dotfile])
 
         
 if __name__ == '__main__':
