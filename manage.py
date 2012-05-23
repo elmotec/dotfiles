@@ -38,6 +38,7 @@ import glob
 import filecmp
 import fnmatch
 import itertools
+import configparser
 
 
 logger = logging.getLogger(__name__)
@@ -74,7 +75,7 @@ class Dotfile(object):
 class DotfileManager(object):
     """Manages dotfiles."""
 
-    def __init__(self, home_dir=None, dotfiles_dir=None):
+    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_files=None):
         """Sets variable that will be needed by the manager.
 
         Post conditions:
@@ -87,6 +88,9 @@ class DotfileManager(object):
         self.dotfiles_dir = os.getcwd()
         if dotfiles_dir:
             self.dotfiles_dir = dotfiles_dir
+        self.ignore_files = []
+        if ignore_files:
+            self.ignore_files = ignore_files
         assert(self.invariants())
 
     def invariants(self):
@@ -104,32 +108,44 @@ class DotfileManager(object):
             return self.dotfiles_dir
         return os.path.join(self.home_dir, self.dotfiles_dir)
 
-    def get_dotfiles(self, *pats):
-        """Gets a generator that loops through the dotfiles."""
-        for filename in os.listdir(self.get_dotfiles_abspath()):
-            if pats and pats[0]:  # patterns to match
-                if not [p for p in pats[0] if fnmatch.fnmatch(filename, p)]:
-                    continue
-            home_filename = os.path.join(self.home_dir, filename)
-            dotfile_name = os.path.join(
-                    self.get_dotfiles_abspath(), filename)
-            if os.path.islink(home_filename):
-                #if os.path.samefile(target, dotfile_name): # *ix only ! 
-                target = os.readlink(home_filename)
-                if target == dotfile_name:
-                    status = Dotfile.synced  # absolute symlink
-                elif os.path.join(self.home_dir, target) == dotfile_name:
-                    status = Dotfile.synced  # relative symlink
-                else:
-                    status = Dotfile.external
-            elif not os.path.exists(home_filename):
-                home_filename = None
-                status = Dotfile.missing
-            elif filecmp.cmp(dotfile_name, home_filename):
-                status = Dotfile.same
+    def get_dotfile(self, file_name):
+        """Retrieves the dotfile for a given file_name."""
+        home_filename = os.path.join(self.home_dir, file_name)
+        dotfile_name = os.path.join(self.get_dotfiles_abspath(), file_name)
+        if os.path.islink(home_filename):
+            #if os.path.samefile(target, dotfile_name):  # *ix only ! 
+            target = os.readlink(home_filename)
+            if target == dotfile_name:
+                status = Dotfile.synced  # absolute symlink
+            elif os.path.join(self.home_dir, target) == dotfile_name:
+                status = Dotfile.synced  # relative symlink
             else:
-                status = Dotfile.conflict
-            yield Dotfile(filename, status=status)
+                status = Dotfile.external
+        elif not os.path.exists(home_filename):
+            home_filename = None
+            status = Dotfile.missing
+        elif filecmp.cmp(dotfile_name, home_filename):
+            status = Dotfile.same
+        else:
+            status = Dotfile.conflict
+        return Dotfile(file_name, status=status)
+
+    def ignore(self, file_name, patterns):
+        # FIXME: factor file look up in pattern list.
+        if patterns:  # patterns to match
+            if [pat for pat in patterns if fnmatch.fnmatch(file_name, pat)]:
+                return True
+        if file_name in self.ignore_files:
+            return True
+        return False
+
+    def get_dotfiles(self, patterns=None):
+        """Gets a generator that loops through the dotfiles."""
+        for file_name in os.listdir(self.get_dotfiles_abspath()):
+            if self.ignore(file_name, patterns):
+                continue
+            yield self.get_dotfile(file_name)
+
 
 
 class DotfilesInterface(object):
@@ -137,12 +153,12 @@ class DotfilesInterface(object):
     def __init__(self, manager):
         self.manager = manager
 
-    def get_valid_commands(self):
+    def _get_valid_commands(self):
         """Introspectively list the methods other than __init__ and itself"""
         import inspect
         command_methods = [ name for (name, value) in inspect.getmembers(
             self, predicate=inspect.ismethod)
-                if name not in ('__init__', 'get_valid_commands')]
+                if not name.startswith('_') ]
         return command_methods
 
     def help(self):
