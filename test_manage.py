@@ -144,6 +144,14 @@ class DotfileManagerTest(unittest.TestCase):
         expected_dotfile = Dotfile(subdir_name, status=Dotfile.synced) 
         self.assertEqual(dotfiles, [expected_dotfile])
 
+    def test_report_ignored(self):
+        file_name = '.gitignore'
+        self.create_file(self.dfm.dotfiles_dir, file_name, "*.pyc") 
+        self.dfm.ignore_files = [ file_name ]
+        dotfiles = list(self.dfm.get_dotfiles())
+        self.assertEqual(dotfiles, [])
+
+
         
 if __name__ == '__main__':
     unittest.main()
