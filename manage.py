@@ -51,14 +51,24 @@ class DotfileError(RuntimeError):
     pass
 
 
+class DotfileStatus(object):
+    """Helper class to hold the status of a dotfile."""
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
+    def __str__(self):
+        return self.name
+
+
 class Dotfile(object):
     """Abstraction for a (possible) link between repository and home dir."""
 
-    synced = 'synced'  # symbolic link to dotfile
-    external = 'external'  # symbolic link to other file
-    missing = 'missing'  # not in home directory
-    conflict = 'conflict'  # different from dotfile
-    same = 'same'  # identical but distinct file
+    synced = DotfileStatus('synced', 'symbolic link to dotfile')
+    external = DotfileStatus('external', 'symbolic link to other file')
+    missing = DotfileStatus('missing', 'not in home directory')
+    conflict = DotfileStatus('conflict', 'different from dotfile')
+    same = DotfileStatus('same', 'identical but distinct file')
 
     def __init__(self, name, status=None):
         self.name = name
@@ -113,7 +123,7 @@ class DotfileManager(object):
         home_filename = os.path.join(self.home_dir, file_name)
         dotfile_name = os.path.join(self.get_dotfiles_abspath(), file_name)
         if os.path.islink(home_filename):
-            #if os.path.samefile(target, dotfile_name):  # *ix only ! 
+            #if os.path.samefile(target, dotfile_name):  # *ix only !
             target = os.readlink(home_filename)
             if target == dotfile_name:
                 status = Dotfile.synced  # absolute symlink
@@ -147,66 +157,26 @@ class DotfileManager(object):
             yield self.get_dotfile(file_name)
 
 
-
-class DotfilesInterface(object):
-    """Interface for the DotfileManager. Provides higher level commands."""
-    def __init__(self, manager):
-        self.manager = manager
-
-    def _get_valid_commands(self):
-        """Introspectively list the methods other than __init__ and itself"""
-        import inspect
-        command_methods = [ name for (name, value) in inspect.getmembers(
-            self, predicate=inspect.ismethod)
-                if not name.startswith('_') ]
-        return command_methods
-
-    def help(self):
-        """This help"""
-        print("Valid commands are:")
-        commands = list(self.get_valid_commands())
-        for command in self.get_valid_commands():
-            print("{:<8}: {}".format(command,
-                getattr(self, command).__doc__))
-
-    def report(self, files):
-        """Displays the status of the dotfiles"""
-        dotfiles = sorted(self.manager.get_dotfiles(files), 
-                key=lambda df: df.status + df.name)
-        for df in dotfiles:
-            print("{:<20} {}".format(df.name, df.status))
-
-def get_verbosity(verbose_count):
-    """Helper to convert a count of verbosity level to a logging level."""
-    assert(isinstance(verbose_count, int))
-    if verbose_count < 0:
-        verbose_count = 0
-    if verbose_count > 4:
-        verbose_count = 4
-    levels = [logging.ERROR, logging.WARNING,
-            logging.INFO, logging.DEBUG]
-    return levels[verbose_count]
-
-
-def setup_logger(verbose_count):
-    """Sets up a logger object for this script."""
-    logging.basicConfig(stream=sys.stderr)
-    verbosity = get_verbosity(verbose_count)
-    if (verbosity > 0):
-        logger.setLevel(verbosity)
-        logger.info("logger level set to {}".format(verbosity))
+def report(args):
+    """Displays status of home directory files compared to dotfiles."""
+    manager = DotfileManager()
+    dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
+            key=lambda df: df.status.name + df.name)
+    for df in dotfiles:
+        print("{:<8} {}".format(df.status, df.name))
 
 
 def expand_wildcards(files):
-    """Expands wildcards in argument in case it is not done by the shell."""
+    """Expands wildcards in argument in case it is not done by the shell"""
     all_files = []
     for item in files:
         all_files += glob.glob(item)
     return all_files
 
 
-def command_line(argv):
-    """Main command line handler."""
+def main():
+    """Parses command line arguments and dispatch to the correct function."""
+    # Main parser.
     parser = argparse.ArgumentParser(
             description=__doc__,
             version=__version__,
@@ -214,29 +184,30 @@ def command_line(argv):
     parser.add_argument("-V", "--verbose", dest="verbose_count",
             action="count", default=0,
             help="increases log verbosity (can be specified multiple times)")
-    parser.add_argument('command', metavar="command",
-            help="command to execute")
-    parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
-            help="dot files to process. See commands.")
-    arguments = parser.parse_args(argv[1:])
-    setup_logger(int(arguments.verbose_count))
-    manager = DotfileManager()
-    dotfiles = arguments.dotfiles
-    #if sys.platform == 'win32':
-        #dotfiles = expand_wildcards(dotfiles)
-    if arguments.command == 'help':
-        DotfilesInterface(manager).help()
-    if arguments.command == 'report':
-        DotfilesInterface(manager).report(dotfiles)
-    return 1
+    subparsers = parser.add_subparsers(help="commands to execute")
+
+    # Report sub-command.
+    report_epilog = "Possible statuses include: {}".format(
+            ", ".join(["{} ({})".format(status.name, status.description) 
+                for status in Dotfile.__dict__.values()
+                if isinstance(status, DotfileStatus)]))
+    report_parser = subparsers.add_parser('report', help=report.__doc__,
+            epilog=report_epilog)
+    report_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
+            help="dot files to report on.")
+    report_parser.set_defaults(func=report)
+
+    args = parser.parse_args(sys.argv[1:])
+    
+    # Sets log level based on the number of the count of -V
+    logger.setLevel(max(4 - args.verbose_count, 0) * 10)
+    # Dispatch to the args.func defined in set_defaults.
+    return args.func(args)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stderr)
-    os_status = 1
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     try:
-        command_line(sys.argv)
-        os_status = 0
+        main()
     finally:
         logging.shutdown()
-    sys.exit(os_status)
