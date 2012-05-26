@@ -97,7 +97,7 @@ class DotfileManagerTest(unittest.TestCase):
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]") 
         dotfiles = list(self.dfm.get_dotfiles())
-        expected_dotfile = Dotfile(file_name, status='missing')
+        expected_dotfile = Dotfile(file_name, status=Dotfile.missing)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
     def test_report_same(self):
