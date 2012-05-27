@@ -3,3 +3,5 @@ repository = .  # current directory.
 ignore = .git .gitignore *.swp dotfiles.py README.rst 
     .unison/ar* .unison/fp* *.bak 
     __pycache__ manage.py test_manage.py *.pyc
+    .bash_history .gitconfig .inputrc .ipython .pypirc
+    .ssh .vim .viminfo .pylint.d
