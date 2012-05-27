@@ -42,8 +42,18 @@ import configparser
 
 
 logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler(sys.stderr))
-logger.setLevel(logging.WARNING)
+
+
+def match_any_pattern(file_name, patterns):
+    """Compares the file name to the patterns.
+
+    Returns false if the patterns list is None or empty.
+    """
+    for pattern in patterns:
+        if fnmatch.fnmatch(file_name, pattern):
+            logger.debug("{} matches {}".format(file_name, pattern))
+            return True
+    return False
 
 
 class DotfileError(RuntimeError):
@@ -85,7 +95,7 @@ class Dotfile(object):
 class DotfileManager(object):
     """Manages dotfiles."""
 
-    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_files=None):
+    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_patterns=None):
         """Sets variable that will be needed by the manager.
 
         Post conditions:
@@ -98,9 +108,9 @@ class DotfileManager(object):
         self.dotfiles_dir = os.getcwd()
         if dotfiles_dir:
             self.dotfiles_dir = dotfiles_dir
-        self.ignore_files = []
-        if ignore_files:
-            self.ignore_files = ignore_files
+        self.ignore_patterns = []
+        if ignore_patterns:
+            self.ignore_patterns = ignore_patterns
         assert(self.invariants())
 
     def invariants(self):
@@ -140,26 +150,43 @@ class DotfileManager(object):
             status = Dotfile.conflict
         return Dotfile(file_name, status=status)
 
-    def ignore(self, file_name, patterns):
-        # FIXME: factor file look up in pattern list.
-        if patterns:  # patterns to match
-            if [pat for pat in patterns if fnmatch.fnmatch(file_name, pat)]:
-                return True
-        if file_name in self.ignore_files:
+    def is_ignored(self, file_name, patterns):
+        if patterns and not match_any_pattern(file_name, patterns):
+            return True
+        if self.ignore_patterns and \
+                match_any_pattern(file_name, self.ignore_patterns):
             return True
         return False
 
     def get_dotfiles(self, patterns=None):
         """Gets a generator that loops through the dotfiles."""
         for file_name in os.listdir(self.get_dotfiles_abspath()):
-            if self.ignore(file_name, patterns):
+            if self.is_ignored(file_name, patterns):
                 continue
             yield self.get_dotfile(file_name)
 
 
+def make_dotfile_manager(args):
+    import configparser
+
+    is_ignored_files = None
+    with open(args.config_file) as config_file:
+        config = configparser.ConfigParser()
+        config.read_file(config_file) 
+        try:
+            ignore_patterns = config['dotfiles']['ignore'].split()
+        except KeyError as error:
+            logger.warn("cannot find ignore section in {}: {}".
+                    format(args.config_file, error))
+        if args.ignore_patterns:
+            ignore_patterns += args.ignore_patterns
+    manager = DotfileManager(ignore_patterns=ignore_patterns)
+    return manager
+
+
 def report(args):
-    """Displays status of home directory files compared to dotfiles."""
-    manager = DotfileManager()
+    """Displays status of dot files in home directory."""
+    manager = make_dotfile_manager(args)
     dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
             key=lambda df: df.status.name + df.name)
     for df in dotfiles:
@@ -183,7 +210,10 @@ def main():
             epilog=None)
     parser.add_argument("-V", "--verbose", dest="verbose_count",
             action="count", default=0,
-            help="increases log verbosity (can be specified multiple times)")
+            help="increases log verbosity (can be specified multiple times).")
+    parser.add_argument("--dotfilesrc", dest="config_file",
+            metavar="FILE", default=".dotfilesrc", 
+            help="specifies configuration file.")
     subparsers = parser.add_subparsers(help="commands to execute")
 
     # Report sub-command.
@@ -195,12 +225,15 @@ def main():
             epilog=report_epilog)
     report_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
             help="dot files to report on.")
+    report_parser.add_argument("--ignore", dest="ignore_patterns",
+            action='append',
+            metavar="PATTERN", help="patterns to ignore.")
     report_parser.set_defaults(func=report)
 
     args = parser.parse_args(sys.argv[1:])
     
-    # Sets log level based on the number of the count of -V
-    logger.setLevel(max(4 - args.verbose_count, 0) * 10)
+    # Sets log level to WARN going more verbose for each new -V.
+    logger.setLevel(max(3 - args.verbose_count, 0) * 10)
     # Dispatch to the args.func defined in set_defaults.
     return args.func(args)
 

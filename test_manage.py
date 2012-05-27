@@ -146,8 +146,8 @@ class DotfileManagerTest(unittest.TestCase):
 
     def test_report_ignored(self):
         file_name = '.gitignore'
-        self.create_file(self.dfm.dotfiles_dir, file_name, "*.pyc") 
-        self.dfm.ignore_files = [ file_name ]
+        self.create_file(self.dfm.dotfiles_dir, file_name, content="*.pyc") 
+        self.dfm.ignore_patterns = [ file_name ]
         dotfiles = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles, [])
 
