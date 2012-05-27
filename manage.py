@@ -49,6 +49,8 @@ def match_any_pattern(file_name, patterns):
 
     Returns false if the patterns list is None or empty.
     """
+    assert iter(patterns), "iterable expected"
+    assert not isinstance(patterns, str), "string where iterable expected"
     for pattern in patterns:
         if fnmatch.fnmatch(file_name, pattern):
             logger.debug("{} matches {}".format(file_name, pattern))
@@ -70,6 +72,9 @@ class DotfileStatus(object):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return "<{}: {}>".format(self.__class__.__name__, str(self))
+
 
 class Dotfile(object):
     """Abstraction for a (possible) link between repository and home dir."""
@@ -79,6 +84,7 @@ class Dotfile(object):
     missing = DotfileStatus('missing', 'not in home directory')
     conflict = DotfileStatus('conflict', 'different from dotfile')
     same = DotfileStatus('same', 'identical but distinct file')
+    unmanaged = DotfileStatus('unmanaged', 'not in dotfile directory')
 
     def __init__(self, name, status=None):
         self.name = name
@@ -123,10 +129,16 @@ class DotfileManager(object):
         return True
 
     def get_dotfiles_abspath(self):
-        """Return the absolute path to the dotfile directory"""
+        """Return the absolute path to the dotfile directory."""
         if os.path.abspath(self.dotfiles_dir) == self.dotfiles_dir:
             return self.dotfiles_dir
         return os.path.join(self.home_dir, self.dotfiles_dir)
+
+    def get_dotfiles_relpath(self):
+        """Returns relative path of dotfile with respect to home directory."""
+        dotfile_abspath = self.get_dotfiles_abspath()
+        home_dir = self.home_dir
+        return os.path.relpath(dotfile_abspath, home_dir)
 
     def get_dotfile(self, file_name):
         """Retrieves the dotfile for a given file_name."""
@@ -142,8 +154,9 @@ class DotfileManager(object):
             else:
                 status = Dotfile.external
         elif not os.path.exists(home_filename):
-            home_filename = None
             status = Dotfile.missing
+        elif not os.path.exists(dotfile_name):
+            status = Dotfile.unmanaged
         elif filecmp.cmp(dotfile_name, home_filename):
             status = Dotfile.same
         else:
@@ -160,10 +173,41 @@ class DotfileManager(object):
 
     def get_dotfiles(self, patterns=None):
         """Gets a generator that loops through the dotfiles."""
+        if patterns:
+            assert iter(patterns), "iterable expected"
+            assert not isinstance(patterns, str),\
+                    "string where iterable expected"
+        seen = set()
         for file_name in os.listdir(self.get_dotfiles_abspath()):
+            seen.add(file_name)
             if self.is_ignored(file_name, patterns):
                 continue
             yield self.get_dotfile(file_name)
+        for file_name in os.listdir(self.home_dir):
+            if file_name in seen:
+                continue
+            if self.is_ignored(file_name, patterns):
+                continue
+            if file_name.startswith(".") or file_name.endswith("rc"):
+                yield self.get_dotfile(file_name)
+
+    def make_symlink(self, dotfile):
+        if dotfile.status == Dotfile.missing:
+            home_filename = os.path.join(self.home_dir, dotfile.name)
+            dotfile_name = os.path.join(self.get_dotfiles_abspath(),
+                    dotfile.name)
+            if sys.platform == 'win32':
+                is_dir = os.path.isdir(dotfile_name)
+                os.symlink(dotfile_name, home_filename, is_dir)
+            else:
+                os.symlink(dotfile_name, home_filename)
+        else:
+            logger.warn("cannot create symlink: {} is {}".format(dotfile.name,
+                dotfile.status))
+
+    def sync(self, patterns=None):
+        for dotfile in self.get_dotfiles(patterns):
+            self.make_symlink(dotfile)
 
 
 def make_dotfile_manager(args):
@@ -172,7 +216,7 @@ def make_dotfile_manager(args):
     is_ignored_files = None
     with open(args.config_file) as config_file:
         config = configparser.ConfigParser()
-        config.read_file(config_file) 
+        config.read_file(config_file)
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
         except KeyError as error:
@@ -193,6 +237,11 @@ def report(args):
         print("{:<8} {}".format(df.status, df.name))
 
 
+def sync(args):
+    manager = make_dotfile_manager(args)
+    manager.sync(args.dotfiles)
+    
+
 def expand_wildcards(files):
     """Expands wildcards in argument in case it is not done by the shell"""
     all_files = []
@@ -212,26 +261,33 @@ def main():
             action="count", default=0,
             help="increases log verbosity (can be specified multiple times).")
     parser.add_argument("--dotfilesrc", dest="config_file",
-            metavar="FILE", default=".dotfilesrc", 
+            metavar="FILE", default=".dotfilesrc",
             help="specifies configuration file.")
+    parser.add_argument("--ignore", dest="ignore_patterns",
+            action='append',
+            metavar="PATTERN", help="patterns to ignore.")
     subparsers = parser.add_subparsers(help="commands to execute")
 
     # Report sub-command.
     report_epilog = "Possible statuses include: {}".format(
-            ", ".join(["{} ({})".format(status.name, status.description) 
+            ", ".join(["{} ({})".format(status.name, status.description)
                 for status in Dotfile.__dict__.values()
                 if isinstance(status, DotfileStatus)]))
     report_parser = subparsers.add_parser('report', help=report.__doc__,
             epilog=report_epilog)
     report_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
             help="dot files to report on.")
-    report_parser.add_argument("--ignore", dest="ignore_patterns",
-            action='append',
-            metavar="PATTERN", help="patterns to ignore.")
     report_parser.set_defaults(func=report)
 
+    # Sync sub-command.
+    sync_parser = subparsers.add_parser('sync', help=sync.__doc__)
+    sync_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
+            help="dot files to sync. Defaults to all.")
+    sync_parser.set_defaults(func=sync)
+
+
     args = parser.parse_args(sys.argv[1:])
-    
+
     # Sets log level to WARN going more verbose for each new -V.
     logger.setLevel(max(3 - args.verbose_count, 0) * 10)
     # Dispatch to the args.func defined in set_defaults.
