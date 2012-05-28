@@ -1,17 +1,9 @@
-path = .profile
-path = .subversion/config
-path = .unison 
-path = .vimrc
 path = Contacts
 path = Documents
 path = Music
 path = Pictures
 path = Videos
-path = backup.exclude
-path = backup.exclude.partial
-path = dotfiles
 path = etc
-path = nose.cfg
 path = perl
 path = python
 path = scripts
