@@ -1,0 +1,3 @@
+[submodule "vimfiles/bundle/makegreen"]
+	path = vimfiles/bundle/makegreen
+	url = git://github.com/reinh/vim-makegreen.git
