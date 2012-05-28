@@ -4,9 +4,6 @@
 [submodule "vimfiles/bundle/snipmate"]
 	path = vimfiles/bundle/snipmate
 	url = git://github.com/msanders/snipmate.vim.git
-[submodule "vimfiles/bundle/minibufexpl"]
-	path = vimfiles/bundle/minibufexpl
-	url = git://github.com/fholgado/minibufexpl.vim.git
 [submodule "vimfiles/bundle/pep8"]
 	path = vimfiles/bundle/pep8
 	url = https://github.com/vim-scripts/pep8.git
@@ -16,3 +13,6 @@
 [submodule "vimfiles/bundle/tasklist"]
 	path = vimfiles/bundle/tasklist
 	url = https://github.com/vim-scripts/TaskList.vim.git
+[submodule "vimfiles/bundle/minibufexpl"]
+	path = vimfiles/bundle/minibufexpl
+	url = https://github.com/fholgado/minibufexpl.vim
