@@ -39,6 +39,7 @@ import filecmp
 import fnmatch
 import itertools
 import configparser
+import shutil
 
 
 logger = logging.getLogger(__name__)
@@ -209,8 +210,28 @@ class DotfileManager(object):
         for dotfile in self.get_dotfiles(patterns):
             self.make_symlink(dotfile)
 
+    def make_copy(self, dotfile):
+        if dotfile.status == Dotfile.missing:
+            home_filename = os.path.join(self.home_dir, dotfile.name)
+            dotfile_name = os.path.join(self.get_dotfiles_abspath(),
+                    dotfile.name)
+            if sys.platform != 'win32':
+                logger.warn("it is recommended to use the sync command")
+            if os.path.isdir(dotfile_name):
+                shutil.copytree(dotfile_name, home_filename)
+            else:
+                shutil.copy2(dotfile_name, home_filename)
+        else:
+            logger.warn("cannot create symlink: {} is {}".format(dotfile.name,
+                dotfile.status))
+
+    def copy(self, patterns=None):
+        for dotfile in self.get_dotfiles(patterns):
+            self.make_copy(dotfile)
+
 
 def make_dotfile_manager(args):
+    """Creates a DotfileManager instance based on command line arguments."""
     import configparser
 
     is_ignored_files = None
@@ -238,9 +259,19 @@ def report(args):
 
 
 def sync(args):
+    """Creates symlinks in home directory to files in the dotfile folder."""
     manager = make_dotfile_manager(args)
     manager.sync(args.dotfiles)
-    
+
+
+def copy(args):
+    """Copies files in dotfile folder to the home directory.
+
+    Useful for platform that do not support symbolic links.
+    """
+    manager = make_dotfile_manager(args)
+    manager.copy(args.dotfiles)
+
 
 def expand_wildcards(files):
     """Expands wildcards in argument in case it is not done by the shell"""
@@ -268,7 +299,7 @@ def main():
             metavar="PATTERN", help="patterns to ignore.")
     subparsers = parser.add_subparsers(help="commands to execute")
 
-    # Report sub-command.
+    # report sub-command.
     report_epilog = "Possible statuses include: {}".format(
             ", ".join(["{} ({})".format(status.name, status.description)
                 for status in Dotfile.__dict__.values()
@@ -279,12 +310,17 @@ def main():
             help="dot files to report on.")
     report_parser.set_defaults(func=report)
 
-    # Sync sub-command.
+    # sync sub-command.
     sync_parser = subparsers.add_parser('sync', help=sync.__doc__)
     sync_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
             help="dot files to sync. Defaults to all.")
     sync_parser.set_defaults(func=sync)
 
+    # copy sub-command.
+    copy_parser = subparsers.add_parser('copy', help=copy.__doc__)
+    copy_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
+            help="dot files to copy. Defaults to all.")
+    copy_parser.set_defaults(func=copy)
 
     args = parser.parse_args(sys.argv[1:])
 

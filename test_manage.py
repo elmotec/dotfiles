@@ -26,6 +26,7 @@ import unittest
 import tempfile
 import shutil
 import os.path
+import logging
 
 from manage import Dotfile, DotfileManager, logger
 
@@ -45,6 +46,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         os.mkdir(dotfiles_dir)
         self.dfm = DotfileManager(home_dir=home_dir,
                 dotfiles_dir=os.path.basename(dotfiles_dir))
+        logging.disable(logging.WARNING)
 
     def tearDown(self):
         """Cleans up test home and dotfiles directories."""
@@ -170,6 +172,31 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         dotfiles_after = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_after,
                 [Dotfile(file_name, status=Dotfile.synced)])
+
+    def test_nosync_conflict(self):
+        """Tests syncing of a missing file."""
+        file_name = 'astylerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name)
+        self.create_file(self.dfm.home_dir, file_name, 'not blah')
+        dotfiles_before = list(self.dfm.get_dotfiles())
+        self.assertEqual(dotfiles_before,
+                [Dotfile(file_name, status=Dotfile.conflict)])
+        self.dfm.sync()
+        dotfiles_after = list(self.dfm.get_dotfiles())
+        self.assertEqual(dotfiles_after,
+                [Dotfile(file_name, status=Dotfile.conflict)])
+
+    def test_copy_missing(self):
+        """Tests copy of a missing file."""
+        file_name = 'astylerc'
+        self.create_file(self.dfm.dotfiles_dir, file_name)
+        dotfiles_before = list(self.dfm.get_dotfiles())
+        self.assertEqual(dotfiles_before,
+                [Dotfile(file_name, status=Dotfile.missing)])
+        self.dfm.copy()
+        dotfiles_after = list(self.dfm.get_dotfiles())
+        self.assertEqual(dotfiles_after,
+                [Dotfile(file_name, status=Dotfile.same)])
 
 
 if __name__ == '__main__':
