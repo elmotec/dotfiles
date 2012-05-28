@@ -1,3 +1,18 @@
 [submodule "vimfiles/bundle/makegreen"]
 	path = vimfiles/bundle/makegreen
 	url = git://github.com/reinh/vim-makegreen.git
+[submodule "vimfiles/bundle/snipmate"]
+	path = vimfiles/bundle/snipmate
+	url = git://github.com/msanders/snipmate.vim.git
+[submodule "vimfiles/bundle/minibufexpl"]
+	path = vimfiles/bundle/minibufexpl
+	url = git://github.com/fholgado/minibufexpl.vim.git
+[submodule "vimfiles/bundle/pep8"]
+	path = vimfiles/bundle/pep8
+	url = https://github.com/vim-scripts/pep8.git
+[submodule "vimfiles/bundle/pydoc"]
+	path = vimfiles/bundle/pydoc
+	url = https://github.com/fs111/pydoc.vim.git
+[submodule "vimfiles/bundle/tasklist"]
+	path = vimfiles/bundle/tasklist
+	url = https://github.com/vim-scripts/TaskList.vim.git
