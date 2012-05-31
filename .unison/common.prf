@@ -7,7 +7,6 @@ path = etc
 path = perl
 path = python
 path = scripts
-path = vimfiles
 #path = AppData/Local/Google/Picasa2
 #path = AppData/Local/Google/Picasa2Albums
 
