@@ -90,7 +90,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         """Checks the dotfile directory is set up and is a directory."""
         self.assert_dir_exists(self.dfm.get_dotfiles_abspath())
 
-    def test_report_missing(self):
+    def test_status_missing(self):
         """Checks status of missing dotfiles in home directory."""
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]")
@@ -98,7 +98,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.missing)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
-    def test_report_unmanaged(self):
+    def test_status_unmanaged(self):
         """Checks status of missing dotfiles in home directory."""
         file_name = '.somefile'
         self.create_file(self.dfm.home_dir, file_name)
@@ -106,7 +106,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.unmanaged)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
-    def test_report_same(self):
+    def test_status_same(self):
         """Checks status of identical dotfiles between home and checkout."""
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]")
@@ -115,7 +115,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.same)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
-    def test_report_conflict(self):
+    def test_status_conflict(self):
         """Checks status of conflicted dotfiles between home and checkout."""
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]")
@@ -124,7 +124,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.conflict)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
-    def test_report_external(self):
+    def test_status_external(self):
         """Checks status of dotfiles in home linked to somewhere else."""
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]")
@@ -133,7 +133,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.external)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
 
-    def test_report_synced(self):
+    def test_status_synced(self):
         """Checks status of synced dotfiles."""
         file_name = '.dotfilerc'
         self.create_file(self.dfm.dotfiles_dir, file_name, "[dotfile]")
@@ -143,7 +143,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(file_name, status=Dotfile.synced)
         self.assertEqual(dotfiles, [expected_dotfile])
 
-    def test_report_dir_synced(self):
+    def test_status_dir_synced(self):
         """Checks status of synced (dot)subdirectories."""
         subdir_name = 'subdir'
         self.create_dir(self.dfm.dotfiles_dir, subdir_name)
@@ -153,7 +153,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         expected_dotfile = Dotfile(subdir_name, status=Dotfile.synced)
         self.assertEqual(dotfiles, [expected_dotfile])
 
-    def test_report_ignored(self):
+    def test_status_ignored(self):
         """Checks ignore functionality."""
         file_name = '.gitignore'
         self.create_file(self.dfm.dotfiles_dir, file_name, content="*.pyc")

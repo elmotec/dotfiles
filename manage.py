@@ -32,12 +32,9 @@ import sys
 import os.path
 import logging
 import argparse
-import difflib
-import types
 import glob
 import filecmp
 import fnmatch
-import itertools
 import configparser
 import shutil
 
@@ -64,7 +61,7 @@ class DotfileError(RuntimeError):
     pass
 
 
-class DotfileStatus(object):
+class DotfileStatus(object):  # pylint: disable=R0903
     """Helper class to hold the status of a dotfile."""
     def __init__(self, name, description):
         self.name = name
@@ -77,7 +74,7 @@ class DotfileStatus(object):
         return "<{}: {}>".format(self.__class__.__name__, str(self))
 
 
-class Dotfile(object):
+class Dotfile(object):  # pylint: disable=R0903
     """Abstraction for a (possible) link between repository and home dir."""
 
     synced = DotfileStatus('synced', 'symbolic link to dotfile')
@@ -102,13 +99,15 @@ class Dotfile(object):
 class DotfileManager(object):
     """Manages dotfiles."""
 
-    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_patterns=None):
+    def __init__(self, home_dir=None, dotfiles_dir=None,
+            ignore_patterns=None, force_sync=None):
         """Sets variable that will be needed by the manager.
 
         Post conditions:
         self.home_dir exists and is a directory.
         self.dotfiles_dir exists and is a directory.
         """
+        self.force_sync = force_sync
         self.home_dir = os.path.expanduser("~")
         if home_dir:
             self.home_dir = home_dir
@@ -165,6 +164,11 @@ class DotfileManager(object):
         return Dotfile(file_name, status=status)
 
     def is_ignored(self, file_name, patterns):
+        """True if the file_name is to be ignored.
+
+        Compares the file name to the patterns to be matched as well as to
+        the ignore patterns (see usage and .dotfilerc).
+        """
         if patterns and not match_any_pattern(file_name, patterns):
             return True
         if self.ignore_patterns and \
@@ -176,7 +180,7 @@ class DotfileManager(object):
         """Gets a generator that loops through the dotfiles."""
         if patterns:
             assert iter(patterns), "iterable expected"
-            assert not isinstance(patterns, str),\
+            assert not isinstance(patterns, str), \
                     "string where iterable expected"
         seen = set()
         for file_name in os.listdir(self.get_dotfiles_abspath()):
@@ -193,8 +197,13 @@ class DotfileManager(object):
                 yield self.get_dotfile(file_name)
 
     def make_symlink(self, dotfile):
-        if dotfile.status == Dotfile.missing:
-            home_filename = os.path.join(self.home_dir, dotfile.name)
+        """Creates a symbolic link in the home directory to the dotfile."""
+        can_create_symlink = (dotfile.status == Dotfile.missing)
+        home_filename = os.path.join(self.home_dir, dotfile.name)
+        if dotfile.status == Dotfile.external and self.force_sync:
+            os.unlink(home_filename)  # Remove existing symlink.
+            can_create_symlink = True
+        if can_create_symlink:
             dotfile_name = os.path.join(self.get_dotfiles_abspath(),
                     dotfile.name)
             if sys.platform == 'win32':
@@ -207,10 +216,12 @@ class DotfileManager(object):
                 dotfile.status))
 
     def sync(self, patterns=None):
+        """Creates a symlink for each file matching patterns."""
         for dotfile in self.get_dotfiles(patterns):
             self.make_symlink(dotfile)
 
     def make_copy(self, dotfile):
+        """Creates a copy of the dotfile in the home directory."""
         if dotfile.status == Dotfile.missing:
             home_filename = os.path.join(self.home_dir, dotfile.name)
             dotfile_name = os.path.join(self.get_dotfiles_abspath(),
@@ -222,19 +233,17 @@ class DotfileManager(object):
             else:
                 shutil.copy2(dotfile_name, home_filename)
         else:
-            logger.warn("cannot create symlink: {} is {}".format(dotfile.name,
+            logger.warn("cannot create copy: {} is {}".format(dotfile.name,
                 dotfile.status))
 
     def copy(self, patterns=None):
+        """Creates a copy for each file matching patterns."""
         for dotfile in self.get_dotfiles(patterns):
             self.make_copy(dotfile)
 
 
 def make_dotfile_manager(args):
     """Creates a DotfileManager instance based on command line arguments."""
-    import configparser
-
-    is_ignored_files = None
     with open(args.config_file) as config_file:
         config = configparser.ConfigParser()
         config.read_file(config_file)
@@ -244,24 +253,24 @@ def make_dotfile_manager(args):
             logger.warn("cannot find ignore section in {}: {}".
                     format(args.config_file, error))
         if args.ignore_patterns:
-            ignore_patterns += args.ignore_patterns
-    manager = DotfileManager(ignore_patterns=ignore_patterns)
+            ignore_patterns = args.ignore_patterns
+        manager = DotfileManager(ignore_patterns=ignore_patterns)
     return manager
 
 
-def report(args):
+def status(args):
     """Displays status of dot files in home directory."""
     manager = make_dotfile_manager(args)
     dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
             key=lambda df: df.status.name + df.name)
-    for df in dotfiles:
-        print("{:<8} {}".format(df.status, df.name))
+    for dfile in dotfiles:
+        print("{:<8} {}".format(dfile.status, dfile.name))
 
 
 def sync(args):
     """Creates symlinks in home directory to files in the dotfile folder."""
     manager = make_dotfile_manager(args)
-    manager.sync(args.dotfiles)
+    manager.sync(args.dotfiles, force=args.force_sync)
 
 
 def copy(args):
@@ -299,21 +308,23 @@ def main():
             metavar="PATTERN", help="patterns to ignore.")
     subparsers = parser.add_subparsers(help="commands to execute")
 
-    # report sub-command.
-    report_epilog = "Possible statuses include: {}".format(
+    # status sub-command.
+    status_epilog = "Possible statuses include: {}".format(
             ", ".join(["{} ({})".format(status.name, status.description)
                 for status in Dotfile.__dict__.values()
                 if isinstance(status, DotfileStatus)]))
-    report_parser = subparsers.add_parser('report', help=report.__doc__,
-            epilog=report_epilog)
-    report_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
-            help="dot files to report on.")
-    report_parser.set_defaults(func=report)
+    status_parser = subparsers.add_parser('status', help=status.__doc__,
+            epilog=status_epilog)
+    status_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
+            help="dot files to status on.")
+    status_parser.set_defaults(func=status)
 
     # sync sub-command.
     sync_parser = subparsers.add_parser('sync', help=sync.__doc__)
     sync_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
             help="dot files to sync. Defaults to all.")
+    sync_parser.add_argument("--force-sync", action='store_true',
+            help="forces sync if the home directory is already synced")
     sync_parser.set_defaults(func=sync)
 
     # copy sub-command.
