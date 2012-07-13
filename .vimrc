@@ -148,4 +148,5 @@ nmap <Leader>d :DiffOrig<CR>
 set wildmenu
 set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
+let g:snippets_dir="C:\\Users\\jlecomte\\vimfiles\\snippets,C:\\Users\\jlecomte\\vimfiles\\bundle\\snipmate\\snippets"
 
