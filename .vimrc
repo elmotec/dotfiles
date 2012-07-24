@@ -1,11 +1,15 @@
 "VIM ressource file
+" vim: set encoding=UTF-8
 
 " For debugging purpose if needed.
 " set verbose=9
 
-" Uses pathogen to set up vim extensions in vimfiles/bundles
+" Adds vimfiles to the runtimepath (not by default for unix).
+set runtimepath+=~/vimfiles
+
+" Uses pathogen to set up vim extensions in vimfiles/bundles.
 call pathogen#infect()
-call pathogen#helptags()
+"call pathogen#helptags()
 
 " Use Vim settings, rather then Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
@@ -41,7 +45,12 @@ if has("gui_running")
 else
   set term=builtin_ansi
 endif
+
+" Easy on the eyes.
 colorscheme desert
+
+" Sets file encodings to UTF-8.
+set fileencodings=utf-8  
 
 " Sets visual bell instead of the beep 
 set vb
@@ -149,4 +158,5 @@ set wildmenu
 set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
 let g:snippets_dir="C:\\Users\\jlecomte\\vimfiles\\snippets,C:\\Users\\jlecomte\\vimfiles\\bundle\\snipmate\\snippets"
+let g:snips_author="Jérôme Lecomte"
 
