@@ -92,7 +92,8 @@ editor-cmd = gvim
 ### while importing or adding files and directories.
 ### '*' matches leading dots, e.g. '*.rej' matches '.foo.rej'.
 global-ignores = *.o *.lo *.la *.al .libs *.so *.so.[0-9]* *.a *.pyc *.pyo
-  *.rej *~ #*# .#* .*.swp .DS_Store *.log *.bak tags .coverage htmlcov
+  *.rej *~ .#* .* .*.swp .DS_Store *.log *.bak tags .coverage htmlcov build
+  __pycache__ 
 ### Set log-encoding to the default encoding for log messages
 # log-encoding = latin1
 ### Set use-commit-times to make checkout/update/switch/revert
