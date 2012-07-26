@@ -13,6 +13,3 @@
 [submodule "vimfiles/bundle/tasklist"]
 	path = vimfiles/bundle/tasklist
 	url = https://github.com/vim-scripts/TaskList.vim.git
-[submodule "vimfiles/bundle/minibufexpl"]
-	path = vimfiles/bundle/minibufexpl
-	url = https://github.com/sontek/minibufexpl.vim
