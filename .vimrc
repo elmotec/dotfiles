@@ -1,5 +1,5 @@
 "VIM ressource file
-" vim: set encoding=UTF-8
+" vim: set encoding=utf-8
 
 " For debugging purpose if needed.
 " set verbose=9
@@ -46,9 +46,6 @@ else
   set term=builtin_ansi
 endif
 
-" Easy on the eyes.
-colorscheme desert
-
 " Sets file encodings to UTF-8.
 set fileencodings=utf-8  
 
@@ -86,8 +83,12 @@ set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the font for windows.
 if has ("gui_win32")
-  set guifont=Lucida\ Console:h12
+    "set guifont=Lucida\ Console:h12
+    set guifont=Source\ Code\ Pro:h12
 endif
+
+" Sets the colors to desert style.
+color desert
 
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
