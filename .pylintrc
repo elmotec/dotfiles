@@ -33,7 +33,7 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=I0011, I0012, W0511
+disable=I0011, I0012, W0511, E1003
 
 
 [REPORTS]
@@ -197,7 +197,7 @@ max-args=5
 ignored-argument-names=_.*
 
 # Maximum number of locals for function / method body
-max-locals=15
+max-locals=16
 
 # Maximum number of return / yield for function / method body
 max-returns=6
