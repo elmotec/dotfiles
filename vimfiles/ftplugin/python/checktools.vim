@@ -46,6 +46,10 @@ function! Pylint()
     call <SID>Pygrep('pylint','pylint --output-format=parseable -i yes --report=n','%f:%l:%m')
 endfunction
 
+function! Flake8()
+    call <SID>Pygrep('flake8','flake8','%f:%l:%c: %m')
+endfunction
+
 :nnoremap <Leader>pl :call Pylint()<CR><CR>
 :nnoremap <Leader>p8 :call Pep8()<CR><CR>
-:nnoremap <Leader>pd :call Pydoc()<CR><CR>
+:nnoremap <Leader>pf :call Flake8()<CR><CR>

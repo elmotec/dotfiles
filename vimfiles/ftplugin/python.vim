@@ -17,3 +17,5 @@ set makeprg=python.exe
 set omnifunc=pythoncomplete#Complete
 set completeopt=menuone,longest,preview
 
+" Convert files to utf-8
+set fileencoding=utf-8
