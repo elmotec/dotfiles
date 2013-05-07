@@ -4,6 +4,9 @@
 " For debugging purpose if needed.
 " set verbose=9
 
+" Auto-source .vimrc when saved
+autocmd! bufwritepost .vimrc source %
+
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
 
@@ -17,6 +20,8 @@ set nocompatible
 
 " No need for backup.
 set nobackup
+" ... or swap file.
+set noswapfile
 
 " Change tabulation to 2 spaces
 set tabstop=4
