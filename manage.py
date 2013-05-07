@@ -296,8 +296,8 @@ def main():
     """Parses command line arguments and dispatch to the correct function."""
     # Main parser.
     parser = argparse.ArgumentParser(description=__doc__,
-                                     version=__version__,
                                      epilog=None)
+    parser.add_argument("-v", "--version", action="version")
     parser.add_argument("-V", "--verbose", dest="verbose_count",
                         action="count", default=0,
                         help="increases log verbosity each time found.")
@@ -339,7 +339,11 @@ def main():
     # Sets log level to WARN going more verbose for each new -V.
     logger.setLevel(max(3 - args.verbose_count, 0) * 10)
     # Dispatch to the args.func defined in set_defaults.
+    if 'func' not in args:
+        logger.error("missing argument. Try -h option.") 
+        return
     return args.func(args)
+    
 
 
 if __name__ == "__main__":
