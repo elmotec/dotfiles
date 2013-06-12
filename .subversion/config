@@ -91,9 +91,46 @@ editor-cmd = gvim
 ### which Subversion will ignore in its 'status' output, and
 ### while importing or adding files and directories.
 ### '*' matches leading dots, e.g. '*.rej' matches '.foo.rej'.
-global-ignores = *.o *.lo *.la *.al .libs *.so *.so.[0-9]* *.a *.pyc *.pyo
-  *.rej *~ .#* .* .*.swp .DS_Store *.log *.bak tags .coverage htmlcov build
-  __pycache__ 
+global-ignores = 
+  *.aps
+  *.bak
+  *.cache
+  *.cmake
+  *.dir
+  *.dll
+  *.exp
+  *.idb
+  *.ilk
+  *.lib
+  *.log
+  *.ncb
+  *.patch
+  *.pdb
+  *.rej
+  *.sln
+  *.suo
+  *.swp
+  *.user
+  *.vcproj
+  *~
+  *~
+  .#*
+  .*
+  .*.swp
+  .coverage
+  .DS_Store
+  .gfs
+  __pycache__
+  build
+  cmake
+  CMakeCache.txt
+  CMakeFiles
+  Debug
+  gfssync.cmd
+  htmlcov
+  Release
+  RelWithDebInfo
+  tags
 ### Set log-encoding to the default encoding for log messages
 # log-encoding = latin1
 ### Set use-commit-times to make checkout/update/switch/revert
