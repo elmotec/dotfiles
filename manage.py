@@ -40,7 +40,8 @@ import configparser
 import shutil
 
 
-logger = logging.getLogger(__name__)
+module = sys.modules['__main__'].__file__
+logger = logging.getLogger(module)
 
 
 def match_any_pattern(file_name, patterns):
@@ -215,10 +216,10 @@ class DotfileManager(object):
     def sync(self, patterns=None, force=False):
         """Creates a symlink for each file matching patterns.
 
-    Arguments:
-    patterns -- list of unix-like file pattern to be matched.
-    force -- forces a sync even if the file is already sync'd elsewhere.
-    """
+        Arguments:
+        patterns -- list of unix-like file pattern to be matched.
+        force -- forces a sync even if the file is already sync'd elsewhere.
+        """
         for dotfile in self.get_dotfiles(patterns):
             self.make_symlink(dotfile, force=force)
 
@@ -347,7 +348,8 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
+                        format='%(name)s (%(levelname)s): %(message)s')
     try:
         main()
     finally:
