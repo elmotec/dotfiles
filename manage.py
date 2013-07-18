@@ -41,7 +41,7 @@ import shutil
 
 
 module = sys.modules['__main__'].__file__
-logger = logging.getLogger(module)
+log = logging.getLogger(module)
 
 
 def match_any_pattern(file_name, patterns):
@@ -53,7 +53,7 @@ def match_any_pattern(file_name, patterns):
     assert not isinstance(patterns, str), "string where iterable expected"
     for pattern in patterns:
         if fnmatch.fnmatch(file_name, pattern):
-            logger.debug("{} matches {}".format(file_name, pattern))
+            log.debug("{} matches {}".format(file_name, pattern))
             return True
     return False
 
@@ -210,7 +210,7 @@ class DotfileManager(object):
             else:
                 os.symlink(dotfile_name, home_filename)
         else:
-            logger.warn("cannot create symlink: {} is {}".
+            log.warn("cannot create symlink: {} is {}".
                         format(dotfile.name, dotfile.status))
 
     def sync(self, patterns=None, force=False):
@@ -230,13 +230,13 @@ class DotfileManager(object):
             dotfile_name = os.path.join(self.get_dotfiles_abspath(),
                                         dotfile.name)
             if sys.platform != 'win32':
-                logger.warn("it is recommended to use the sync command")
+                log.warn("it is recommended to use the sync command")
             if os.path.isdir(dotfile_name):
                 shutil.copytree(dotfile_name, home_filename)
             else:
                 shutil.copy2(dotfile_name, home_filename)
         else:
-            logger.warn("cannot create copy: {} is {}".
+            log.warn("cannot create copy: {} is {}".
                         format(dotfile.name, dotfile.status))
 
     def copy(self, patterns=None):
@@ -253,7 +253,7 @@ def make_dotfile_manager(args):
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
         except KeyError as error:
-            logger.warn("cannot find ignore section in {}: {}".
+            log.warn("cannot find ignore section in {}: {}".
                         format(args.config_file, error))
         if args.ignore_patterns:
             ignore_patterns = args.ignore_patterns
@@ -338,10 +338,10 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     # Sets log level to WARN going more verbose for each new -V.
-    logger.setLevel(max(3 - args.verbose_count, 0) * 10)
+    log.setLevel(max(3 - args.verbose_count, 0) * 10)
     # Dispatch to the args.func defined in set_defaults.
     if 'func' not in args:
-        logger.error("missing argument. Try -h option.") 
+        log.error("missing argument. Try -h option.") 
         return
     return args.func(args)
     
