@@ -13,3 +13,6 @@
 [submodule "vimfiles/bundle/tasklist"]
 	path = vimfiles/bundle/tasklist
 	url = https://github.com/vim-scripts/TaskList.vim.git
+[submodule "vimfiles/bundle/taglist"]
+	path = vimfiles/bundle/taglist
+	url = https://github.com/vim-scripts/taglist.vim.git
