@@ -17,5 +17,8 @@ set makeprg=python.exe
 set omnifunc=pythoncomplete#Complete
 set completeopt=menuone,longest,preview
 
+" Auto replace pdb
+iabbrev pdb import pdb; pdb.set_trace()
+
 " Convert files to utf-8
 set fileencoding=utf-8
