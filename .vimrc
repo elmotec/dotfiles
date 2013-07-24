@@ -4,29 +4,29 @@
 " For debugging purpose if needed.
 " set verbose=9
 
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" Uses pathogen to set up vim extensions in vimfiles/bundles.
+call pathogen#infect()
+call pathogen#helptags()
+
 " Auto-source .vimrc when saved
 autocmd! bufwritepost .vimrc source %
 
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
 
-" Uses pathogen to set up vim extensions in vimfiles/bundles.
-call pathogen#infect()
-"call pathogen#helptags()
-
-" Use Vim settings, rather then Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
-
 " No need for backup.
 set nobackup
 " ... or swap file.
 set noswapfile
 
-" Change tabulation to 2 spaces
+" Change tabulation to 4 spaces
 set tabstop=4
 
-" shifts 2 spaces at a time
+" shifts 4 spaces at a time
 set shiftwidth=4
 
 " Causes tab at the begining of a line (only !) to insert spaces
@@ -105,8 +105,8 @@ noremap <c-s-Tab> :bp<CR>
 " Control S saves current file.
 noremap <c-S> :w<CR>
 
-" Additional key mappings based on , combination.
-let mapleader = "," 
+" Leaves leader as the default \
+" let mapleader = "\" 
 " Hilight search 
 " wrap/unwrap lines
 nmap <Leader>w :set wrap!<CR>
