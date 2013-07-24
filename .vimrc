@@ -75,6 +75,10 @@ set showmatch
 
 " Repeat last command and put cursor at the start of the changes
 nmap . .`[
+	
+" Scrolls while keeping the cursor in the middle of the screen.
+noremap <c-j> jzz
+noremap <c-k> kzz	
 
 "(*) There is a default policy is $VIM is not defined
 " please, refer to Vim documentation (www.vim.org)
