@@ -16,3 +16,6 @@
 [submodule "vimfiles/bundle/taglist"]
 	path = vimfiles/bundle/taglist
 	url = https://github.com/vim-scripts/taglist.vim.git
+[submodule "vimfiles/bundle/airline"]
+	path = vimfiles/bundle/airline
+	url = https://github.com/bling/vim-airline.git
