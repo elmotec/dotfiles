@@ -39,10 +39,6 @@ set autoindent
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if has("gui_running")
-  " Colors
-  highlight normal guibg=white guifg=black
-  highlight cursor guibg=red
-  highlight special gui=none guibg=gray95
   noremap <c-Down> <c-w>j
   noremap <c-Up> <c-w>k
   noremap <c-Right> <c-w>l
@@ -56,6 +52,10 @@ set fileencodings=utf-8
 
 " Sets visual bell instead of the beep 
 set vb
+
+" Instead of failing a command because of unsaved changes,
+" raise a dialogue asking if you wish to save changed files.
+set confirm
 
 " List the path where to look for files
 set path=.,${HOME}/etc,${HOME}/cpp/libs/**,${HOME}/scripts
@@ -72,6 +72,9 @@ set laststatus=2
 
 " Hilight matching parenthesis
 set showmatch
+
+" Shows line number in the margin
+set number
 
 " Repeat last command and put cursor at the start of the changes
 nmap . .`[
@@ -97,7 +100,7 @@ if has ("gui_win32")
 endif
 
 " Sets the colors to desert style.
-color desert
+color lucius
 
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
@@ -108,6 +111,14 @@ noremap <c-Tab> :bn<CR>
 noremap <c-s-Tab> :bp<CR>
 " Control S saves current file.
 noremap <c-S> :w<CR>
+" Control-F4 closes the buffer.
+noremap <c-F4> :bd<CR>
+
+" Train myself to not use arrow keys
+noremap <Up> <NOP>
+noremap <Right> <NOP>
+noremap <Up> <NOP>
+noremap <Down> <NOP>
 
 " Leaves leader as the default \
 " let mapleader = "\" 
@@ -118,15 +129,17 @@ nmap <Leader>w :set wrap!<CR>
 nmap <Leader>n :set number!<CR>
 " Show task list (FIXME, TODO, ...). Requires TaskList.vim plugin.
 nmap <Leader>l <Plug>TaskList
+" Show cursor line
+nmap <Leader>c :set cursorline!<CR>
+set cursorline
 " Lists all buffers.
 nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
 nmap <Leader>s :set hlsearch!<CR>
 " Starts file explorer.
 nmap <Leader>e :Ex<CR>
-" Reload .vimrc
-nmap <Leader>sv :so $HOME/.vimrc<CR>
-nmap <Leader>ev :e $HOME/.vimrc<CR>
+" Tag list explorer
+nmap <Leader>t :TlistToggle<CR>
 " Loops through tags instead of sticking to the first one.
 nmap <c-T> <c-T><z><z>
 
