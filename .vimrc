@@ -4,7 +4,7 @@
 " For debugging purpose if needed.
 " set verbose=9
 
-" Use Vim settings, rather then Vi settings (much better!).
+" Use Vim settings, rather then Vi settings.
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
@@ -12,7 +12,7 @@ set nocompatible
 call pathogen#infect()
 call pathogen#helptags()
 
-" Auto-source .vimrc when saved
+" Auto-source .vimrc when it is saved.
 autocmd! bufwritepost .vimrc source %
 
 " Adds vimfiles to the runtimepath (not by default for unix).
@@ -117,7 +117,7 @@ noremap <c-F4> :bd<CR>
 " Train myself to not use arrow keys
 noremap <Up> <NOP>
 noremap <Right> <NOP>
-noremap <Up> <NOP>
+noremap <Left> <NOP>
 noremap <Down> <NOP>
 
 " Leaves leader as the default \
@@ -180,6 +180,7 @@ nmap <Leader>d :DiffOrig<CR>
 set wildmenu
 set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
-let g:snippets_dir="C:\\Users\\jlecomte\\vimfiles\\snippets,C:\\Users\\jlecomte\\vimfiles\\bundle\\snipmate\\snippets"
-let g:snips_author="Jérôme Lecomte"
-
+" UltiSnips customization to use <tab> to trigger jumps.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
