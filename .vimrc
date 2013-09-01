@@ -48,9 +48,9 @@ else
 endif
 
 " Sets file encodings to UTF-8.
-set fileencodings=utf-8  
+set fileencodings=utf-8
 
-" Sets visual bell instead of the beep 
+" Sets visual bell instead of the beep
 set vb
 
 " Instead of failing a command because of unsaved changes,
@@ -78,10 +78,10 @@ set number
 
 " Repeat last command and put cursor at the start of the changes
 nmap . .`[
-	
+
 " Scrolls while keeping the cursor in the middle of the screen.
 noremap <c-j> jzz
-noremap <c-k> kzz	
+noremap <c-k> kzz
 
 "(*) There is a default policy is $VIM is not defined
 " please, refer to Vim documentation (www.vim.org)
@@ -94,9 +94,10 @@ noremap <c-k> kzz
 set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the font for windows.
-if has ("gui_win32")
-    "set guifont=Lucida\ Console:h12
-    set guifont=Source\ Code\ Pro:h12
+if has("gui_win32")
+    set guifont=Source\ Code\ Pro:12
+elseif has("gui")
+    set guifont=Source\ Code\ Pro\ 12
 endif
 
 " Sets the colors to desert style.
@@ -121,8 +122,8 @@ noremap <Left> <NOP>
 noremap <Down> <NOP>
 
 " Leaves leader as the default \
-" let mapleader = "\" 
-" Hilight search 
+" let mapleader = "\"
+" Hilight search
 " wrap/unwrap lines
 nmap <Leader>w :set wrap!<CR>
 " Show line numbers
@@ -166,17 +167,7 @@ if has("autocmd")
     \ endif
 endif " has("autocmd")
 
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
-" Diffs last saved version to current.
-nmap <Leader>d :DiffOrig<CR>
-
-" Enhanced file choices. 
+" Enhanced file choices.
 set wildmenu
 set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
