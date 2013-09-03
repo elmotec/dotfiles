@@ -126,8 +126,10 @@ noremap <Down> <NOP>
 " Hilight search
 " wrap/unwrap lines
 nmap <Leader>w :set wrap!<CR>
-" Show line numbers
+" Show line numbers (absolute)
 nmap <Leader>n :set number!<CR>
+" Show line numbers (relative)
+nmap <Leader>r :set relativenumber!<CR>
 " Show task list (FIXME, TODO, ...). Requires TaskList.vim plugin.
 nmap <Leader>l <Plug>TaskList
 " Show cursor line
