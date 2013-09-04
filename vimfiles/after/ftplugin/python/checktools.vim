@@ -8,8 +8,8 @@ function! <SID>Pygrep(checkname, grepprg, grepfmt)
   let l:grepprogram_save = &grepprg
   set grepformat&vim
   set grepformat&vim
-  let &grepformat = a:grepfmt 
-  let &grepprg = a:grepprg 
+  let &grepformat = a:grepfmt
+  let &grepprg = a:grepprg
   if &readonly == 0 | update | endif
   silent! grep! %
   let &grepformat = l:grepformat_save
@@ -28,13 +28,13 @@ function! <SID>Pygrep(checkname, grepprg, grepfmt)
   redraw!
   let tlist=getqflist() ", 'get(v:val, ''bufnr'')')
   if empty(tlist)
-	  if !hlexists('GreenBar')
-		  hi GreenBar term=reverse ctermfg=white ctermbg=darkgreen guifg=white guibg=darkgreen
-	  endif
-	  echohl GreenBar
-	  echomsg a:checkname . " correct"
-	  echohl None
-	  cclose
+      if !hlexists('GreenBar')
+          hi GreenBar term=reverse ctermfg=white ctermbg=darkgreen guifg=white guibg=darkgreen
+      endif
+      echohl GreenBar
+      echomsg a:checkname . " correct"
+      echohl None
+      cclose
   endif
 endfunction
 
@@ -43,7 +43,7 @@ function! Pep8()
 endfunction
 
 function! Pylint()
-    call <SID>Pygrep('pylint','pylint --msg-template="{path}:{line}: [{msg_id}] {msg}" --report=n','%f:%l:%m')
+    call <SID>Pygrep('pylint','pylint --msg-template "{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" --report=n','%f:%l:%m')
 endfunction
 
 function! Flake8()
