@@ -95,7 +95,7 @@ set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the font for windows.
 if has("gui_win32")
-    set guifont=Source\ Code\ Pro:12
+    set guifont=Source\ Code\ Pro:h12
 elseif has("gui")
     set guifont=Source\ Code\ Pro\ 12
 endif
