@@ -200,7 +200,6 @@ class DotfileManager(object):
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
-        import pdb; pdb.set_trace()
         can_create_symlink = (dotfile.status == Dotfile.missing)
         home_filename = os.path.join(self.home_dir, dotfile.name)
         if force:
