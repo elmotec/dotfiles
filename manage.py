@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# vim: set encoding=utf-8
+# encoding: utf-8
 
 """Manages dot file relationship between home and dotfiles directories."""
 
@@ -36,8 +36,12 @@ import argparse
 import glob
 import filecmp
 import fnmatch
-import configparser
+if sys.version_info < (3, 0, 0):
+    import ConfigParser as configparser
+else:
+    import configparser
 import shutil
+import difflib
 
 
 module = sys.modules['__main__'].__file__
@@ -196,9 +200,10 @@ class DotfileManager(object):
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
+        import pdb; pdb.set_trace()
         can_create_symlink = (dotfile.status == Dotfile.missing)
         home_filename = os.path.join(self.home_dir, dotfile.name)
-        if dotfile.status == Dotfile.external and force:
+        if force:
             os.unlink(home_filename)  # Remove existing symlink.
             can_create_symlink = True
         if can_create_symlink:
@@ -223,9 +228,13 @@ class DotfileManager(object):
         for dotfile in self.get_dotfiles(patterns):
             self.make_symlink(dotfile, force=force)
 
-    def make_copy(self, dotfile):
+    def make_copy(self, dotfile, force=False):
         """Creates a copy of the dotfile in the home directory."""
-        if dotfile.status == Dotfile.missing:
+        can_create_copy = (dotfile.status == Dotfile.missing)
+        if not can_create_copy and force:
+            os.unlink(home_filename)  # Remove existing symlink.
+            can_create_symlink = True
+        if can_create_copy:
             home_filename = os.path.join(self.home_dir, dotfile.name)
             dotfile_name = os.path.join(self.get_dotfiles_abspath(),
                                         dotfile.name)
@@ -237,12 +246,31 @@ class DotfileManager(object):
                 shutil.copy2(dotfile_name, home_filename)
         else:
             log.warn("cannot create copy: {} is {}".
-                        format(dotfile.name, dotfile.status))
+                     format(dotfile.name, dotfile.status))
 
     def copy(self, patterns=None):
         """Creates a copy for each file matching patterns."""
         for dotfile in self.get_dotfiles(patterns):
             self.make_copy(dotfile)
+
+    def show_diff(self, dotfile):
+        """Shows diff between the dotfile folder and the home directory."""
+        if dotfile.status == Dotfile.missing:
+            log.warn("{} is missing".format(dotfile.name))
+            return
+        home_filename = os.path.join(self.home_dir, dotfile.name)
+        fromlines = open(dotfile.name).readlines()
+        tolines = open(home_filename).readlines()
+        diffs = list(difflib.unified_diff(fromlines, tolines))
+        if diffs:
+            header = "diff {} {}\n".format(dotfile.name, home_filename)
+            sys.stdout.write(header)
+        sys.stdout.writelines(diffs)
+
+    def diff(self, patterns=None):
+        """Diffs each file matching patterns."""
+        for dotfile in self.get_dotfiles(patterns):
+            self.show_diff(dotfile)
 
 
 def make_dotfile_manager(args):
@@ -276,10 +304,21 @@ def sync(args):
     manager.sync(args.dotfiles, force=args.force)
 
 
+def diff(args):
+    """Shows differences between dotfile folder and home directory.
+
+    :args: files to process if any.
+    """
+    manager = make_dotfile_manager(args)
+    manager.diff(args.dotfiles)
+
+
 def copy(args):
     """Copies files in dotfile folder to the home directory.
 
     Useful for platform that do not support symbolic links.
+
+    :args: files to process if any.
     """
     manager = make_dotfile_manager(args)
     manager.copy(args.dotfiles)
@@ -325,7 +364,7 @@ def main():
     sync_parser = subparsers.add_parser('sync', help=sync.__doc__)
     sync_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
                              help="dot files to sync. Defaults to all.")
-    sync_parser.add_argument("--force", action='store_true',
+    sync_parser.add_argument("-f", "--force", action='store_true',
                              help="forces sync")
     sync_parser.set_defaults(func=sync)
 
@@ -335,16 +374,21 @@ def main():
                              help="dot files to copy. Defaults to all.")
     copy_parser.set_defaults(func=copy)
 
+    # diff sub-command.
+    diff_parser = subparsers.add_parser('diff', help=diff.__doc__)
+    diff_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
+                             help="dot files to diff. Defaults to all.")
+    diff_parser.set_defaults(func=diff)
+
     args = parser.parse_args(sys.argv[1:])
 
     # Sets log level to WARN going more verbose for each new -V.
     log.setLevel(max(3 - args.verbose_count, 0) * 10)
     # Dispatch to the args.func defined in set_defaults.
     if 'func' not in args:
-        log.error("missing argument. Try -h option.") 
+        log.error("missing argument. Try -h option.")
         return
     return args.func(args)
-    
 
 
 if __name__ == "__main__":
