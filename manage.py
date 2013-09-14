@@ -200,7 +200,8 @@ class DotfileManager(object):
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
-        can_create_symlink = (dotfile.status == Dotfile.missing)
+        can_create_symlink = (dotfile.status in [Dotfile.missing,
+                                                 Dotfile.same])
         home_filename = os.path.join(self.home_dir, dotfile.name)
         if force:
             os.unlink(home_filename)  # Remove existing symlink.
