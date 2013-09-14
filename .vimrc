@@ -179,4 +179,4 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnips_python_style="sphinx"
+let g:ultisnips_python_style="sphinx"
