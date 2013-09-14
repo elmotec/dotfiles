@@ -18,6 +18,9 @@ autocmd! bufwritepost .vimrc source %
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
 
+" Leaves leader as the default \
+" let mapleader = "\"
+
 " No need for backup.
 set nobackup
 " ... or swap file.
@@ -25,6 +28,7 @@ set noswapfile
 
 " Change tabulation to 4 spaces
 set tabstop=4
+noremap <Leader>ws :%s/\s\+$//e<CR>:%s/	/    /g<CR>
 
 " shifts 4 spaces at a time
 set shiftwidth=4
@@ -121,8 +125,6 @@ noremap <Right> <NOP>
 noremap <Left> <NOP>
 noremap <Down> <NOP>
 
-" Leaves leader as the default \
-" let mapleader = "\"
 " Hilight search
 " wrap/unwrap lines
 nmap <Leader>w :set wrap!<CR>
@@ -177,3 +179,4 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnips_python_style="sphinx"
