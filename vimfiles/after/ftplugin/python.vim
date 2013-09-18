@@ -26,3 +26,5 @@ set fileencoding=utf-8
 " Vim pydoc customizations.
 let g:pydoc_use_drop=1
 
+" Python documentation style. 
+let g:ultisnips_python_style="sphinx"
