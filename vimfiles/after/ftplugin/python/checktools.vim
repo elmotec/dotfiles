@@ -42,6 +42,10 @@ function! Pep8()
     call <SID>Pygrep('pep8','pep8 --repeat','%f:%l:%m')
 endfunction
 
+function! Pep257()
+    call <SID>Pygrep('pep257','pep257','%f:%l:%m')
+endfunction
+
 function! Pylint()
     call <SID>Pygrep('pylint','pylint --msg-template "{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" --report=n','%f:%l:%m')
 endfunction
@@ -53,3 +57,4 @@ endfunction
 :nnoremap <Leader>pl :call Pylint()<CR><CR>
 :nnoremap <Leader>p8 :call Pep8()<CR><CR>
 :nnoremap <Leader>pf :call Flake8()<CR><CR>
+:nnoremap <Leader>p7 :call Pep257()<CR><CR>
