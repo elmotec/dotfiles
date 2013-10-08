@@ -83,7 +83,12 @@ set number
 " Repeat last command and put cursor at the start of the changes
 nmap . .`[
 
-" Scrolls while keeping the cursor in the middle of the screen.
+" Replace %% with the current file directory in command line. 
+" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
+cabbr <expr> %% expand('%:p:h')
+
+" Scrolls while keeping the cursor in the middle of the screen
+" (not great going up, it causes the screen to flicker).
 noremap <c-j> jzz
 noremap <c-k> kzz
 
