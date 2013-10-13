@@ -16,7 +16,7 @@ call pathogen#helptags()
 autocmd! bufwritepost .vimrc source %
 
 " Default size is a little bigger than 80 columns to accomodate line numbers.
-set lines=38 columns=85
+set columns=85 " lines=35
 
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
@@ -187,3 +187,8 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" For sunset: write down geo location.
+let g:sunset_latitude=40.67
+let g:sunset_longitude=-73.94
+let g:sunset_utc_offset=-5
