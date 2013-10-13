@@ -26,5 +26,8 @@ set fileencoding=utf-8
 " Vim pydoc customizations.
 let g:pydoc_use_drop=1
 
+" Show column 81 to 9999 as different background.
+let &colorcolumn=join(range(81, 9999), ",")
+
 " Python documentation style. 
 let g:ultisnips_python_style="sphinx"
