@@ -15,6 +15,9 @@ call pathogen#helptags()
 " Auto-source .vimrc when it is saved.
 autocmd! bufwritepost .vimrc source %
 
+" Default size is a little bigger than 80 columns to accomodate line numbers.
+set lines=38 columns=85
+
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
 
