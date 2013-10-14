@@ -31,7 +31,7 @@ set noswapfile
 
 " Change tabulation to 4 spaces
 set tabstop=4
-noremap <Leader>ws :%s/\s\+$//e<CR>:%s/	/    /g<CR>
+noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/    /    /g<CR>`m
 
 " shifts 4 spaces at a time
 set shiftwidth=4
@@ -86,7 +86,7 @@ set number
 " Repeat last command and put cursor at the start of the changes
 nmap . .`[
 
-" Replace %% with the current file directory in command line. 
+" Replace %% with the current file directory in command line.
 " See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
 cabbr <expr> %% expand('%:p:h')
 
