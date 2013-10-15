@@ -169,6 +169,8 @@ if has("autocmd")
   " Auto load python specific extensions (bring in
   " $VIMRUNTIME/ftplugin/python* files and directories).
   autocmd BufNewFile,BufRead *.py set filetype=python
+  " Handles log files with special syntax hilighting.
+  autocmd BufNewFile,BufRead *.log set filetype=log
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
