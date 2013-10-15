@@ -194,3 +194,6 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:sunset_latitude=40.67
 let g:sunset_longitude=-73.94
 let g:sunset_utc_offset=-5
+
+" Controls which airline sections get truncated and at what width.
+let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
