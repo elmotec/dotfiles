@@ -1,5 +1,5 @@
 "VIM ressource file
-" vim: set encoding=utf-8
+"encoding=utf-8
 
 " For debugging purpose if needed.
 " set verbose=9
@@ -180,6 +180,10 @@ if has("autocmd")
     \   exe "normal g`\"" |
     \ endif
 endif " has("autocmd")
+
+" Make tabs and trailing spaces visible as Unicode characters
+set list
+set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
 
 " Enhanced file choices.
 set wildmenu
