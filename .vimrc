@@ -31,7 +31,7 @@ set noswapfile
 
 " Change tabulation to 4 spaces
 set tabstop=4
-noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/    /    /g<CR>`m
+noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /g<CR>`m
 
 " shifts 4 spaces at a time
 set shiftwidth=4
@@ -54,8 +54,17 @@ else
   set term=builtin_ansi
 endif
 
-" Sets file encodings to UTF-8.
-set fileencodings=utf-8
+" Sets file encodings to UTF-8 if possible.
+" Based on http://vim.wikia.com/wiki/Working_with_Unicode.
+if has("multi_byte")
+    if &termencoding == ""
+        let &termencoding = &encoding
+    endif
+    set encoding=utf-8
+    setglobal fileencodings=utf-8
+    "setglobal bomb
+    set fileencodings=ucs-bom,utf-8,latin1
+endif
 
 " Sets visual bell instead of the beep
 set vb
@@ -107,7 +116,7 @@ set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the font for windows.
 if has("gui_win32")
-    set guifont=Source\ Code\ Pro:h12
+    set guifont=Source\ Code\ Pro:h12,Consolas:h13
 elseif has("gui")
     set guifont=Source\ Code\ Pro\ 12
 endif
@@ -183,7 +192,9 @@ endif " has("autocmd")
 
 " Make tabs and trailing spaces visible as Unicode characters
 set list
-set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
+if has("multi_byte")
+    set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
+endif
 
 " Enhanced file choices.
 set wildmenu
