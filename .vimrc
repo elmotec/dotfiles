@@ -51,7 +51,7 @@ if has("gui_running")
   noremap <c-Right> <c-w>l
   noremap <c-Left> <c-w>h
 else
-  set term=builtin_ansi
+  set term=$TERM
 endif
 
 " Sets file encodings to UTF-8 if possible.
@@ -121,8 +121,14 @@ elseif has("gui")
     set guifont=Source\ Code\ Pro\ 12
 endif
 
-" Sets the colors to desert style.
-color lucius
+" Sets the color scheme.
+if has("gui")
+    " Make sure env variable $TERM set to
+    " xterm-256colors on linux.
+    set t_CO=256
+    colorscheme lucius
+    let g:lucius_contrast='light'
+endif
 
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
@@ -136,7 +142,7 @@ noremap <c-S> :w<CR>
 " Control-F4 closes the buffer.
 noremap <c-F4> :bd<CR>
 
-" Train myself to not use arrow keys
+" Train myself to not use arrow keys (see Practcial Vim)
 noremap <Up> <NOP>
 noremap <Right> <NOP>
 noremap <Left> <NOP>
