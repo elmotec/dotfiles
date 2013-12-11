@@ -114,6 +114,9 @@ noremap <c-k> kzz
 " Sets the location of tag files
 set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
+" Sets the number of command to remember in history (20 is default)
+set history=60
+
 " Sets the font for windows.
 if has("gui_win32")
     set guifont=Source\ Code\ Pro:h12,Consolas:h13
