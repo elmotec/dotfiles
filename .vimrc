@@ -34,6 +34,7 @@ set tabstop=4
 noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /g<CR>`m
 
 " Causes tab at the begining of a line to insert spaces.
+set expandtab
 set smarttab
 set shiftwidth=4
 
