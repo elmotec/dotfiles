@@ -29,16 +29,16 @@ set nobackup
 " ... or swap file.
 set noswapfile
 
-" Change tabulation to 4 spaces
+" Set tabulation to 4 spaces
 set tabstop=4
 noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /g<CR>`m
 
-" shifts 4 spaces at a time
+" Causes tab at the begining of a line to insert spaces.
+set smarttab
 set shiftwidth=4
 
-" Causes tab at the begining of a line (only !) to insert spaces
-set smarttab
-set expandtab
+" Quickly remove tabs and trailing spaces.
+noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /e<CR>`m
 
 " Auto indent program in a C-like fashion
 set autoindent
@@ -76,8 +76,8 @@ set confirm
 " List the path where to look for files
 set path=.,${HOME}/etc,${HOME}/cpp/libs/**,${HOME}/scripts
 
-" Set the characters acceptable as part of a file name
-" Needed for /home/lecomtj/myfile as { and } aren't built in
+" Set the characters acceptable as part of a file name for gf command.
+" Needed for /home/jlecomte/myfile as { and } aren't built in
 set isfname=@,48-57,/,.,-,_,+,,,$,~,{,}
 
 " Always display line and column
@@ -99,10 +99,9 @@ nmap . .`[
 " See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
 cabbr <expr> %% expand('%:p:h')
 
-" Scrolls while keeping the cursor in the middle of the screen
-" (not great going up, it causes the screen to flicker).
-noremap <c-j> jzz
-noremap <c-k> kzz
+" Keep the cursor line at least 7 lines away from the top/bottom
+" the screen so we can have some context.
+set scrolloff=7
 
 "(*) There is a default policy is $VIM is not defined
 " please, refer to Vim documentation (www.vim.org)
@@ -111,7 +110,7 @@ noremap <c-k> kzz
 " shell that started vim)
 "set shell=/bin/bash
 
-" Sets the location of tag files
+" Sets the location of tag files up to 4 levels up.
 set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
 
 " Sets the number of command to remember in history (20 is default)
@@ -136,7 +135,10 @@ endif
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
 
-" Mimics Visual Studio interface.
+" Sets the color scheme.
+color lucius
+
+" Could not let those go... mimics Visual Studio interface.
 " Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
 noremap <c-Tab> :bn<CR>
 noremap <c-s-Tab> :bp<CR>
@@ -145,22 +147,21 @@ noremap <c-S> :w<CR>
 " Control-F4 closes the buffer.
 noremap <c-F4> :bd<CR>
 
-" Train myself to not use arrow keys (see Practcial Vim)
+" Train myself to not use arrow keys in Vim.
 noremap <Up> <NOP>
 noremap <Right> <NOP>
 noremap <Left> <NOP>
 noremap <Down> <NOP>
 
-" Hilight search
-" wrap/unwrap lines
+" Wrap/unwrap lines
 nmap <Leader>w :set wrap!<CR>
-" Show line numbers (absolute)
+" Show/Hide line numbers (absolute)
 nmap <Leader>n :set number!<CR>
-" Show line numbers (relative)
+" Show/Hide line numbers (relative)
 nmap <Leader>r :set relativenumber!<CR>
 " Show task list (FIXME, TODO, ...). Requires TaskList.vim plugin.
 nmap <Leader>l <Plug>TaskList
-" Show cursor line
+" Show/Hide cursor line
 nmap <Leader>c :set cursorline!<CR>
 set cursorline
 " Lists all buffers.
@@ -199,8 +200,9 @@ if has("autocmd")
     \ endif
 endif " has("autocmd")
 
-" Make tabs and trailing spaces visible as Unicode characters
+" Make tabs and trailing spaces visible...
 set list
+" ... as Unicode characters
 if has("multi_byte")
     set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
 endif
