@@ -31,7 +31,7 @@ set noswapfile
 
 " Set tabulation to 4 spaces
 set tabstop=4
-noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /g<CR>`m
+
 
 " Causes tab at the begining of a line to insert spaces.
 set expandtab
@@ -111,8 +111,8 @@ set scrolloff=7
 " shell that started vim)
 "set shell=/bin/bash
 
-" Sets the location of tag files up to 4 levels up.
-set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags
+" Sets the location of tag files up to 5 levels up.
+set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
 
 " Sets the number of command to remember in history (20 is default)
 set history=60
@@ -120,6 +120,7 @@ set history=60
 " Sets the font for windows.
 if has("gui_win32")
     set guifont=Source\ Code\ Pro:h12,Consolas:h13
+" Sets the font for Linux.
 elseif has("gui")
     set guifont=Source\ Code\ Pro\ 12
 endif
@@ -135,9 +136,6 @@ endif
 
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
-
-" Sets the color scheme.
-color lucius
 
 " Could not let those go... mimics Visual Studio interface.
 " Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
@@ -218,8 +216,8 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " For sunset: write down geo location.
-let g:sunset_latitude=40.67
-let g:sunset_longitude=-73.94
+let g:sunset_latitude=40.71
+let g:sunset_longitude=-74.01
 let g:sunset_utc_offset=-5
 
 " Controls which airline sections get truncated and at what width.
