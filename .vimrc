@@ -189,7 +189,9 @@ if has("autocmd")
   autocmd BufNewFile,BufRead *.py set filetype=python
   " Handles log files with special syntax hilighting.
   autocmd BufNewFile,BufRead *.log set filetype=log
-
+  " Handles .build (nant) files as xml.
+  autocmd BufNewFile,BufRead *.build set filetype=xml
+  
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
