@@ -23,6 +23,8 @@ set runtimepath+=~/vimfiles
 
 " Leaves leader as the default \
 " let mapleader = "\"
+" Set Leader as space
+" let mapleader = " "
 
 " No need for backup.
 set nobackup
@@ -53,6 +55,9 @@ if has("gui_running")
   noremap <c-Left> <c-w>h
 else
   set term=$TERM
+  set t_Co=256
+  let &t_AB="\e[48;5;%dm"
+  let &t_AF="\e[38;5;%dm"
 endif
 
 " Sets file encodings to UTF-8 if possible.
@@ -191,7 +196,7 @@ if has("autocmd")
   autocmd BufNewFile,BufRead *.log set filetype=log
   " Handles .build (nant) files as xml.
   autocmd BufNewFile,BufRead *.build set filetype=xml
-  
+
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
@@ -218,9 +223,14 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " For sunset: write down geo location.
+" New York
 let g:sunset_latitude=40.71
 let g:sunset_longitude=-74.01
 let g:sunset_utc_offset=-5
+" Paris?
+"let g:sunset_latitude=49.14
+"let g:sunset_longitude=2.33
+"let g:sunset_utc_offset=1
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
