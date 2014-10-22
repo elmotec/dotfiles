@@ -24,7 +24,7 @@ set runtimepath+=~/vimfiles
 " Leaves leader as the default \
 " let mapleader = "\"
 " Set Leader as space
-" let mapleader = " "
+let mapleader = " "
 
 " No need for backup.
 set nobackup
@@ -172,6 +172,9 @@ set cursorline
 nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
 nmap <Leader>s :set hlsearch!<CR>
+" Set search hilight by default.
+:set hlsearch
+:set incsearch
 " Starts file explorer.
 nmap <Leader>e :Ex<CR>
 " Tag list explorer
@@ -234,3 +237,4 @@ let g:sunset_utc_offset=-5
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+let g:airline#extensions#tabline#enabled = 1

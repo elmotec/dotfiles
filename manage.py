@@ -43,7 +43,7 @@ else:
 import shutil
 import difflib
 
-
+JL
 module = sys.modules['__main__'].__file__
 log = logging.getLogger(module)
 
