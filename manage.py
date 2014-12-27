@@ -3,7 +3,7 @@
 
 """Manages dot file relationship between home and dotfiles directories."""
 
-# Copyright (c) 2012 Jerome Lecomte
+# Copyright (c) 2012,13,14 Jerome Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,6 @@ else:
 import shutil
 import difflib
 
-JL
 module = sys.modules['__main__'].__file__
 log = logging.getLogger(module)
 
@@ -275,8 +274,8 @@ class DotfileManager(object):
 
 def make_dotfile_manager(args):
     """Creates a DotfileManager instance based on command line arguments."""
+    config = configparser.ConfigParser()
     with open(args.config_file) as config_file:
-        config = configparser.ConfigParser()
         config.read_file(config_file)
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
@@ -295,7 +294,7 @@ def get_status(args):
     dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
                       key=lambda df: df.status.name + df.name)
     for dfile in dotfiles:
-        print("{:<8} {}".format(dfile.status, dfile.name))
+        print("{:<10} {}".format(str(dfile.status), dfile.name))
 
 
 def sync(args):
