@@ -8,6 +8,7 @@ path = perl
 path = python
 path = scripts
 path = Downloads
+path = Applications
 #path = AppData/Local/Google/Picasa2
 #path = AppData/Local/Google/Picasa2Albums
 
