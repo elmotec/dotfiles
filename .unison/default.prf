@@ -1,10 +1,10 @@
-# roots 
+# roots
 root = ssh://strasbourg//cygdrive/c/Users/jlecomte
 root = /cygdrive/c/Users/jlecomte
 
 include common
 
 fastcheck = true
-perms = 0
+#perms = 0
 sshargs = -C
 
