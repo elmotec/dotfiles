@@ -172,9 +172,11 @@ set cursorline
 nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
 nmap <Leader>s :set hlsearch!<CR>
-" Set search hilight by default.
-:set hlsearch
-:set incsearch
+" Leverage incsearch.vim.
+let g:incsearch#auto_nohlsearch = 1
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
 " Starts file explorer.
 nmap <Leader>e :Ex<CR>
 " Tag list explorer
@@ -237,4 +239,4 @@ let g:sunset_utc_offset=-5
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
