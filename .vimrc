@@ -35,6 +35,8 @@ set noswapfile
 " Set tabulation to 4 spaces
 set tabstop=4
 
+" Shortcut to clean up end of line spaces
+noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /g<CR>`m
 
 " Causes tab at the begining of a line to insert spaces.
 set expandtab
