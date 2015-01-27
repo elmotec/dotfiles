@@ -1,5 +1,6 @@
 "VIM ressource file
-"encoding=utf-8
+set encoding=utf-8
+scriptencoding utf-8
 
 " For debugging purpose if needed.
 " set verbose=9
@@ -22,7 +23,7 @@ set columns=85 " lines=35
 set runtimepath+=~/vimfiles
 
 " Leaves leader as the default \
-" let mapleader = "\"
+" let g:mapleader = "\"
 " Set Leader as space
 let mapleader = " "
 
