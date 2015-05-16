@@ -58,3 +58,4 @@ endfunction
 :nnoremap <Leader>p8 :call Pep8()<CR><CR>
 :nnoremap <Leader>pf :call Flake8()<CR><CR>
 :nnoremap <Leader>p7 :call Pep257()<CR><CR>
+:nnoremap <Leader>pt :MakeGreen %<CR>:copen<CR>
