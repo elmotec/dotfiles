@@ -3,7 +3,7 @@
 
 """Manages dot file relationship between home and dotfiles directories."""
 
-# Copyright (c) 2012,13,14 Jerome Lecomte
+# Copyright (c) 2012-2015 Jerome Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 # THE SOFTWARE.
 
 
-__version__ = '0.50'
+__version__ = '0.51'
 __author__ = 'Jérôme Lecomte'
 __license__ = 'MIT'
 
@@ -56,7 +56,7 @@ def match_any_pattern(file_name, patterns):
     assert not isinstance(patterns, str), "string where iterable expected"
     for pattern in patterns:
         if fnmatch.fnmatch(file_name, pattern):
-            log.debug("{} matches {}".format(file_name, pattern))
+            log.debug("%s matches %s", file_name, pattern)
             return True
     return False
 
@@ -119,15 +119,18 @@ class DotfileManager(object):
         self.ignore_patterns = []
         if ignore_patterns:
             self.ignore_patterns = ignore_patterns
-        assert(self.invariants())
+        log.info("home dir: %s", self.home_dir)
+        log.info("dotfiles dir: %s", self.dotfiles_dir)
+        log.debug("ignored patterns: %s", self.ignore_patterns)
+        assert self.invariants()
 
     def invariants(self):
-        """Self check the class. Called with assert(invariants())."""
-        assert(os.path.exists(self.home_dir))
-        assert(os.path.isdir(self.home_dir))
+        """Self check the class. Called with assert invariants()."""
+        assert os.path.exists(self.home_dir)
+        assert os.path.isdir(self.home_dir)
         if self.dotfiles_dir:
-            assert(os.path.exists(self.get_dotfiles_abspath()))
-            assert(os.path.isdir(self.get_dotfiles_abspath()))
+            assert os.path.exists(self.get_dotfiles_abspath())
+            assert os.path.isdir(self.get_dotfiles_abspath())
         return True
 
     def get_dotfiles_abspath(self):
@@ -214,8 +217,8 @@ class DotfileManager(object):
             else:
                 os.symlink(dotfile_name, home_filename)
         else:
-            log.warn("cannot create symlink: {} is {}".
-                        format(dotfile.name, dotfile.status))
+            log.warning("cannot create symlink: %s is %s",
+                        dotfile.name, dotfile.status)
 
     def sync(self, patterns=None, force=False):
         """Creates a symlink for each file matching patterns.
@@ -230,22 +233,21 @@ class DotfileManager(object):
     def make_copy(self, dotfile, force=False):
         """Creates a copy of the dotfile in the home directory."""
         can_create_copy = (dotfile.status == Dotfile.missing)
+        home_filename = os.path.join(self.home_dir, dotfile.name)
         if not can_create_copy and force:
             os.unlink(home_filename)  # Remove existing symlink.
-            can_create_symlink = True
         if can_create_copy:
-            home_filename = os.path.join(self.home_dir, dotfile.name)
             dotfile_name = os.path.join(self.get_dotfiles_abspath(),
                                         dotfile.name)
             if sys.platform != 'win32':
-                log.warn("it is recommended to use the sync command")
+                log.warning("it is recommended to use the sync command")
             if os.path.isdir(dotfile_name):
                 shutil.copytree(dotfile_name, home_filename)
             else:
                 shutil.copy2(dotfile_name, home_filename)
         else:
-            log.warn("cannot create copy: {} is {}".
-                     format(dotfile.name, dotfile.status))
+            log.warning("cannot create copy: %s is %s",
+                        dotfile.name, dotfile.status)
 
     def copy(self, patterns=None):
         """Creates a copy for each file matching patterns."""
@@ -255,7 +257,7 @@ class DotfileManager(object):
     def show_diff(self, dotfile):
         """Shows diff between the dotfile folder and the home directory."""
         if dotfile.status == Dotfile.missing:
-            log.warn("{} is missing".format(dotfile.name))
+            log.warning("%s is missing", dotfile.name)
             return
         home_filename = os.path.join(self.home_dir, dotfile.name)
         fromlines = open(dotfile.name).readlines()
@@ -280,8 +282,8 @@ def make_dotfile_manager(args):
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
         except KeyError as error:
-            log.warn("cannot find ignore section in {}: {}".
-                        format(args.config_file, error))
+            log.warning("cannot find ignore section in %s: %s",
+                        args.config_file, error)
         if args.ignore_patterns:
             ignore_patterns = args.ignore_patterns
         manager = DotfileManager(ignore_patterns=ignore_patterns)
@@ -336,8 +338,9 @@ def main():
     # Main parser.
     parser = argparse.ArgumentParser(description=__doc__,
                                      epilog=None)
-    parser.add_argument("-v", "--version", action="version")
-    parser.add_argument("-V", "--verbose", dest="verbose_count",
+    parser.add_argument("-V", "--version", action="version",
+                        version="{} {}".format(module, __version__))
+    parser.add_argument("-v", "--verbose", dest="verbose_count",
                         action="count", default=0,
                         help="increases log verbosity each time found.")
     parser.add_argument("--dotfilesrc", dest="config_file",

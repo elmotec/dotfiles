@@ -3,7 +3,7 @@
 
 """Functional tests for py."""
 
-# Copyright (c) 2012 Jérôme Lecomte
+# Copyright (c) 2012-2015 Jérôme Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import shutil
 import os.path
 import logging
 
-from manage import Dotfile, DotfileManager, logger
+from manage import Dotfile, DotfileManager
 
 
 class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
@@ -46,7 +46,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         dotfiles_dir = os.path.join(home_dir, 'dotfiles')
         os.mkdir(dotfiles_dir)
         self.dfm = DotfileManager(home_dir=home_dir,
-                dotfiles_dir=os.path.basename(dotfiles_dir))
+                                  dotfiles_dir=os.path.basename(dotfiles_dir))
         logging.disable(logging.WARNING)
 
     def tearDown(self):
@@ -61,7 +61,7 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         """Helper to assert a path exists and is a directory."""
         self.assert_exists(directory)
         self.assertTrue(os.path.isdir(directory),
-                "{} is not a directory".format(directory))
+                        "{} is not a directory".format(directory))
 
     def create_file(self, dirname, filename, content="blah"):
         """Creates a file."""
@@ -168,11 +168,11 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         self.create_file(self.dfm.dotfiles_dir, file_name)
         dotfiles_before = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_before,
-                [Dotfile(file_name, status=Dotfile.missing)])
+                         [Dotfile(file_name, status=Dotfile.missing)])
         self.dfm.sync()
         dotfiles_after = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_after,
-                [Dotfile(file_name, status=Dotfile.synced)])
+                         [Dotfile(file_name, status=Dotfile.synced)])
 
     def test_nosync_conflict(self):
         """Tests syncing of a missing file."""
@@ -181,11 +181,11 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         self.create_file(self.dfm.home_dir, file_name, 'not blah')
         dotfiles_before = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_before,
-                [Dotfile(file_name, status=Dotfile.conflict)])
+                         [Dotfile(file_name, status=Dotfile.conflict)])
         self.dfm.sync()
         dotfiles_after = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_after,
-                [Dotfile(file_name, status=Dotfile.conflict)])
+                         [Dotfile(file_name, status=Dotfile.conflict)])
 
     def test_copy_missing(self):
         """Tests copy of a missing file."""
@@ -193,11 +193,11 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         self.create_file(self.dfm.dotfiles_dir, file_name)
         dotfiles_before = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_before,
-                [Dotfile(file_name, status=Dotfile.missing)])
+                         [Dotfile(file_name, status=Dotfile.missing)])
         self.dfm.copy()
         dotfiles_after = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles_after,
-                [Dotfile(file_name, status=Dotfile.same)])
+                         [Dotfile(file_name, status=Dotfile.same)])
 
 
 if __name__ == '__main__':
