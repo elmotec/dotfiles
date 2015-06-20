@@ -1,0 +1,13 @@
+# encoding: utf-8
+
+import pprint
+import rlcompleter
+
+# aliases
+# pretty print a instance variable's dict.
+alias pi pprint.pprint(vars(%1))
+# show local variables other than modules.
+alias lv pprint.pprint({k: v for (k, v) in locals().items() if type(v).__name__ != 'module'})
+
+pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
+
