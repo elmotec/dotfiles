@@ -229,6 +229,8 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
+let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
 
 " For sunset: write down geo location.
 " New York
