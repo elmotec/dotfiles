@@ -26,6 +26,7 @@ Thumbs.db
 # Ignore my typical setup file
 /setup.*
 
-# Ignore virtual env driectories
+# Ignore Python support directories
 /venv.*
 /venv
+/pylint.d
