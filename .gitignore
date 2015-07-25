@@ -5,3 +5,4 @@
 .unison/fp*
 tags
 vimfiles/.*
+.gitignore
