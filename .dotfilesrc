@@ -1,9 +1,11 @@
 [dotfiles]
 repository = .  # current directory.
 ignore = .git .gitignore .gitmodules
-    *.swp dotfiles.py README.rst 
-    .unison/ar* .unison/fp* *.bak 
+    *.swp dotfiles.py README.rst
+    .unison/ar* .unison/fp* *.bak
     __pycache__ manage.py test_manage.py *.pyc
-    .bash_history .gitconfig .inputrc .ipython .pypirc
+    .bash_history .inputrc .ipython .pypirc
     .ssh .vim .viminfo .pylint.d .sqldeveloper .vft*
     .gitattributes
+;difftool = gvim.bat -d {} {}
+;difftool = "C:\Program Files\TortoiseSVN\bin\TortoiseMerge.exe" "{}" "{}"

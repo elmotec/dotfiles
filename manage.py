@@ -24,7 +24,7 @@
 # THE SOFTWARE.
 
 
-__version__ = '0.51'
+__version__ = '0.52'
 __author__ = 'Jérôme Lecomte'
 __license__ = 'MIT'
 
@@ -41,7 +41,7 @@ if sys.version_info < (3, 0, 0):
 else:
     import configparser
 import shutil
-import difflib
+
 
 module = sys.modules['__main__'].__file__
 log = logging.getLogger(module)
@@ -101,9 +101,11 @@ class Dotfile(object):  # pylint: disable=R0903
 
 
 class DotfileManager(object):
+
     """Manages dotfiles."""
 
-    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_patterns=None):
+    def __init__(self, home_dir=None, dotfiles_dir=None, ignore_patterns=None,
+                 difftool=None):
         """Sets variable that will be needed by the manager.
 
         Post conditions:
@@ -119,9 +121,11 @@ class DotfileManager(object):
         self.ignore_patterns = []
         if ignore_patterns:
             self.ignore_patterns = ignore_patterns
+        self.difftool = difftool
         log.info("home dir: %s", self.home_dir)
         log.info("dotfiles dir: %s", self.dotfiles_dir)
         log.debug("ignored patterns: %s", self.ignore_patterns)
+        log.debug("difftool: %s", self.difftool)
         assert self.invariants()
 
     def invariants(self):
@@ -260,13 +264,26 @@ class DotfileManager(object):
             log.warning("%s is missing", dotfile.name)
             return
         home_filename = os.path.join(self.home_dir, dotfile.name)
-        fromlines = open(dotfile.name).readlines()
-        tolines = open(home_filename).readlines()
-        diffs = list(difflib.unified_diff(fromlines, tolines))
-        if diffs:
-            header = "diff {} {}\n".format(dotfile.name, home_filename)
-            sys.stdout.write(header)
-        sys.stdout.writelines(diffs)
+        if self.difftool:
+            import shlex
+            import subprocess
+            cmd = self.difftool.format(dotfile.name, home_filename)
+            #split_cmd = shlex.split(cmd, posix=False)
+            try:
+                subprocess.check_call(cmd)
+            except Exception as err:
+                log.error('failed to execute {}: {}'.format(cmd, err))
+                raise
+        else:
+            import difflib
+            fromlines = open(dotfile.name).readlines()
+            tolines = open(home_filename).readlines()
+            diffs = list(difflib.unified_diff(fromlines, tolines))
+            if diffs:
+                header = "diff {} {}\n".format(dotfile.name, home_filename)
+                sys.stdout.write(header)
+            sys.stdout.writelines(diffs)
+
 
     def diff(self, patterns=None):
         """Diffs each file matching patterns."""
@@ -277,16 +294,26 @@ class DotfileManager(object):
 def make_dotfile_manager(args):
     """Creates a DotfileManager instance based on command line arguments."""
     config = configparser.ConfigParser()
+    ignore_patterns = None
+    difftool = None
     with open(args.config_file) as config_file:
         config.read_file(config_file)
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
         except KeyError as error:
-            log.warning("cannot find ignore section in %s: %s",
-                        args.config_file, error)
+            log.debug("cannot find dotfiles/ignore configuration in %s: %s",
+                      args.config_file, error)
         if args.ignore_patterns:
             ignore_patterns = args.ignore_patterns
-        manager = DotfileManager(ignore_patterns=ignore_patterns)
+        try:
+            difftool = config['dotfiles']['difftool']
+        except KeyError as error:
+            log.debug("cannot find dotfiles/difftool configuration in %s: %s",
+                      args.config_file, error)
+        if 'difftool' in args and args.difftool:
+            difftool = args.difftool
+        manager = DotfileManager(ignore_patterns=ignore_patterns,
+                                 difftool=difftool)
     return manager
 
 
@@ -378,6 +405,7 @@ def main():
 
     # diff sub-command.
     diff_parser = subparsers.add_parser('diff', help=diff.__doc__)
+    diff_parser.add_argument('--difftool', help="diff tool to use for diff.")
     diff_parser.add_argument('dotfiles', metavar="dotfile", nargs='*',
                              help="dot files to diff. Defaults to all.")
     diff_parser.set_defaults(func=diff)
