@@ -233,15 +233,18 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
 
 " For sunset: write down geo location.
-" New York
 let g:sunset_latitude=40.71
 let g:sunset_longitude=-74.01
-let g:sunset_utc_offset=-5
-" Paris?
-"let g:sunset_latitude=49.14
-"let g:sunset_longitude=2.33
-"let g:sunset_utc_offset=1
+" Clock offset between EST and UTC
+let g:sunset_utc_offset=-4
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
-" let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#enabled = 1
+
+" Files to ignore with Ctrl-P
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+    \ 'file': '\v\.(exe|so|dll|pyd)$',
+    \ }
+
