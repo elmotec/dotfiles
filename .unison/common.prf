@@ -12,6 +12,10 @@ path = Applications
 #path = AppData/Local/Google/Picasa2
 #path = AppData/Local/Google/Picasa2Albums
 
+follow = Name Music
+follow = Name 20??
+follow = Name Videos
+
 ignore = Name *.bak
 ignore = Name *.deleteme
 ignore = Name *.log
