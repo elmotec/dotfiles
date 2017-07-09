@@ -112,9 +112,7 @@ class DotfileManager(object):
         self.home_dir exists and is a directory.
         self.dotfiles_dir exists and is a directory.
         """
-        self.home_dir = os.path.expanduser("~")
-        if home_dir:
-            self.home_dir = home_dir
+        self.home_dir = home_dir or os.path.expanduser("~")
         self.dotfiles_dir = os.getcwd()
         if dotfiles_dir:
             self.dotfiles_dir = dotfiles_dir
@@ -312,7 +310,8 @@ def make_dotfile_manager(args):
                       args.config_file, error)
         if 'difftool' in args and args.difftool:
             difftool = args.difftool
-        manager = DotfileManager(ignore_patterns=ignore_patterns,
+        manager = DotfileManager(home_dir=args.home_dir,
+                                 ignore_patterns=ignore_patterns,
                                  difftool=difftool)
     return manager
 
@@ -363,6 +362,7 @@ def expand_wildcards(files):
 def main():
     """Parses command line arguments and dispatch to the correct function."""
     # Main parser.
+    home_dir = os.path.expanduser("~")
     parser = argparse.ArgumentParser(description=__doc__,
                                      epilog=None)
     parser.add_argument("-V", "--version", action="version",
@@ -376,6 +376,8 @@ def main():
     parser.add_argument("--ignore", dest="ignore_patterns",
                         action='append', metavar="PATTERN",
                         help="patterns to ignore.")
+    parser.add_argument("--home-dir", dest="home_dir", default=home_dir,
+                        help="change the home directory")
     subparsers = parser.add_subparsers(help="commands to execute")
 
     # status sub-command.
