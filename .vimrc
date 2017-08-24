@@ -225,6 +225,9 @@ endif
 set wildmenu
 set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
+" redraw only when needed
+set lazyredraw
+
 " UltiSnips customization to use <tab> to trigger jumps.
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
