@@ -6,10 +6,8 @@ endif
 let g:loaded_python = 1
 
 " Code folding.
-"set foldmethod=indent
-"set foldlevel=99
-set foldexpr=SimpylFold(v:lnum)
-set foldmethod=expr
+"set foldexpr=SimpylFold(v:lnum)
+"set foldmethod=expr
 
 compiler pyunit
 " MakeGreen function expects makeprg to be defined as python (not python\ %).
