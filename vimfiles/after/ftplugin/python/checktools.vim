@@ -47,7 +47,7 @@ function! Pep257()
 endfunction
 
 function! Pylint()
-    call <SID>Pygrep('pylint','pylint --msg-template "{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" --report=n','%f:%l:%m')
+    call <SID>Pygrep('pylint','pylint --msg-template "{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" --reports=n','%f:%l:%m')
 endfunction
 
 function! Flake8()
