@@ -1,5 +1,5 @@
 # roots
-root = ssh://strasbourg//cygdrive/c/Users/jlecomte
+root = ssh://desktop1//cygdrive/c/Users/jlecomte
 root = /cygdrive/c/Users/jlecomte
 
 include common

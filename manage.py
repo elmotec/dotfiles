@@ -41,6 +41,8 @@ if sys.version_info < (3, 0, 0):
 else:
     import configparser
 import shutil
+if sys.platform == 'win32':
+    import _winapi
 
 
 module = sys.modules['__main__'].__file__
@@ -215,7 +217,15 @@ class DotfileManager(object):
                                         dotfile.name)
             if sys.platform == 'win32':
                 is_dir = os.path.isdir(dotfile_name)
-                os.symlink(dotfile_name, home_filename, is_dir)
+                if is_dir:
+                    _winapi.CreateJunction(dotfile_name, home_filename)
+                else:
+                    try:
+                        os.symlink(dotfile_name, home_filename, is_dir)
+                    except OSError as err:
+                        log.error('failed to create symlink: %s', err)
+                        log.info('revert to copy')
+                        self.make_copy(dotfile, force=force)
             else:
                 os.symlink(dotfile_name, home_filename)
         else:
@@ -322,7 +332,10 @@ def get_status(args):
     dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
                       key=lambda df: df.status.name + df.name)
     for dfile in dotfiles:
-        print("{:<10} {}".format(str(dfile.status), dfile.name))
+        file_or_dir = 'F'
+        if os.path.isdir(dfile.name):
+            file_or_dir = 'D' 
+        print("{} {:<10} {}".format(file_or_dir, str(dfile.status), dfile.name))
 
 
 def sync(args):
