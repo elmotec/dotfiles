@@ -11,7 +11,8 @@ let g:loaded_python = 1
 
 compiler pyunit
 " MakeGreen function expects makeprg to be defined as python (not python\ %).
-set makeprg=python.exe\ \-m\ unittest\ %
+set makeprg=python.exe\ \-m\ unittest\ -\ 2>NUL
+set equalprg=black.exe\ -q\ %
 
 " Auto completion
 set omnifunc=pythoncomplete#Complete
