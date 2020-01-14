@@ -56,3 +56,4 @@ ignore = Name tmp
 ignore = Name venv
 ignore = Name ZbThumbnail.info
 ignore = Path .unison/[^\.]*
+ignore = Path iCloud\ Photos
