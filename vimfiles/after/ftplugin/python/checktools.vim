@@ -51,7 +51,7 @@ function! Pylint()
 endfunction
 
 function! Flake8()
-    call <SID>Pygrep('flake8','flake8','%f:%l:%c: %m')
+    call <SID>Pygrep('flake8','flake8 --max-line-length 119','%f:%l:%c: %m')
 endfunction
 
 :nnoremap <Leader>pl :call Pylint()<CR><CR>
