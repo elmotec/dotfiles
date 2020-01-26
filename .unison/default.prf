@@ -1,6 +1,8 @@
 # roots
 root = ssh://desktop1//cygdrive/c/Users/jlecomte
 root = /cygdrive/c/Users/jlecomte
+#root = ssh://desktop1
+#root = C:\Users\jlecomte
 
 include common
 
