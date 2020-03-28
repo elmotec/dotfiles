@@ -1,11 +1,12 @@
 # roots
-root = ssh://desktop1//cygdrive/c/Users/jlecomte
-root = /cygdrive/c/Users/jlecomte
-#root = ssh://desktop1
-#root = C:\Users\jlecomte
+#root = ssh://desktop1//cygdrive/c/Users/jlecomte
+#root = /cygdrive/c/Users/jlecomte
+root = ssh://desktop1
+root = C:\Users\jlecomte
+servercmd = "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
 
 include common
 
 fastcheck = true
-#perms = 0
+perms = 0
 sshargs = -C
