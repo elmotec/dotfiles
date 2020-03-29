@@ -1,4 +1,5 @@
 "{ Builtin options and settings
+
 " change filechar for folding, vertical split, and message sepator
 set fillchars=fold:\ ,vert:\│,msgsep:‾
 
@@ -23,14 +24,8 @@ set clipboard+=unnamedplus
 " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set noswapfile
 
-" Set up backup directory
-let g:backupdir=expand(stdpath('data') . '/backup')
-if !isdirectory(g:backupdir)
-   call mkdir(g:backupdir, "p")
-endif
-let &backupdir=g:backupdir
-
-set backupcopy=yes  " copy the original file to backupdir and overwrite it
+" No need for backup when you have source control.
+set nobackup
 
 " General tab settings
 set tabstop=4       " number of visual spaces per TAB
@@ -41,14 +36,16 @@ set expandtab       " expand tab to spaces so that tabs are spaces
 " Set matching pairs of characters and highlight matching brackets
 set matchpairs+=<:>,「:」
 
-" Show line number and relative line number
-set number relativenumber
+" Show line number and no relative number by default.
+" Use <leader>n and r to toggle line number and relativenumber respectively.
+set number norelativenumber
 
 " Ignore case in general, but become case-sensitive when uppercase is present
 set ignorecase smartcase
 
 " File and script encoding settings for vim
 set fileencoding=utf-8
+
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 scriptencoding utf-8
 
@@ -168,4 +165,25 @@ if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     set grepformat=%f:%l:%c:%m
 endif
+
+" Replace %% with the current file directory in command line.
+" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
+cabbr <expr> %% expand('%:p:h')
+
+" Could not let those go... mimics Visual Studio interface.
+" Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
+noremap <c-Tab> :bn<CR>
+noremap <c-s-Tab> :bp<CR>
+" Control S saves current file.
+noremap <c-S> :w<CR>
+" Control-F4 closes the buffer.
+noremap <c-F4> :bd<CR>
+
+" Wrap/unwrap lines
+nmap <Leader>w :set wrap!<CR>
+" Show/Hide line numbers (absolute)
+nmap <Leader>n :set number!<CR>
+" Show/Hide line numbers (relative)
+nmap <Leader>r :set relativenumber!<CR>
+
 "}

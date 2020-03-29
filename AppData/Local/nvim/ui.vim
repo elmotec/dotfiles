@@ -7,24 +7,22 @@ if $TERM == "xterm-256color" || exists('g:started_by_firenvim')
     set termguicolors
 endif
 " Use dark background
-set background=dark
+set background=light
 "}}
 
 "{{ Colorscheme settings
 """"""""""""""""""""""""""""gruvbox settings"""""""""""""""""""""""""""
 " We should check if theme exists before using it, otherwise you will get
 " error message when starting Nvim
-if utils#HasColorscheme('gruvbox8')
+"if utils#HasColorscheme('gruvbox8')
     " Italic options should be put before colorscheme setting,
     " see https://goo.gl/8nXhcp
-    let g:gruvbox_italics=1
-    let g:gruvbox_italicize_strings=1
-    let g:gruvbox_filetype_hi_groups = 0
-    let g:gruvbox_plugin_hi_groups = 0
-    colorscheme gruvbox8_hard
-else
-    colorscheme desert
-endif
+    "let g:gruvbox_italics=1
+    "let g:gruvbox_italicize_strings=1
+    "let g:gruvbox_filetype_hi_groups = 0
+    "let g:gruvbox_plugin_hi_groups = 0
+    "colorscheme gruvbox8_hard
+"endif
 
 """"""""""""""""""""""""""" deus settings"""""""""""""""""""""""""""""""""
 " colorscheme deus
@@ -39,7 +37,7 @@ endif
 " let g:one_allow_italics = 1
 " colorscheme one
 
-"""""""""""""""""""""""""""material.vim settings""""""""""""""""""""""""""
+"""""""""""""""""""""""""" material.vim settings""""""""""""""""""""""""""
 " let g:material_terminal_italics = 1
 " " theme_style can be 'default', 'dark' or 'palenight'
 " let g:material_theme_style = 'dark'
@@ -50,6 +48,15 @@ endif
 " " Make the tab line lighter than the background.
 " let g:badwolf_tabline = 2
 " colorscheme badwolf
+
+""""""""""""""""""""""""""" lucius settings """"""""""""""""""""""""""""""
+if utils#HasColorscheme('lucius')
+    colorscheme lucius
+    let g:lucius_contrast='dark'
+else
+    colorscheme dessert
+endif
+
 "}}
 
 "{{ Cursor colors and shapes

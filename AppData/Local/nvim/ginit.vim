@@ -5,7 +5,8 @@ if exists('g:GuiLoaded')
     GuiTabline 0
     GuiPopupmenu 0
     GuiLinespace 2
-    GuiFont! Source\ Code\ Pro:h12:l
+    GuiFont! Source\ Code\ Pro:h12
+    " GuiFont! Source\ Code\ Pro:h12:l
     " GuiFont! Microsoft\ YaHei\ Mono:h10:l
 
     " Use shift+insert for paste inside neovim-qt,

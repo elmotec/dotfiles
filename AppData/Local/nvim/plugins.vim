@@ -92,17 +92,18 @@ endif
 
 "{{ UI: Color, theme etc.
 " A list of colorscheme plugin you may want to try. Find what suits you.
-Plug 'lifepillar/vim-gruvbox8'
-Plug 'srcery-colors/srcery-vim'
+" Plug 'lifepillar/vim-gruvbox8'
+" Plug 'srcery-colors/srcery-vim'
 " Plug 'sjl/badwolf'
 " Plug 'ajmwagar/vim-deus'
 " Plug 'sainnhe/vim-color-desert-night'
 " Plug 'YorickPeterse/happy_hacking.vim'
-" Plug 'lifepillar/vim-solarized8'
+Plug 'lifepillar/vim-solarized8'
 " Plug 'sickill/vim-monokai'
 " Plug 'whatyouhide/vim-gotham'
 " Plug 'rakr/vim-one'
 " Plug 'kaicataldo/material.vim'
+Plug 'vim-scripts/Sunset' 
 
 if !exists('g:started_by_firenvim')
     " colorful status line and theme
@@ -322,6 +323,7 @@ call plug#end()
 "}}
 "}
 
+
 "{ Plugin settings
 "{{ Vim-plug settings
 " Use shortnames for common vim-plug command to reduce typing.
@@ -502,11 +504,11 @@ endif
 """"""""""""""""""""""" nerdtree settings """"""""""""""""""""""""""
 " Toggle nerdtree window and keep cursor in file window,
 " adapted from http://tinyurl.com/y2kt8cy9
-nnoremap <silent> <Space>s :NERDTreeToggle<CR>:wincmd p<CR>
+nnoremap <silent> <leader>ns :NERDTreeToggle<CR>:wincmd p<CR>
 
 " Reveal currently editted file in nerdtree widnow,
 " see https://goo.gl/kbxDVK
-nnoremap <silent> <Space>f :NERDTreeFind<CR>
+nnoremap <silent> <leader>nf :NERDTreeFind<CR>
 
 " Ignore certain files and folders
 let NERDTreeIgnore = ['\.pyc$', '^__pycache__$']

@@ -16,7 +16,7 @@ else
 endif
 
 " Custom mapping <leader> (see `:h mapleader` for more info)
-let mapleader = ','
+let mapleader = ' '
 "}}
 
 "{{ Disable loading certain plugins
@@ -39,4 +39,13 @@ let g:loaded_tarPlugin = 1
 let g:loaded_matchit = 1
 let g:loaded_matchparen = 1
 "}}
+
+"{{ Physical location for automatic day/night switch.
+" For sunset: write down geo location.
+let g:sunset_latitude=40.71
+let g:sunset_longitude=-74.01
+" Clock offset between EST and UTC
+let g:sunset_utc_offset=-4
+"}}
+
 "}
