@@ -6,8 +6,6 @@
 if $TERM == "xterm-256color" || exists('g:started_by_firenvim')
     set termguicolors
 endif
-" Use dark background
-set background=light
 "}}
 
 "{{ Colorscheme settings

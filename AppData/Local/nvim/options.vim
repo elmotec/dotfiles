@@ -38,7 +38,8 @@ set matchpairs+=<:>,「:」
 
 " Show line number and no relative number by default.
 " Use <leader>n and r to toggle line number and relativenumber respectively.
-set number norelativenumber
+set number
+set norelativenumber
 
 " Ignore case in general, but become case-sensitive when uppercase is present
 set ignorecase smartcase
@@ -165,25 +166,5 @@ if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     set grepformat=%f:%l:%c:%m
 endif
-
-" Replace %% with the current file directory in command line.
-" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
-cabbr <expr> %% expand('%:p:h')
-
-" Could not let those go... mimics Visual Studio interface.
-" Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
-noremap <c-Tab> :bn<CR>
-noremap <c-s-Tab> :bp<CR>
-" Control S saves current file.
-noremap <c-S> :w<CR>
-" Control-F4 closes the buffer.
-noremap <c-F4> :bd<CR>
-
-" Wrap/unwrap lines
-nmap <Leader>w :set wrap!<CR>
-" Show/Hide line numbers (absolute)
-nmap <Leader>n :set number!<CR>
-" Show/Hide line numbers (relative)
-nmap <Leader>r :set relativenumber!<CR>
 
 "}

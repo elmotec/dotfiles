@@ -163,7 +163,7 @@ nnoremap C "_C
 nnoremap cc "_cc
 
 " Remove trailing whitespace characters
-nnoremap <silent> <leader><Space> :call utils#StripTrailingWhitespaces()<CR>
+nnoremap <silent> <leader>ws :call utils#StripTrailingWhitespaces()<CR>
 
 " check the syntax group of current cursor position
 nnoremap <silent> <leader>st :call utils#SynGroup()<CR>
@@ -172,4 +172,30 @@ nnoremap <silent> <leader>st :call utils#SynGroup()<CR>
 if maparg('<C-L>', 'n') ==# ''
   nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 endif
+
+" Could not let those go... mimics Visual Studio interface.
+" Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
+noremap <c-Tab> :bn<CR>
+noremap <c-s-Tab> :bp<CR>
+" Control S saves current file.
+noremap <c-S> :w<CR>
+" Control-F4 closes the buffer.
+noremap <c-F4> :bd<CR>
+
+" Replace %% with the current file directory in command line.
+" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
+cabbr <expr> %% expand('%:p:h')
+
+" Wrap/unwrap lines
+nmap <Leader>w :set wrap!<CR>
+" Show/Hide line numbers (absolute)
+nmap <Leader>n :set number!<CR>
+" Show/Hide line numbers (relative)
+nmap <Leader>r :set relativenumber!<CR>
+
+" Repeat last command and put cursor at the start of the changes
+nmap . .`[
+
 "}
+
+

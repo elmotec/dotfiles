@@ -64,3 +64,5 @@ if exists('g:fvim_loaded')
 
     FVimUIPopupMenu v:false
 endif
+
+execute 'source ' . g:nvim_config_root . '/ui.vim'
