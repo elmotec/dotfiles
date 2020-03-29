@@ -1,0 +1,56 @@
+global !p
+def gen_header(snip):
+	placeholders_string = snip.buffer[snip.line].strip()
+	level = int(placeholders_string[0])
+
+	# erase current line
+	snip.buffer[snip.line] = ""
+	line_content = "#"*level + " ${1:Section Name} " + "#"*level
+	line_content += '\n\n$0'
+
+	snip.expand_anon(line_content)
+endglobal
+
+snippet kbd "HTML kbd tag"
+<kbd>${1:KEY}</kbd>$0
+endsnippet
+
+snippet "meta(data)?" "Markdown front matter in YAML format" br
+---
+title: "$1"
+date: `!p from datetime import datetime
+if not snip.c:
+	snip.rv=datetime.now().strftime("%Y-%m-%d %H:%M:%S%z")`
+tags: [$2]
+categories: [$3]
+---
+$0
+endsnippet
+
+snippet more "HTML more tag"
+<!--more-->
+endsnippet
+
+snippet img "Aligned image using HTML tag"
+<p align="center">
+<img src="${1:URL}" width="400">
+</p>
+$0
+endsnippet
+
+snippet link "Markdown links"
+[$1]($2)$0
+endsnippet
+
+post_jump "gen_header(snip)"
+snippet "h([1-6])" "Markdown header" br
+`!p snip.rv = match.group(1)`
+endsnippet
+
+snippet detail "Clickable details" b
+<details>
+<summary>$1</summary>
+
+$2
+</details>
+endsnippet
