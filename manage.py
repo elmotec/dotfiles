@@ -185,18 +185,24 @@ class DotfileManager(object):
         if patterns:
             assert iter(patterns), "iterable expected"
             assert not isinstance(patterns, str), "non-string expected"
+            # Remove .\ prefix if any because relpath does not have it.
+            patterns = [pat.replace(".\\", "") for pat in patterns]
         seen = set()
         top_dir = "."
         for root, dirs, files in os.walk(top_dir):
-            dotlessroot = root.replace(".\\", "")
-            log.debug("procesing %s ...", dotlessroot)
+            relroot = os.path.relpath(root)
             if root == top_dir:
                 for file in files:
                     dotlessfile = file.replace(".\\", "")
                     if not self.is_ignored(dotlessfile, patterns):
+                        log.info("processing %s ...", relroot)
                         yield self.get_dotfile(dotlessfile)
-            elif not self.is_ignored(dotlessroot, patterns):
-                yield self.get_dotfile(dotlessroot)
+                        continue
+            elif not self.is_ignored(relroot, patterns):
+                log.info("processing %s ...", relroot)
+                yield self.get_dotfile(relroot)
+                continue
+            log.debug("ignored %s", relroot)
         return
 
     def make_symlink(self, dotfile, force=False):
