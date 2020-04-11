@@ -92,8 +92,8 @@ set confirm
 " Do not use visual and errorbells
 set visualbell noerrorbells
 
-" The level we start to fold
-set foldlevel=0
+" Do not set the level we start to fold. Leave to the filtype plugins.
+"set foldlevel=0
 
 " The number of command and search history to keep
 set history=500
@@ -110,7 +110,7 @@ set autowrite
 " http://tinyurl.com/yxd23vo8
 set title
 set titlestring=
-set titlestring+=%(%{hostname()}\ \ %)
+"set titlestring+=%(%{hostname()}\ \ %)
 set titlestring+=%(%{expand('%:p')}\ \ %)
 set titlestring+=%{strftime('%Y-%m-%d\ %H:%M',getftime(expand('%')))}
 

@@ -7,7 +7,7 @@ set formatoptions-=r
 " Set the folding related options for vim script. Setting folding option
 " in modeline is annoying in that the modeline get executed each time the
 " window focus is lost (see http://tinyurl.com/yyqyyhnc)
-set foldmethod=expr foldlevel=0 foldlevelstart=-1
+set foldmethod=expr foldlevel=3 foldlevelstart=-1
 	\ foldexpr=utils#VimFolds(v:lnum) foldtext=utils#MyFoldText()
 
 " Use :help command for keyword when pressing `K` in vim file,
