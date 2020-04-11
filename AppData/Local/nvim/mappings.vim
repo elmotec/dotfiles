@@ -143,7 +143,7 @@ xnoremap <C-H> :s/
 
 " Change current working directory locally and print cwd after that,
 " see https://vim.fandom.com/wiki/Set_working_directory_to_the_current_file
-nnoremap <silent> <leader>cd :lcd %:p:h<CR>:pwd<CR>
+"nnoremap <silent> <leader>cd :lcd %:p:h<CR>:pwd<CR>
 
 " Use Esc to quit builtin terminal
 tnoremap <ESC>   <C-\><C-n>

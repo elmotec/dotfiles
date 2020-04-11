@@ -75,7 +75,7 @@ Plug 'haya14busa/vim-asterisk'
 
 " File search, tag search and more
 if g:is_win
-    Plug 'Yggdroot/LeaderF'
+    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat'}
 else
     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 endif
@@ -87,7 +87,8 @@ endif
 " Plug 'dyng/ctrlsf.vim'
 
 " A greping tool
-" Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+nnoremap <leader>// :Grepper<CR>
 "}}
 
 "{{ UI: Color, theme etc.
@@ -107,9 +108,45 @@ Plug 'vim-scripts/Sunset'
 
 if !exists('g:started_by_firenvim')
     " colorful status line and theme
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
     Plug 'mhinz/vim-startify'
+    Plug 'vim-airline/vim-airline'
+    " Plug 'vim-airline/vim-airline-themes'
+    "{{ UI: Status line, look
+    """""""""""""""""""""""""""vim-airline setting""""""""""""""""""""""""""""""
+    " Tabline settings
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+
+    " Show buffer number for easier switching between buffer,
+    " see https://github.com/vim-airline/vim-airline/issues/1149
+    let g:airline#extensions#tabline#buffer_nr_show = 1
+
+    " Buffer number display format
+    let g:airline#extensions#tabline#buffer_nr_format = '%s. '
+
+    " Whether to show function or other tags on status line
+    let g:airline#extensions#tagbar#enabled = 1
+
+    " Skip empty sections if there are nothing to show,
+    " extracted from https://vi.stackexchange.com/a/9637/15292
+    let g:airline_skip_empty_sections = 1
+
+    " Whether to use powerline symbols, see https://goo.gl/XLY19H.
+    let g:airline_powerline_fonts = 0
+
+    if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+    let g:airline_symbols.branch = '⎇'
+    let g:airline_symbols.paste = 'ρ'
+    let g:airline_symbols.spell = 'Ꞩ'
+
+    " Only show git hunks which are non-zero
+    let g:airline#extensions#hunks#non_zero_only = 1
+
+    " Speed up airline
+    let g:airline_highlighting_cache = 1
+    "}}
 endif
 "}}
 
@@ -128,6 +165,7 @@ endif
 "{{ Navigation and tags plugin
 " File explorer for vim
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+noremap <C-n> :NERDTreeToggle<CR>
 
 " Only install these plugins if ctags are installed on the system
 if executable('ctags')
@@ -314,6 +352,12 @@ Plug 'cespare/vim-toml'
 if g:is_mac || g:is_win
     Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 endif
+
+"{{ fzf related plugins
+if executable('fzf')
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+endif
+"}}
 
 " Debugger plugin
 if g:is_mac || g:is_linux
@@ -763,55 +807,6 @@ if ( g:is_win || g:is_mac ) && executable('latex')
         endfunction
     endif
 endif
-"}}
-
-"{{ UI: Status line, look
-"""""""""""""""""""""""""""vim-airline setting""""""""""""""""""""""""""""""
-" Set airline theme to a random one if it exists
-let s:candidate_airlinetheme = ['ayu_mirage', 'base16_flat',
-    \ 'base16_grayscale', 'lucius', 'hybridline', 'ayu_dark',
-    \ 'base16_adwaita', 'biogoo', 'distinguished', 'jellybeans',
-    \ 'luna', 'raven', 'term', 'vice', 'zenburn']
-let s:idx = utils#RandInt(0, len(s:candidate_airlinetheme)-1)
-let s:theme = s:candidate_airlinetheme[s:idx]
-
-if utils#HasAirlinetheme(s:theme)
-    let g:airline_theme=s:theme
-endif
-
-" Tabline settings
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-
-" Show buffer number for easier switching between buffer,
-" see https://github.com/vim-airline/vim-airline/issues/1149
-let g:airline#extensions#tabline#buffer_nr_show = 1
-
-" Buffer number display format
-let g:airline#extensions#tabline#buffer_nr_format = '%s. '
-
-" Whether to show function or other tags on status line
-let g:airline#extensions#tagbar#enabled = 1
-
-" Skip empty sections if there are nothing to show,
-" extracted from https://vi.stackexchange.com/a/9637/15292
-let g:airline_skip_empty_sections = 1
-
-" Whether to use powerline symbols, see https://goo.gl/XLY19H.
-let g:airline_powerline_fonts = 0
-
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-let g:airline_symbols.branch = '⎇'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.spell = 'Ꞩ'
-
-" Only show git hunks which are non-zero
-let g:airline#extensions#hunks#non_zero_only = 1
-
-" Speed up airline
-let g:airline_highlighting_cache = 1
 "}}
 
 "{{ Misc plugin setting
