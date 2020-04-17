@@ -3,15 +3,11 @@ set encoding=utf-8
 scriptencoding utf-8
 
 " For debugging purpose if needed.
-" set verbose=9
+set verbose=0
 
 " Use Vim settings, rather then Vi settings.
 " This must be first, because it changes other options as a side effect.
 set nocompatible
-
-" Uses pathogen to set up vim extensions in vimfiles/bundles.
-call pathogen#infect()
-call pathogen#helptags()
 
 " Auto-source .vimrc when it is saved.
 autocmd! bufwritepost .vimrc source %
@@ -49,31 +45,14 @@ noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /e<CR>`m
 " Auto indent program in a C-like fashion
 set autoindent
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if has("gui_running")
-  noremap <c-Down> <c-w>j
-  noremap <c-Up> <c-w>k
-  noremap <c-Right> <c-w>l
-  noremap <c-Left> <c-w>h
-else
-  set term=$TERM
-  set t_Co=256
-  let &t_AB="\e[48;5;%dm"
-  let &t_AF="\e[38;5;%dm"
-endif
-
 " Sets file encodings to UTF-8 if possible.
 " Based on http://vim.wikia.com/wiki/Working_with_Unicode.
-if has("multi_byte")
-    if &termencoding == ""
-        let &termencoding = &encoding
-    endif
-    set encoding=utf-8
-    setglobal fileencodings=utf-8
-    "setglobal bomb
-    set fileencodings=ucs-bom,utf-8,latin1
+if &termencoding == ""
+    let &termencoding = &encoding
 endif
+setglobal fileencodings=utf-8
+"setglobal bomb
+set fileencodings=ucs-bom,utf-8,latin1
 
 " Sets visual bell instead of the beep
 set vb
@@ -133,15 +112,6 @@ elseif has("gui")
     set guifont=Source\ Code\ Pro\ 12
 endif
 
-" Sets the color scheme.
-if has("gui")
-    " Make sure env variable $TERM set to
-    " xterm-256colors on linux.
-    set t_CO=256
-    colorscheme lucius
-    let g:lucius_contrast='light'
-endif
-
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
 
@@ -166,8 +136,6 @@ nmap <Leader>w :set wrap!<CR>
 nmap <Leader>n :set number!<CR>
 " Show/Hide line numbers (relative)
 nmap <Leader>r :set relativenumber!<CR>
-" Show task list (FIXME, TODO, ...). Requires TaskList.vim plugin.
-nmap <Leader>l <Plug>TaskList
 " Show/Hide cursor line
 nmap <Leader>c :set cursorline!<CR>
 set cursorline
@@ -175,15 +143,8 @@ set cursorline
 nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
 nmap <Leader>s :set hlsearch!<CR>
-" Leverage incsearch.vim.
-let g:incsearch#auto_nohlsearch = 1
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
 " Starts file explorer.
 nmap <Leader>e :Ex<CR>
-" Tag list explorer
-nmap <Leader>t :TlistToggle<CR>
 " Loops through tags instead of sticking to the first one.
 nmap <c-T> <c-T><z><z>
 
@@ -228,6 +189,32 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 " redraw only when needed
 set lazyredraw
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                          Plugins with plug.vim 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:vim_config_root = expand('<sfile>:p:h')
+let g:VIM_PLUG_PATH = expand(g:vim_config_root . '/autoload/plug.vim')
+if empty(glob(g:VIM_PLUG_PATH))
+    echoerr 'You have to install plug.vim in ' . g:vim_config_root . '/autoload/'
+    finish
+endif
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/vimfiles//plugged')
+
+" quoting/parenthesizing made simple
+Plug 'tpope/vim-surround'
+
+" Startup screen with mru and cool quotes.
+Plug 'mhinz/vim-startify'
+
+" Snippet library
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
 " UltiSnips customization to use <tab> to trigger jumps.
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -235,19 +222,32 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
 let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
 
+" Airline status bar
+Plug 'vim-airline/vim-airline'
+
+" Controls which airline sections get truncated and at what width.
+let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+let g:airline#extensions#tabline#enabled = 1
+
+" Integrate ripgrep search tool in vim.
+Plug 'jremmen/vim-ripgrep'
+
+" Command line fuzzy finder
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+nmap <leader>fo :Files<CR>
+nmap <leader>ff :Rg 
+nmap <leader>fs :Snippets<CR>
+
+" Sunset changes background depending on the day/night.
+Plug 'vim-scripts/Sunset'
+
 " For sunset: write down geo location.
 let g:sunset_latitude=40.71
 let g:sunset_longitude=-74.01
 " Clock offset between EST and UTC
 let g:sunset_utc_offset=-4
 
-" Controls which airline sections get truncated and at what width.
-let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
-"let g:airline#extensions#tabline#enabled = 1
-
-" Files to ignore with Ctrl-P
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-    \ 'file': '\v\.(exe|so|dll|pyd)$',
-    \ }
+" Complete the plugin section.
+call plug#end()
 

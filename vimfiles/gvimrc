@@ -1,0 +1,8 @@
+" Sets the color scheme in gui mode.
+colorscheme lucius
+set background=light
+
+" Make sure env variable $TERM set to
+" xterm-256colors on linux.
+set t_CO=256
+
