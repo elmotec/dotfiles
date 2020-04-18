@@ -7,4 +7,5 @@ tags
 vimfiles/.*
 .gitignore
 .gitconfig
+vimfiles/plugged
 vimfiles/plugged/.*
