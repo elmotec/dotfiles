@@ -2,11 +2,8 @@
 // For documentation on these settings, see: https://aka.ms/terminal-documentation
 
 {
-
     "$schema": "https://aka.ms/terminal-profiles-schema",
-
     "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-
     "profiles":
     {
         "defaults":
@@ -14,7 +11,7 @@
             // Put settings here that you want to apply to all profiles
             "fontFace": "Source Code Pro",
             "fontSize": 12,
-            "acrylicOpacity": 0.75,
+            "acrylicOpacity": 0.90,
             "useAcrylic": true,
             "closeOnExit": true,
             "hidden": false
@@ -171,7 +168,6 @@
             ]
         }
     ],
-
     // Add any keybinding overrides to this array.
     // To unbind a default keybinding, set the command to "unbound"
     "keybindings": [
