@@ -12,9 +12,6 @@ set nocompatible
 " Auto-source .vimrc when it is saved.
 autocmd! bufwritepost .vimrc source %
 
-" Default size is a little bigger than 80 columns to accomodate line numbers.
-set columns=85 " lines=35
-
 " Adds vimfiles to the runtimepath (not by default for unix).
 set runtimepath+=~/vimfiles
 
@@ -165,6 +162,7 @@ if has("autocmd")
   autocmd BufNewFile,BufRead *.log set filetype=log
   " Handles .build (nant) files as xml.
   autocmd BufNewFile,BufRead *.build set filetype=xml
+  autocmd BufNewFile,BufRead *.config set filetype=xml
 
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
@@ -189,6 +187,10 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 " redraw only when needed
 set lazyredraw
 
+" Make sure env variable $TERM set to xterm-256colors on linux.
+if has("linux")
+    set t_CO=256
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          Plugins with plug.vim 
@@ -248,6 +250,7 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = "python.exe"
 
 " Asynchronous linter
 Plug 'dense-analysis/ale'
@@ -267,11 +270,11 @@ let g:airline#extensions#ale#enabled = 1
 Plug 'tpope/vim-fugitive'
 
 " Sunset changes background depending on the day/night.
-Plug 'vim-scripts/Sunset'
-
-" For sunset: write down geo location.
-let g:sunset_latitude=40.71
-let g:sunset_longitude=-74.01
+" Registered in vimrc and activated in gvimrc.
+Plug 'vim-scripts/Sunset', { 'on': [] }
+" Approximate geo location NY.
+let g:sunset_latitude=41
+let g:sunset_longitude=-74
 " Clock offset between EST and UTC
 let g:sunset_utc_offset=-4
 
