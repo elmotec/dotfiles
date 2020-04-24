@@ -1,6 +1,7 @@
 Set-Alias vi nvim
 Set-Alias gvi nvim-qt
 Set-Alias which Get-Command
+Set-Alias unison "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
 
 $Env:Path += ";$home\scripts"
 $Env:Path += ';C:\Program Files\Git\bin\'
