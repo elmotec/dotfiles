@@ -192,6 +192,14 @@ if has("linux")
     set t_CO=256
 endif
 
+" Keep the colorscheme of the terminal.
+" colorscheme lucius
+
+" Temp directory to default to $TEMP on Windows.
+if has("win32") || has("win64")
+    set directory=$TEMP
+end
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          Plugins with plug.vim 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -270,7 +278,7 @@ let g:airline#extensions#ale#enabled = 1
 Plug 'tpope/vim-fugitive'
 
 " Sunset changes background depending on the day/night.
-" Registered in vimrc and activated in gvimrc.
+" Registered in vimrc and activated in gvimrc only.
 Plug 'vim-scripts/Sunset', { 'on': [] }
 " Approximate geo location NY.
 let g:sunset_latitude=41
