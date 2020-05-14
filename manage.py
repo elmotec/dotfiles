@@ -32,7 +32,7 @@ __license__ = 'MIT'
 import sys
 assert sys.version_info >= (3, 8) or sys.platfom != "win32", \
     "program requires Python 3.8 for Windows"
-import os.path
+import pathlib as pl
 import logging
 import argparse
 import glob
@@ -46,20 +46,6 @@ if sys.platform == 'win32':
 
 module = sys.modules['__main__'].__file__
 log = logging.getLogger(module)
-
-
-def match_any_pattern(name, patterns):
-    """Compares the file name to the patterns.
-
-    Returns false if the patterns list is None or empty.
-    """
-    assert iter(patterns), "iterable expected"
-    assert not isinstance(patterns, str), "string where iterable expected"
-    for pattern in patterns:
-        if fnmatch.fnmatch(name, pattern):
-            log.debug("%s matches %s", name, pattern)
-            return True
-    return False
 
 
 class DotfileError(RuntimeError):
@@ -113,121 +99,105 @@ class DotfileManager(object):
         self.home_dir exists and is a directory.
         self.dotfiles_dir exists and is a directory.
         """
-        self.home_dir = home_dir or os.path.expanduser("~")
-        self.dotfiles_dir = os.getcwd()
+        self.home_dir = home_dir or pl.Path.home()
+        self.dotfiles_dir = pl.Path.cwd()
         if dotfiles_dir:
             self.dotfiles_dir = dotfiles_dir
         self.ignore_patterns = []
         if ignore_patterns:
             self.ignore_patterns = ignore_patterns
         self.difftool = difftool
-        log.debug("home directory: %s", self.home_dir)
-        log.debug("dotfiles directory: %s", self.dotfiles_dir)
-        log.debug("ignored patterns: %s", self.ignore_patterns)
-        log.debug("difftool: %s", self.difftool)
+        log.info("home directory: %s", self.home_dir)
+        log.info("dotfiles directory: %s", self.dotfiles_dir)
+        log.info("ignored patterns: %s", self.ignore_patterns)
+        log.info("difftool: %s", self.difftool)
         assert self.invariants()
 
     def invariants(self):
         """Self check the class. Called with assert invariants()."""
-        assert os.path.exists(self.home_dir)
-        assert os.path.isdir(self.home_dir)
+        assert self.home_dir.exists()
+        assert self.home_dir.is_dir()
         if self.dotfiles_dir:
-            assert os.path.exists(self.get_dotfiles_abspath())
-            assert os.path.isdir(self.get_dotfiles_abspath())
+            assert self.get_dotfiles_abspath().exists()
+            assert self.get_dotfiles_abspath().is_dir()
         return True
 
     def get_dotfiles_abspath(self):
         """Return the absolute path to the dotfile directory."""
-        if os.path.abspath(self.dotfiles_dir) == self.dotfiles_dir:
+        if self.dotfiles_dir.absolute() == self.dotfiles_dir:
             return self.dotfiles_dir
-        return os.path.join(self.home_dir, self.dotfiles_dir)
+        return Path.home() / self.dotfiles_dir
 
     def get_dotfiles_relpath(self):
         """Returns relative path of dotfile with respect to home directory."""
         dotfile_abspath = self.get_dotfiles_abspath()
         home_dir = self.home_dir
-        return os.path.relpath(dotfile_abspath, home_dir)
+        return dotfile_abspath.relative_to(home_dir)
 
     def get_dotfile(self, file_name):
         """Retrieves the dotfile for a given file_name."""
-        home_name = os.path.join(self.home_dir, file_name)
-        dotfile_name = os.path.join(self.get_dotfiles_abspath(), file_name)
+        home_name = self.home_dir / file_name
+        dotfile_name = self.get_dotfiles_abspath() / file_name
         # Starting Python 3.8, detects junctions on Windows
-        if os.path.realpath(home_name) == os.path.realpath(dotfile_name):
+        if home_name.resolve() == dotfile_name.resolve():
             status = Dotfile.synced
-        elif not os.path.exists(home_name):
+        elif not home_name.exists():
             status = Dotfile.missing
-        elif os.path.isdir(home_name) and os.path.isdir(dotfile_name):
+        elif home_name.is_dir() and dotfile_name.is_dir():
             status = Dotfile.same 
-        elif not os.path.exists(dotfile_name):
+        elif not dotfile_name.exists():
             status = Dotfile.unmanaged
-        elif filecmp.cmp(dotfile_name, home_name):
+        elif filecmp.cmp(str(dotfile_name), str(home_name)):
             status = Dotfile.same
         else:
             status = Dotfile.conflict
         return Dotfile(file_name, status=status)
 
-    def is_ignored(self, name, patterns):
-        """True if the name is to be ignored.
+    def get_dotfiles(self, targets=None):
+        """Gets a generator that loops through the dotfiles.
 
-        Compares the file name to the patterns to be matched as well as to
-        the ignore patterns (see usage and .dotfilerc).
         """
-        if patterns and not match_any_pattern(name, patterns):
-            return True
-        if self.ignore_patterns and \
-                match_any_pattern(name, self.ignore_patterns):
-            return True
-        return False
-
-    def get_dotfiles(self, patterns=None):
-        """Gets a generator that loops through the dotfiles."""
-        if patterns:
-            assert iter(patterns), "iterable expected"
-            assert not isinstance(patterns, str), "non-string expected"
+        if targets:
+            assert iter(targets), "iterable expected"
+            assert not isinstance(targets, str), "non-string expected"
             # Remove .\ prefix if any because relpath does not have it.
-            patterns = [pat.replace(".\\", "") for pat in patterns]
-        seen = set()
-        top_dir = "."
-        for root, dirs, files in os.walk(top_dir):
-            relroot = os.path.relpath(root)
-            if root == top_dir:
-                for file in files:
-                    dotlessfile = file.replace(".\\", "")
-                    if not self.is_ignored(dotlessfile, patterns):
-                        log.info("processing %s ...", relroot)
-                        yield self.get_dotfile(dotlessfile)
-                        continue
-            elif not self.is_ignored(relroot, patterns):
-                log.info("processing %s ...", relroot)
-                yield self.get_dotfile(relroot)
-                continue
-            log.debug("ignored %s", relroot)
+            targets = [pat.replace(".\\", "") for pat in targets]
+        for target in targets:
+            if pl.Path(target).is_dir():
+                files = pl.Path(target).glob("**/*.*")
+            else:
+                files = [target]
+            for filename in files:
+                log.debug("%s ...", filename)
+                if any(fnmatch.fnmatch(filename, pat) for pat in self.ignore_patterns):
+                    log.debug("ignored %s", filename)
+                    continue
+                log.debug("processing %s ...", filename)
+                yield self.get_dotfile(filename)
         return
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
         can_create_symlink = (dotfile.status in [Dotfile.missing,
                                                  Dotfile.same])
-        home_filename = os.path.join(self.home_dir, dotfile.name)
+        home_filename = self.home_dir / dotfile.name
         if force:
             log.info("deleting %s ...", home_filename)
             os.unlink(home_filename)  # Remove existing symlink.
             log.debug("%s deleted", home_filename)
             can_create_symlink = True
         if can_create_symlink:
-            dotfile_name = os.path.join(self.get_dotfiles_abspath(),
-                                        dotfile.name)
+            dotfile_name = self.get_dotfiles_abspath() / dotfile.name
             log.info("creating symlink %s -> %s ...", dotfile_name, home_filename)
             if sys.platform == 'win32':
-                is_dir = os.path.isdir(dotfile_name)
+                is_dir = dotfile_name.is_dir()
                 if is_dir:
                     log.debug("using windows junction ...")
                     _winapi.CreateJunction(dotfile_name, home_filename)
                 else:
                     try:
                         log.debug("using symlink (on windows) ...")
-                        os.symlink(dotfile_name, home_filename, is_dir)
+                        home_filename.symlink_to(dotfile_name, is_dir)
                     except OSError as err:
                         log.error('failed to create symlink: %s', err)
                         log.error('see https://stackoverflow.com/questions/26787872/')
@@ -241,28 +211,27 @@ class DotfileManager(object):
             log.warning("cannot create symlink: %s status is %s",
                         dotfile.name, dotfile.status)
 
-    def sync(self, patterns=None, force=False):
+    def sync(self, targets=None, force=False):
         """Creates a symlink for each file matching patterns.
 
         Arguments:
         patterns -- list of unix-like file pattern to be matched.
         force -- forces a sync even if the file is already sync'd elsewhere.
         """
-        for dotfile in self.get_dotfiles(patterns):
+        for dotfile in self.get_dotfiles(targets):
             self.make_symlink(dotfile, force=force)
 
     def make_copy(self, dotfile, force=False):
         """Creates a copy of the dotfile in the home directory."""
         can_create_copy = (dotfile.status == Dotfile.missing)
-        home_filename = os.path.join(self.home_dir, dotfile.name)
+        home_filename = self.home_dir / dotfile.name
         if not can_create_copy and force:
             os.unlink(home_filename)  # Remove existing symlink.
         if can_create_copy:
-            dotfile_name = os.path.join(self.get_dotfiles_abspath(),
-                                        dotfile.name)
+            dotfile_name = self.get_dotfiles_abspath() / dotfile.name
             if sys.platform != 'win32':
                 log.warning("it is recommended to use the sync command")
-            if os.path.isdir(dotfile_name):
+            if dotfile_name.is_dir():
                 shutil.copytree(dotfile_name, home_filename)
             else:
                 shutil.copy2(dotfile_name, home_filename)
@@ -270,9 +239,9 @@ class DotfileManager(object):
             log.warning("cannot create copy: %s is %s",
                         dotfile.name, dotfile.status)
 
-    def copy(self, patterns=None):
+    def copy(self, targets=None):
         """Creates a copy for each file matching patterns."""
-        for dotfile in self.get_dotfiles(patterns):
+        for dotfile in self.get_dotfiles(targets):
             self.make_copy(dotfile)
 
     def show_diff(self, dotfile):
@@ -280,10 +249,10 @@ class DotfileManager(object):
         if dotfile.status == Dotfile.missing:
             log.warning("%s is missing", dotfile.name)
             return
-        if os.path.isdir(dotfile.name):
+        if dotfile.name.is_dir():
             log.debug("%s is a directory", dotfile.name)
             return
-        home_filename = os.path.join(self.home_dir, dotfile.name)
+        home_filename = self.home_dir / dotfile.name
         if self.difftool:
             import shlex
             import subprocess
@@ -305,9 +274,9 @@ class DotfileManager(object):
             sys.stdout.writelines(diffs)
 
 
-    def diff(self, patterns=None):
-        """Diffs each file matching patterns."""
-        for dotfile in self.get_dotfiles(patterns):
+    def diff(self, targets=None):
+        """Diffs each file matching targets."""
+        for dotfile in self.get_dotfiles(targets):
             self.show_diff(dotfile)
 
 
@@ -332,7 +301,7 @@ def make_dotfile_manager(args):
                       args.config_file, error)
             if 'difftool' in args and args.difftool:
                 difftool = args.difftool
-        manager = DotfileManager(home_dir=args.home_dir,
+        manager = DotfileManager(home_dir=pl.Path(args.home_dir),
                                  ignore_patterns=ignore_patterns,
                                  difftool=difftool)
         return manager
@@ -342,10 +311,10 @@ def get_status(args):
     """Displays status of dot files in home directory."""
     manager = make_dotfile_manager(args)
     dotfiles = sorted(manager.get_dotfiles(args.dotfiles),
-                      key=lambda df: df.status.name + df.name)
+                      key=lambda df: df.status.name + str(df.name))
     for dfile in dotfiles:
         file_or_dir = 'F'
-        if os.path.isdir(dfile.name):
+        if dfile.name.is_dir():
             file_or_dir = 'D' 
         status = str(dfile.status)
         if args.diffs and status in ['synced', 'same']:
@@ -379,18 +348,10 @@ def copy(args):
     manager.copy(args.dotfiles)
 
 
-def expand_wildcards(files):
-    """Expands wildcards in argument in case it is not done by the shell"""
-    all_files = []
-    for item in files:
-        all_files += glob.glob(item)
-    return all_files
-
-
 def main():
     """Parses command line arguments and dispatch to the correct function."""
     # Main parser.
-    home_dir = os.path.expanduser("~")
+    home_dir = pl.Path.home()
     parser = argparse.ArgumentParser(description=__doc__,
                                      epilog=None)
     parser.add_argument("-V", "--version", action="version",
@@ -404,7 +365,7 @@ def main():
     parser.add_argument("--ignore", dest="ignore_patterns",
                         action='append', metavar="PATTERN",
                         help="patterns to ignore.")
-    parser.add_argument("--home-dir", dest="home_dir", default=home_dir,
+    parser.add_argument("--home-dir", dest="home_dir", default=str(home_dir),
                         help="change the home directory")
     subparsers = parser.add_subparsers(help="commands to execute")
 
