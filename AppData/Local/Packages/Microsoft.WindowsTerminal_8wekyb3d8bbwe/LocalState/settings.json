@@ -246,7 +246,7 @@
             "black": "#252525",
             "brightBlack": "#5e5e5e",
             "red": "#d80d43",
-            "brightRed": "#ff0000",
+            "brightRed": "#ee1010",
             "green": "#53881d",
             "brightGreen": "#90d849",
             "yellow": "#88531d",
@@ -271,6 +271,7 @@
         // These two lines additionally bind them to Ctrl+C and Ctrl+V.
         // To learn more about selection, visit https://aka.ms/terminal-selection
         { "command": {"action": "copy", "singleLine": false }, "keys": "ctrl+c" },
+        { "command": {"action": "copy", "singleLine": false }, "keys": "enter" },
         { "command": "paste", "keys": "ctrl+v" },
 
         // Press Ctrl+Shift+F to open the search box
