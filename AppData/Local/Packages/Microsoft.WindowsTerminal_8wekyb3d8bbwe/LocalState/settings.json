@@ -15,10 +15,11 @@
     // To learn more about global settings, visit https://aka.ms/terminal-global-settings
 
     // If enabled, selections are automatically copied to your clipboard.
-    "copyOnSelect": false,
+    "copyOnSelect": true,
 
-    // If enabled, formatted data is also copied to your clipboard
+    // If enabled, formatted data is also copied to your clipboard like Unix
     "copyFormatting": false,
+    "theme": "system",
 
     // A profile specifies a command to execute paired with information about how it should look and feel.
     // Each one of them will appear in the 'New Tab' dropdown,
@@ -29,15 +30,15 @@
         "defaults":
         {
             // Put settings here that you want to apply to all profiles.
-            "colorScheme": "Wood",
+            "colorScheme": "Nono",
             "cursorColor": "#FFFFFF",
             "cursorShape": "vintage",
-            //"acrylicOpacity": 0.70,
+            //"acrylicOpacity": 0.40,
             //"useAcrylic": true,
             "closeOnExit": true,
             "hidden": false,
-            //"backgroundImageOpacity": 0.6,
-            //"backgroundImage": "C:/Users/jlecomte/Pictures/wallpaper/other/wood.png",
+            "backgroundImageOpacity": 0.5,
+            "backgroundImage": "C:/Users/jlecomte/OneDrive/solar-flare-bw.jpg",
             //"backgroundImageStretchMode": "none",
             "fontFace": "Cascadia Code light",
             //"fontFace": "Source Code Pro",
@@ -240,10 +241,52 @@
             "foreground": "#979797"
         },
         {
+            "name": "Nono",
+            "background":"#1d2936",
+            "foreground":"#d9e6f2",
+            "black": "#000000",
+            "brightBlack": "#888888",
+            "red": "#a96969",
+            "brightRed": "#dcbcbc",
+            "green": "#69a969",
+            "brightGreen": "#bddcbc",
+            "yellow": "#a9a969",
+            "brightYellow": "#dcdcbc",
+            "blue": "#6969a9",
+            "brightBlue": "#bcbcdc",
+            "purple": "#a96969",
+            "brightPurple": "#dcbcdc",
+            "cyan": "#498999",
+            "brightCyan": "#acccdc",
+            "white": "#d9d9d9",
+            "brightWhite": "#ffffff"
+        },
+        {
+            "name": "Nono Inverse",
+            "background":"#1d2936",
+            "foreground":"#d9e6f2",
+            "black": "#000000",
+            "brightBlack": "#888888",
+            "red": "#a96969",
+            "brightRed": "#dcbcbc",
+            "green": "#69a969",
+            "brightGreen": "#bddcbc",
+            "yellow": "#a9a969",
+            "brightYellow": "#dcdcbc",
+            "blue": "#6969a9",
+            "brightBlue": "#bcbcdc",
+            "purple": "#a96969",
+            "brightPurple": "#dcbcdc",
+            "cyan": "#498999",
+            "brightCyan": "#acccdc",
+            "white": "#d9d9d9",
+            "brightWhite": "#ffffff"
+        },
+        {
             "name": "Wood",
             "background": "#4d2610",
             "foreground": "#dfb4ae",
-            "black": "#252525",
+            "black": "#050505",
             "brightBlack": "#5e5e5e",
             "red": "#d80d43",
             "brightRed": "#ee1010",
