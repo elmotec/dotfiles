@@ -86,6 +86,12 @@
                 "hidden": false,
                 "name": "PowerShell",
                 "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
+                "hidden": false,
+                "name": "Legacy",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
@@ -313,9 +319,9 @@
         // Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
         // These two lines additionally bind them to Ctrl+C and Ctrl+V.
         // To learn more about selection, visit https://aka.ms/terminal-selection
-        { "command": {"action": "copy", "singleLine": false }, "keys": "ctrl+c" },
+        { "command": {"action": "copy", "singleLine": false }, "keys": "ctrl+shift+c" },
         { "command": {"action": "copy", "singleLine": false }, "keys": "enter" },
-        { "command": "paste", "keys": "ctrl+v" },
+        { "command": "paste", "keys": "ctrl+shift+v" },
 
         // Press Ctrl+Shift+F to open the search box
         { "command": "find", "keys": "ctrl+shift+f" },
