@@ -20,6 +20,9 @@
     // If enabled, formatted data is also copied to your clipboard like Unix
     "copyFormatting": false,
     "theme": "system",
+    "initialRows": 50,
+    "initialCols": 120,
+    "initialPosition": "100,100",
 
     // A profile specifies a command to execute paired with information about how it should look and feel.
     // Each one of them will appear in the 'New Tab' dropdown,
@@ -38,7 +41,7 @@
             "closeOnExit": true,
             "hidden": false,
             "backgroundImageOpacity": 0.5,
-            "backgroundImage": "C:/Users/jlecomte/OneDrive/solar-flare-bw.jpg",
+            "backgroundImage": "C:/Users/jlecomte/OneDrive/backgrounds/black-diamnonds.jpg",
             //"backgroundImageStretchMode": "none",
             "fontFace": "Cascadia Code light",
             //"fontFace": "Source Code Pro",
@@ -253,7 +256,7 @@
             "black": "#000000",
             "brightBlack": "#888888",
             "red": "#a96969",
-            "brightRed": "#dcbcbc",
+            "brightRed": "#dcacac",
             "green": "#69a969",
             "brightGreen": "#bddcbc",
             "yellow": "#a9a969",
@@ -330,6 +333,8 @@
         // - "split": "auto" makes this pane open in the direction that provides the most surface area.
         // - "splitMode": "duplicate" makes the new pane use the focused pane's profile.
         // To learn more about panes, visit https://aka.ms/terminal-panes
-        { "command": { "action": "splitPane", "split": "auto", "splitMode": "duplicate" }, "keys": "alt+shift+d" }
+        { "command": { "action": "splitPane", "split": "auto" }, "keys": "alt+shift+plus" },
+        { "command": { "action": "splitPane", "split": "horizontal" }, "keys": "alt+shift+-" },
+        { "command": { "action": "splitPane", "split": "vertical" }, "keys": "alt+shift+|" }
     ]
 }
