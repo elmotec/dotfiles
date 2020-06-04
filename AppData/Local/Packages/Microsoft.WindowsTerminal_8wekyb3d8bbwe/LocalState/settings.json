@@ -34,7 +34,7 @@
         {
             // Put settings here that you want to apply to all profiles.
             "colorScheme": "Nono",
-            "cursorColor": "#FFFFFF",
+            "cursorColor": "#22CC22",
             "cursorShape": "vintage",
             //"acrylicOpacity": 0.40,
             //"useAcrylic": true,
