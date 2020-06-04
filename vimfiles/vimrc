@@ -222,16 +222,6 @@ Plug 'tpope/vim-surround'
 " Startup screen with mru and cool quotes.
 Plug 'mhinz/vim-startify'
 
-" Snippet library
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
-" UltiSnips customization to use <tab> to trigger jumps.
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-" Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
-let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
-
 " Airline status bar
 Plug 'vim-airline/vim-airline'
 
@@ -273,6 +263,21 @@ let g:ale_python_pylint_options = '-j 0 -r n'
 let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 let g:airline#extensions#ale#enabled = 1
+
+" Problems with ultisnips, nvim and Windows
+if !has('nvim')
+    " Snippet library
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
+
+    " UltiSnips customization to use <tab> to trigger jumps.
+    let g:UltiSnipsExpandTrigger="<tab>"
+    let g:UltiSnipsListSnippets="<tab><tab>"
+    let g:UltiSnipsJumpForwardTrigger="<c-j>"
+    let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+    " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
+    let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
+endif
 
 " Git integration
 Plug 'tpope/vim-fugitive'
