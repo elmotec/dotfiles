@@ -7,6 +7,8 @@ Set-Alias unison "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
 if (Test-Path alias::diff) {
     Remove-Item alias:diff -force
 }
+function ls_alias { wsl ls --color=auto -hF $args }
+Set-Alias ls ls_alias -Option AllScope
 
 # My PATH
 $Env:Path += ";$home\scripts"
@@ -34,7 +36,7 @@ $VTSettings=$HOME + "\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8
 # Fish like path shorterning.
 # Credit https://www.reddit.com/r/PowerShell/comments/gpqct8/fishlike_prompt_that_autoshrinks_your_current/frpp3vo/
 function prompt {
-    $regex = [regex]::new("(([\\][^\\])[^\\]+)(?=\\*\\)");
+    $regex = [regex]::new("(([\\][^\\]{2})[^\\]+)(?=\\*\\)");
     $folder = $regex.replace($pwd,'$2')
     "PS $folder>"
 }
