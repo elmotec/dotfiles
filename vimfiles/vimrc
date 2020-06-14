@@ -112,10 +112,12 @@ endif
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
 
+" Moves around between buffers with Ctrl+j and Ctrl+k.
+" We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
+noremap <c-k> :bn<CR>
+noremap <c-j> :bp<CR>
+
 " Could not let those go... mimics Visual Studio interface.
-" Moves around between buffers with Ctrl+Tab and Ctrl+Shift+Tab.
-noremap <c-Tab> :bn<CR>
-noremap <c-s-Tab> :bp<CR>
 " Control S saves current file.
 noremap <c-S> :w<CR>
 " Control-F4 closes the buffer.
@@ -201,7 +203,7 @@ if has("win32") || has("win64")
 end
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                          Plugins with plug.vim 
+"                          Plugins with plug.vim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:vim_config_root = expand('<sfile>:p:h')
@@ -236,7 +238,7 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 nmap <leader>fo :Files<CR>
-nmap <leader>ff :Rg 
+nmap <leader>ff :Rg
 nmap <leader>fs :Snippets<CR>
 
 " Auto completion
