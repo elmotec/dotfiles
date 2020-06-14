@@ -8,7 +8,7 @@
 {
     "$schema": "https://aka.ms/terminal-profiles-schema",
 
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44c0}",
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
     //"defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
 
     // You can add more global application settings here.
@@ -52,16 +52,19 @@
             {
                 // Make changes here to the powershell.exe profile.
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "name": "Windows PowerShell",
-                "commandline": "powershell.exe",
+                "name": "PowerShell",
+                "commandline": "pwsh.exe",
+                "icon": "ms-appx:///ProfileIcons/{574e775e-4f2a-5b96-ac1e-a2962a402336}.png",
                 "startingDirectory": "~",
                 "hidden": false
             },
             {
                 // Make changes here to the powershell.exe profile.
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44c0}",
-                "name": "Windows PowerShell",
-                "commandline": "pwsh.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44be}",
+                // Admin is mentioned in the title
+                "name": "PowerShell Administrator",
+                "commandline": "gsudo pwsh.exe",
+                "icon": "ms-appx:///ProfileIcons/{574e775e-4f2a-5b96-ac1e-a2962a402336}.png",
                 "startingDirectory": "~",
                 "hidden": false
             },
@@ -85,16 +88,16 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-                "hidden": false,
-                "name": "PowerShell",
-                "source": "Windows.Terminal.PowershellCore"
-            },
-            {
                 "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
                 "hidden": false,
                 "name": "Legacy",
                 "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
             }
         ]
     },
