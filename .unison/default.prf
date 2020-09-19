@@ -3,7 +3,7 @@
 #root = /cygdrive/c/Users/jlecomte
 root = ssh://desktop1
 root = C:\Users\jlecomte
-servercmd = "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
+#servercmd = "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
 
 include common
 
