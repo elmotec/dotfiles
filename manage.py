@@ -70,7 +70,7 @@ class Dotfile(object):  # pylint: disable=R0903
     """Abstraction for a (possible) link between repository and home dir."""
 
     synced = DotfileStatus('synced', 'symbolic link to dotfile')
-    external = DotfileStatus('external', 'symbolic link to other file')
+    external = DotfileStatus('external', 'symbolic link to file other than dotfile')
     missing = DotfileStatus('missing', 'not in home directory')
     conflict = DotfileStatus('conflict', 'different from dotfile')
     same = DotfileStatus('same', 'identical but distinct file')
@@ -99,13 +99,11 @@ class DotfileManager(object):
         self.home_dir exists and is a directory.
         self.dotfiles_dir exists and is a directory.
         """
-        self.home_dir = home_dir or pl.Path.home()
-        self.dotfiles_dir = pl.Path.cwd()
-        if dotfiles_dir:
-            self.dotfiles_dir = dotfiles_dir
+        self.home_dir = pl.Path(home_dir or pl.Path.home())
+        self.dotfiles_dir = pl.Path(dotfiles_dir or pl.Path.cwd())
         self.ignore_patterns = []
         if ignore_patterns:
-            self.ignore_patterns = ignore_patterns
+            self.ignore_patterns = [self.dotfiles_dir / ip for ip in ignore_patterns]
         self.difftool = difftool
         log.info("home directory: %s", self.home_dir)
         log.info("dotfiles directory: %s", self.dotfiles_dir)
@@ -126,7 +124,7 @@ class DotfileManager(object):
         """Return the absolute path to the dotfile directory."""
         if self.dotfiles_dir.absolute() == self.dotfiles_dir:
             return self.dotfiles_dir
-        return Path.home() / self.dotfiles_dir
+        return pl.Path.home() / self.dotfiles_dir
 
     def get_dotfiles_relpath(self):
         """Returns relative path of dotfile with respect to home directory."""
@@ -134,13 +132,17 @@ class DotfileManager(object):
         home_dir = self.home_dir
         return dotfile_abspath.relative_to(home_dir)
 
-    def get_dotfile(self, file_name):
-        """Retrieves the dotfile for a given file_name."""
-        home_name = self.home_dir / file_name
+    def get_dotfile(self, file_name: pl.Path):
+        """Retrieves the Dotfile for a given file_name."""
+        relative = file_name.relative_to(self.dotfiles_dir)
+        home_name = self.home_dir / relative
         dotfile_name = self.get_dotfiles_abspath() / file_name
-        # Starting Python 3.8, detects junctions on Windows
+        # Starting Python 3.8, detects junctions on Windows.
         if home_name.resolve() == dotfile_name.resolve():
             status = Dotfile.synced
+        # Home file is a symlink but not resolved to the correct dotfile.
+        elif home_name.is_symlink():
+            status = Dotfile.external
         elif not home_name.exists():
             status = Dotfile.missing
         elif home_name.is_dir() and dotfile_name.is_dir():
@@ -151,35 +153,41 @@ class DotfileManager(object):
             status = Dotfile.same
         else:
             status = Dotfile.conflict
-        return Dotfile(file_name, status=status)
+        return Dotfile(str(relative), status=status)
 
     def get_dotfiles(self, targets=None):
         """Gets a generator that loops through the dotfiles.
 
+        targets:
+            Can be files or directories.
+
         """
-        if targets:
-            assert iter(targets), "iterable expected"
-            assert not isinstance(targets, str), "non-string expected"
-            # Remove .\ prefix if any because relpath does not have it.
-            targets = [pat.replace(".\\", "") for pat in targets]
+        if targets is None:
+            targets = ["."]
+        assert iter(targets), "iterable expected"
+        assert not isinstance(targets, str), "non-string expected"
+        target_files = []
+        targets = [self.dotfiles_dir / tar for tar in targets]
         for target in targets:
             if pl.Path(target).is_dir():
-                files = pl.Path(target).glob("**/*.*")
+                files = pl.Path(target).glob("**/*")
             else:
                 files = [target]
-            for filename in files:
-                log.debug("%s ...", filename)
-                if any(fnmatch.fnmatch(filename, pat) for pat in self.ignore_patterns):
-                    log.debug("ignored %s", filename)
-                    continue
-                log.debug("processing %s ...", filename)
-                yield self.get_dotfile(filename)
+            target_files += files
+        for target_file in target_files:
+            log.debug("%s ...", target_file)
+            str_target_file = str(target_file)
+            match = [fnmatch.fnmatch(str_target_file, ipat) for ipat in self.ignore_patterns]
+            if any(match):
+                log.debug("ignored %s", target_file)
+                continue
+            log.debug("processing %s ...", target_file)
+            yield self.get_dotfile(target_file)
         return
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
-        can_create_symlink = (dotfile.status in [Dotfile.missing,
-                                                 Dotfile.same])
+        can_create_symlink = (dotfile.status in [Dotfile.missing, Dotfile.same])
         home_filename = self.home_dir / dotfile.name
         if force:
             log.info("deleting %s ...", home_filename)
@@ -193,7 +201,7 @@ class DotfileManager(object):
                 is_dir = dotfile_name.is_dir()
                 if is_dir:
                     log.debug("using windows junction ...")
-                    _winapi.CreateJunction(dotfile_name, home_filename)
+                    _winapi.CreateJunction(str(dotfile_name), str(home_filename))
                 else:
                     try:
                         log.debug("using symlink (on windows) ...")
@@ -207,6 +215,8 @@ class DotfileManager(object):
                 log.debug("using symlink ...")
                 os.symlink(dotfile_name, home_filename)
             log.debug("symlink %s -> %s created", dotfile_name, home_filename)
+        elif dotfile.status == Dotfile.synced:
+            log.debug("symlink %s already exists", dotfile.name)
         else:
             log.warning("cannot create symlink: %s status is %s",
                         dotfile.name, dotfile.status)
@@ -249,17 +259,16 @@ class DotfileManager(object):
         if dotfile.status == Dotfile.missing:
             log.warning("%s is missing", dotfile.name)
             return
-        if dotfile.name.is_dir():
+        if pl.Path(dotfile.name).is_dir():
             log.debug("%s is a directory", dotfile.name)
             return
         home_filename = self.home_dir / dotfile.name
         if self.difftool:
-            import shlex
             import subprocess
-            cmd = self.difftool.format(dotfile.name, home_filename)
+            cmd = self.difftool.format(str(dotfile.name), str(home_filename))
             log.info(cmd)
             try:
-                subprocess.check_call(cmd)
+                subprocess.check_call(cmd.split())
             except Exception as err:
                 log.error('failed to execute {}: {}'.format(cmd, err))
                 raise
@@ -269,7 +278,7 @@ class DotfileManager(object):
             tolines = open(home_filename).readlines()
             diffs = list(difflib.unified_diff(fromlines, tolines))
             if diffs:
-                header = "diff {} {}\n".format(dotfile.name, home_filename)
+                header = "diff {} {}\n".format(str(dotfile.name), str(home_filename))
                 sys.stdout.write(header)
             sys.stdout.writelines(diffs)
 
@@ -314,7 +323,7 @@ def get_status(args):
                       key=lambda df: df.status.name + str(df.name))
     for dfile in dotfiles:
         file_or_dir = 'F'
-        if dfile.name.is_dir():
+        if (manager.dotfiles_dir / dfile.name).is_dir():
             file_or_dir = 'D' 
         status = str(dfile.status)
         if args.diffs and status in ['synced', 'same']:
