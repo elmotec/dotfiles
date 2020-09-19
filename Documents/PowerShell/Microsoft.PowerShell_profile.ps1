@@ -2,7 +2,6 @@
 Set-Alias vi nvim
 Set-Alias gvi nvim-qt
 Set-Alias which Get-Command
-Set-Alias unison "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
 # Remove diff aliast because it conflicts with the command of the same name.
 if (Test-Path alias::diff) {
     Remove-Item alias:diff -force
@@ -33,12 +32,18 @@ $Env:TMPDIR=$Env:TMP
 # Quick access to terminal settings because .json is associated to Visual Studio.
 $VTSettings=$HOME + "\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 
+# Git directories will show helpful status (see prompt below).
+Import-Module posh-git
+
 # Fish like path shorterning.
 # Credit https://www.reddit.com/r/PowerShell/comments/gpqct8/fishlike_prompt_that_autoshrinks_your_current/frpp3vo/
 function prompt {
     $regex = [regex]::new("(([\\][^\\]{2})[^\\]+)(?=\\*\\)");
     $folder = $regex.replace($pwd,'$2')
-    "PS $folder>"
+    $GitPromptSettings.DefaultPromptPath = "PS $folder"
+    $GitPromptSettings.DefaultPromptPath.ForegroundColor = 0x00FF00
+    $prompt += & $GitPromptScriptBlock
+    if ($prompt) { "$prompt" } else { "PS $folder" }
 }
 
 # Turn on fuzzy finder fzf at the command line.
