@@ -5,11 +5,11 @@ if has("nvim")
     GuiFont! Source\ Code\ Pro:h12
     GuiTabline 0
 else
-    set guifont=source\ code\ pro:h11,consolas:h11
+    set guifont=source\ code\ pro:h14,consolas:h14
 endif
 
 " Default size is a little bigger than 80 columns to accomodate line numbers.
-set columns=145
+set columns=120
 set lines=40
 
 " Activate sunset to automate switch between dark and light mode.
