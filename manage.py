@@ -265,10 +265,12 @@ class DotfileManager(object):
         home_filename = self.home_dir / dotfile.name
         if self.difftool:
             import subprocess
+            import shlex
             cmd = self.difftool.format(str(dotfile.name), str(home_filename))
             log.info(cmd)
             try:
-                subprocess.check_call(cmd.split())
+                cmd_split = shlex.split(cmd)
+                subprocess.check_call(cmd_split)
             except Exception as err:
                 log.error('failed to execute {}: {}'.format(cmd, err))
                 raise
