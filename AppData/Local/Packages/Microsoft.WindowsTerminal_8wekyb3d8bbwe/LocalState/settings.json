@@ -83,7 +83,7 @@
                 "hidden": false,
                 "name": "Ubuntu-18.04",
                 "colorScheme": "UbuntuLegit",
-                //"backgroundImage": "https://irc.ubports.com/pZVADPli.png",
+                "backgroundImage": "https://irc.ubports.com/pZVADPli.png",
                 "backgroundImageAlignment": "topRight",
                 "source": "Windows.Terminal.Wsl"
 
@@ -104,6 +104,15 @@
                 "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
                 "hidden": false,
                 "name": "Legacy",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+                "hidden": false,
+                "name": "Ubuntu-20.04",
+                "colorScheme": "UbuntuLegit",
+                "backgroundImage": "https://irc.ubports.com/pZVADPli.png",
+                "backgroundImageAlignment": "topRight",
                 "source": "Windows.Terminal.Wsl"
             }
         ]
