@@ -40,6 +40,7 @@ import filecmp
 import fnmatch
 import configparser
 import shutil
+import os
 if sys.platform == 'win32':
     import _winapi
 
