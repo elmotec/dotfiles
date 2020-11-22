@@ -33,6 +33,7 @@
         "defaults":
         {
             // Put settings here that you want to apply to all profiles.
+            "bellStyle": "none",
             "colorScheme": "Nono",
             "cursorColor": "#22CC22",
             "cursorShape": "vintage",
@@ -40,12 +41,11 @@
             //"useAcrylic": true,
             "closeOnExit": true,
             "hidden": false,
-            "backgroundImageOpacity": 0.5,
-            "backgroundImage": "C:/Users/jlecomte/OneDrive/backgrounds/black-diamnonds.jpg",
+            //"backgroundImage": "desktopWallpaper",
             //"backgroundImageStretchMode": "none",
             "fontFace": "Cascadia Code light",
             //"fontFace": "Source Code Pro",
-            "fontSize": 11
+            "fontSize": 14
         },
         "list":
         [
@@ -56,6 +56,8 @@
                 "commandline": "pwsh.exe",
                 "icon": "ms-appx:///ProfileIcons/{574e775e-4f2a-5b96-ac1e-a2962a402336}.png",
                 "startingDirectory": "~",
+                "backgroundImage": "C:/Users/jlecomte/OneDrive/backgrounds/black-diamnonds.jpg",
+                "backgroundImageOpacity": 0.5,
                 "hidden": false
             },
             {
@@ -66,6 +68,7 @@
                 "commandline": "gsudo pwsh.exe",
                 "icon": "ms-appx:///ProfileIcons/{574e775e-4f2a-5b96-ac1e-a2962a402336}.png",
                 "startingDirectory": "~",
+                "backgroundImage": "C:/Users/jlecomte/OneDrive/backgrounds/black-diamnonds.jpg",
                 "hidden": false
             },
             {
@@ -79,7 +82,11 @@
                 "guid": "{c6eaf9f4-32a7-5fdc-b5cf-066e8a4b1e40}",
                 "hidden": false,
                 "name": "Ubuntu-18.04",
+                "colorScheme": "UbuntuLegit",
+                //"backgroundImage": "https://irc.ubports.com/pZVADPli.png",
+                "backgroundImageAlignment": "topRight",
                 "source": "Windows.Terminal.Wsl"
+
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -88,16 +95,16 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
-                "hidden": false,
-                "name": "Legacy",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
                 "hidden": false,
                 "name": "PowerShell",
                 "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
+                "hidden": false,
+                "name": "Legacy",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
@@ -293,6 +300,27 @@
             "brightCyan": "#acccdc",
             "white": "#d9d9d9",
             "brightWhite": "#ffffff"
+        },
+        {
+            "name": "UbuntuLegit",
+            "foreground": "#EEEEEE",
+            "background": "#2C001E",
+            "black": "#4E9A06",
+            "blue": "#3465A4",
+            "cyan": "#06989A",
+            "green": "#300A24",
+            "purple": "#75507B",
+            "red": "#CC0000",
+            "white": "#D3D7CF",
+            "yellow": "#C4A000",
+            "brightBlack": "#555753",
+            "brightBlue": "#729FCF",
+            "brightCyan": "#34E2E2",
+            "brightGreen": "#8AE234",
+            "brightPurple": "#AD7FA8",
+            "brightRed": "#EF2929",
+            "brightWhite": "#EEEEEE",
+            "brightYellow": "#FCE94F"
         },
         {
             "name": "Wood",
