@@ -28,16 +28,10 @@ set noswapfile
 " Set tabulation to 4 spaces
 set tabstop=4
 
-" Shortcut to clean up end of line spaces
-noremap <Leader>ws :mark m<CR>:retab<CR>%s/\s\+$//e<CR>`m
-
 " Causes tab at the begining of a line to insert spaces.
 set expandtab
 set smarttab
 set shiftwidth=4
-
-" Quickly remove tabs and trailing spaces.
-noremap <Leader>ws :mark m<CR>:%s/\s\+$//e<CR>:%s/<Tab>/    /e<CR>`m
 
 " Auto indent program in a C-like fashion
 set autoindent
@@ -114,8 +108,8 @@ syntax on
 
 " Moves around between buffers with Ctrl+j and Ctrl+k.
 " We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
-noremap <c-k> :bn<CR>
-noremap <c-j> :bp<CR>
+nnoremap <c-s-k> :bn<CR>
+nnoremap <c-s-j> :bp<CR>
 
 " Could not let those go... mimics Visual Studio interface.
 " Control S saves current file.
@@ -130,20 +124,18 @@ noremap <Left> <NOP>
 noremap <Down> <NOP>
 
 " Wrap/unwrap lines
-nmap <Leader>w :set wrap!<CR>
+nmap <Leader><Leader>w :set wrap!<CR>
 " Show/Hide line numbers (absolute)
-nmap <Leader>n :set number!<CR>
+nmap <Leader><Leader>n :set number!<CR>
 " Show/Hide line numbers (relative)
-nmap <Leader>r :set relativenumber!<CR>
+nmap <Leader><Leader>r :set relativenumber!<CR>
 " Show/Hide cursor line
-nmap <Leader>c :set cursorline!<CR>
+nmap <Leader><Leader>c :set cursorline!<CR>
 set cursorline
-" Lists all buffers.
-nmap <Leader>b :ls<CR>
 " Hilights searched terms on/off.
-nmap <Leader>s :set hlsearch!<CR>
+nmap <Leader><Leader>s :set hlsearch!<CR>
 " Starts file explorer.
-nmap <Leader>e :Ex<CR>
+nmap <Leader><Leader>e :Ex<CR>
 " Loops through tags instead of sticking to the first one.
 nmap <c-T> <c-T><z><z>
 
@@ -227,6 +219,9 @@ Plug 'mhinz/vim-startify'
 " Airline status bar
 Plug 'vim-airline/vim-airline'
 
+" Markdown (.md) handling and wiki features
+Plug 'vimwiki/vimwiki'
+
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
 let g:airline#extensions#tabline#enabled = 1
@@ -241,23 +236,8 @@ nmap <leader>fo :Files<CR>
 nmap <leader>ff :Rg
 nmap <leader>fs :Snippets<CR>
 
-" Auto completion
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-let g:deoplete#enable_at_startup = 1
-let g:python3_host_prog = "python.exe"
-
 " Asynchronous linter
 Plug 'dense-analysis/ale'
-" language not mentioned will have all linters enabled.
-"let g:ale_linters = {
-"\   'javascript': ['eslint'],
-"\}
 let g:ale_fixers = {
     \ "python": ["black", "isort"]
 \}
@@ -273,16 +253,13 @@ if !has('nvim')
     Plug 'honza/vim-snippets'
 
     " UltiSnips customization to use <tab> to trigger jumps.
-    let g:UltiSnipsExpandTrigger="<tab>"
-    let g:UltiSnipsListSnippets="<tab><tab>"
-    let g:UltiSnipsJumpForwardTrigger="<c-j>"
-    let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+    let g:UltiSnipsExpandTrigger="<c-tab>"
+    let g:UltiSnipsListSnippets="<c-tab><c-tab>"
+    let g:UltiSnipsJumpForwardTrigger="<c-tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<c-s-tab>"
     " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
     let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
 endif
-
-" Git integration
-Plug 'tpope/vim-fugitive'
 
 " Sunset changes background depending on the day/night.
 " Registered in vimrc and activated in gvimrc only.
