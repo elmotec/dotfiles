@@ -191,6 +191,8 @@ endif
 
 " Temp directory to default to $TEMP on Windows.
 if has("win32") || has("win64")
+    " Support for Python is needed for some plugins (e.g. deoplete, ultisnips).
+    let $PATH = $LOCALAPPDATA . "\\Programs\\Python\\Python38;" . $PATH
     set directory=$TEMP
 end
 
@@ -221,6 +223,7 @@ Plug 'vim-airline/vim-airline'
 
 " Markdown (.md) handling and wiki features
 Plug 'vimwiki/vimwiki'
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
