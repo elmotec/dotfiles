@@ -8,7 +8,6 @@ path = perl
 path = python
 path = scripts
 path = Downloads
-path = Applications
 
 follow = Name Music
 follow = Name Pictures
