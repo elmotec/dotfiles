@@ -43,7 +43,7 @@
             "hidden": false,
             //"backgroundImage": "desktopWallpaper",
             //"backgroundImageStretchMode": "none",
-            "fontFace": "Cascadia Code light",
+            "fontFace": "Consolas",
             //"fontFace": "Source Code Pro",
             "fontSize": 14
         },
