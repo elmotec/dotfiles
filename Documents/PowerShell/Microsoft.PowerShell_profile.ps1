@@ -54,7 +54,7 @@ Import-Module PSFzf -ArgumentList 'Ctrl+t', 'Alt+r' -Force
 
 # Quickly cd to preferred directories.
 Import-Module CDPath
-Set-CDPath -Path ~,~\Documents\Github,~\Documents\Gitlab,~\Documents\Python
+Set-CDPath -Path ~,~\Documents,~\Documents\Github,~\Documents\Gitlab,~\Documents\Python
 
 # Display import PS variables
 echo "`$VTSettings=$VTSettings"
