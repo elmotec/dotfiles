@@ -1,10 +1,8 @@
 # roots
-#root = ssh://desktop1//cygdrive/c/Users/jlecomte
-#root = /cygdrive/c/Users/jlecomte
-root = ssh://desktop1
-root = C:\Users\jlecomte
-#servercmd = "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
+root = ssh://<host>
+root = <local>
 
+# Unison preferences file
 include common
 
 fastcheck = true
