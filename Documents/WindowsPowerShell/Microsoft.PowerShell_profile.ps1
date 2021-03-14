@@ -1,7 +1,8 @@
+# Aliases
 Set-Alias vi nvim
 Set-Alias gvi nvim-qt
 Set-Alias which Get-Command
-Set-Alias unison "C:\ProgramData\chocolatey\bin\unison 2.48.4 text.exe"
+# Remove diff aliast because it conflicts with the command of the same name.
 if (Test-Path alias::diff) {
     Remove-Item alias:diff -force
 }
@@ -18,8 +19,10 @@ $Env:Path += ';C:\Program Files\WinMerge\'
 $Env:EDITOR="nvim.exe"
 
 # Set TMP variable to ram disk
-# If you need to create virtual temp drive
-# imdisk -a -t vm -m R: -s 2Gb
+if (-Not Test-Path "R:\") {
+    # If you need to create the virtual temp drive
+    imdisk -a -t vm -m R: -s 2Gb
+}
 if (Test-Path "R:\") {
     $Env:TMP="R:\"
 }

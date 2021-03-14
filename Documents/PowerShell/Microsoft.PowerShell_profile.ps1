@@ -18,9 +18,11 @@ $Env:Path += ';C:\Program Files\WinMerge\'
 # Set the virual editor for subversion, git, ...
 $Env:EDITOR="nvim.exe"
 
-# Set TMP variable to ram disk if available
-# If you need to create virtual temp drive
-# imdisk -a -t vm -m R: -s 2Gb
+# Set TMP variable to ram disk
+if (-Not Test-Path "R:\") {
+    # If you need to create the virtual temp drive
+    imdisk -a -t vm -m R: -s 2Gb
+}
 if (Test-Path "R:\") {
     $Env:TMP="R:\"
 }
@@ -32,7 +34,6 @@ $Env:TMPDIR=$Env:TMP
 
 # Quick access to terminal settings because .json is associated to Visual Studio.
 $VTSettings=$HOME + "\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-
 
 # Git directories will show helpful status (see prompt below).
 Import-Module posh-git
