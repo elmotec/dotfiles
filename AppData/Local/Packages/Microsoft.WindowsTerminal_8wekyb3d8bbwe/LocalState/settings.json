@@ -62,6 +62,13 @@
         [
             {
                 "backgroundImage": "C:\\Users\\jlecomte\\OneDrive\\backgrounds\\black-diamnonds.jpg",
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "backgroundImage": "C:\\Users\\jlecomte\\OneDrive\\backgrounds\\black-diamnonds.jpg",
                 "commandline": "powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
@@ -74,13 +81,9 @@
                 "name": "Command Prompt"
             },
             {
-                "backgroundImage": "C:\\Users\\jlecomte\\OneDrive\\backgrounds\\black-diamnonds.jpg",
-                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-                "hidden": false,
-                "name": "PowerShell",
-                "source": "Windows.Terminal.PowershellCore"
-            },
-            {
+                "backgroundImage": "https://irc.ubports.com/pZVADPli.png",
+                "backgroundImageAlignment": "topRight",
+                "colorScheme": "UbuntuLegit",
                 "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
                 "hidden": false,
                 "name": "Ubuntu-20.04",
