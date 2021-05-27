@@ -19,7 +19,7 @@ $Env:Path += ';C:\Program Files\WinMerge\'
 $Env:EDITOR="nvim.exe"
 
 # Set TMP variable to ram disk
-if (-Not Test-Path "R:\") {
+if (-Not $(Test-Path "R:\")) {
     # If you need to create the virtual temp drive
     imdisk -a -t vm -m R: -s 2Gb
 }
@@ -41,11 +41,8 @@ Import-Module posh-git
 # Turn on fuzzy finder fzf at the command line.
 Import-Module PSFzf -ArgumentList 'Ctrl+t', 'Alt+r' -Force
 
-# Quickly cd to preferred directories.
-Import-Module CDPath
-Set-CDPath -Path ~,~\Documents\Github,~\Documents\Gitlab,~\Documents\Python
-
 # Display import PS variables
 echo "`$VTSettings=$VTSettings"
-echo "`$PROFILE=$PROFILE"
+echo "`$PROFILE.CurrentUserCurrentHost=$PROFILE.CurrentUserCurrentHost"
+echo "`$PROFILE.CurrentUserAllHosts=$PROFILE.CurrentUserAllHosts"
 echo ""
