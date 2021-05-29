@@ -52,12 +52,8 @@ set vb
 " raise a dialogue asking if you wish to save changed files.
 set confirm
 
-" List the path where to look for files
-set path=.,${HOME}/etc,${HOME}/cpp/libs/**,${HOME}/scripts
-
-" Set the characters acceptable as part of a file name for gf command.
-" Added for the curly braces that aren't built in on all ${OS}.
-set isfname=@,48-57,/,\\,.,-,_,+,,,#,$,%,{,},[,],:,@-@,!,~,=
+" Add to the list the path where to look for files.
+set path+=${HOME}/etc,${HOME}/scripts
 
 " Always display line and column
 set ruler
