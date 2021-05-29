@@ -56,8 +56,8 @@ set confirm
 set path=.,${HOME}/etc,${HOME}/cpp/libs/**,${HOME}/scripts
 
 " Set the characters acceptable as part of a file name for gf command.
-" Needed for /home/jlecomte/myfile as { and } aren't built in
-set isfname=@,48-57,/,.,-,_,+,,,$,~,{,}
+" Added for the curly braces that aren't built in on all ${OS}.
+set isfname=@,48-57,/,\\,.,-,_,+,,,#,$,%,{,},[,],:,@-@,!,~,=
 
 " Always display line and column
 set ruler
@@ -215,11 +215,11 @@ call plug#begin('~/vimfiles/plugged')
 " quoting/parenthesizing made simple
 Plug 'tpope/vim-surround'
 
+" Git in vim
+Plug 'tpope/vim-fugitive'
+
 " Startup screen with mru and cool quotes.
 Plug 'mhinz/vim-startify'
-
-" Airline status bar
-Plug 'vim-airline/vim-airline'
 
 " Powershell
 Plug 'pprovost/vim-ps1'
@@ -228,8 +228,11 @@ Plug 'pprovost/vim-ps1'
 Plug 'vimwiki/vimwiki'
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_folding = 'expr'
-" autocmd FileType vimwiki setlocal syntax=markdown
+autocmd FileType vimwiki setlocal syntax=markdown
 autocmd FileType vimwiki setlocal foldenable
+
+" Airline status bar
+Plug 'vim-airline/vim-airline'
 
 " Controls which airline sections get truncated and at what width.
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
