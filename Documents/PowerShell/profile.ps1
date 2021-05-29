@@ -25,7 +25,9 @@ if (-Not $(Test-Path "R:\")) {
 }
 if (Test-Path "R:\") {
     $Env:TMP="R:\"
-    mkdir "R:\tmp" | Out-Null
+    if (-Not $(Test-Path "R:\tmp")) {
+        mkdir "R:\tmp" | Out-Null
+    }
     if (Test-Path "R:\tmp") {
         $Env:TMP="R:\tmp"
     }
