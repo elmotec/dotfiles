@@ -86,7 +86,7 @@ set scrolloff=7
 "set shell=/bin/bash
 
 " Sets the location of tag files up to 5 levels up.
-set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
+set tag+=../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
 
 " Sets the number of command to remember in history (20 is default)
 set history=60
