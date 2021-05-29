@@ -19,12 +19,16 @@ $Env:Path += ';C:\Program Files\WinMerge\'
 $Env:EDITOR="nvim.exe"
 
 # Set TMP variable to ram disk
-if (-Not (Test-Path "R:\")) {
+if (-Not $(Test-Path "R:\")) {
     # If you need to create the virtual temp drive
     imdisk -a -t vm -m R: -s 2Gb
 }
 if (Test-Path "R:\") {
     $Env:TMP="R:\"
+    mkdir "R:\tmp" | Out-Null
+    if (Test-Path "R:\tmp") {
+        $Env:TMP="R:\tmp"
+    }
 }
 else {
     $Env:TMP=$HOME + "\tmp"
