@@ -21,7 +21,7 @@ $Env:EDITOR="nvim.exe"
 # Set TMP variable to ram disk
 if (-Not $(Test-Path "R:\")) {
     # If you need to create the virtual temp drive
-    imdisk -a -t vm -m R: -s 2Gb
+    Start-Process -Verb RunAs powershell.exe -Args "-executionpolicy bypass -command imdisk -a -t vm -m R: -s 2Gb -p '/fs:ntfs /q /y'"
 }
 if (Test-Path "R:\") {
     $Env:TMP="R:\"
