@@ -234,9 +234,6 @@ Plug 'vim-airline/vim-airline'
 let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
 let g:airline#extensions#tabline#enabled = 1
 
-" Integrate ripgrep search tool in vim.
-Plug 'jremmen/vim-ripgrep'
-
 " Command line fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -280,7 +277,11 @@ let g:sunset_longitude=-74
 " Clock offset between EST and UTC
 let g:sunset_utc_offset=-4
 
+" Support for Jenkins pipeline files
 Plug 'martinda/Jenkinsfile-vim-syntax'
+
+" Add supports for editorconfig
+Plug 'editorconfig/editorconfig-vim'
 
 " Complete the plugin section.
 call plug#end()
