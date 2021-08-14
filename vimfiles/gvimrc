@@ -8,10 +8,20 @@ else
     set guifont=source\ code\ pro:h14,consolas:h14
 endif
 
+" Set background to light between 7:00 and 18:30. Dark otherwise.
+function! s:setbackground()
+    if (strftime('%H%M') % 1830) >= 700
+      set background=light
+    else
+      set background=dark
+    endif
+endfunction
+" call setbackground at startup ...
+call s:setbackground()
+" ... and again when inactive.
+autocmd CursorHold * nested call s:setbackground()
+
 " Default size is a little bigger than 80 columns to accomodate line numbers.
 set columns=120
 set lines=40
-
-" Activate sunset to automate switch between dark and light mode.
-call plug#load('Sunset')
 

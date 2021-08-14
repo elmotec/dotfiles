@@ -268,15 +268,6 @@ if !has('nvim')
     let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
 endif
 
-" Sunset changes background depending on the day/night.
-" Registered in vimrc and activated in gvimrc only.
-Plug 'vim-scripts/Sunset', { 'on': [] }
-" Approximate geo location NY.
-let g:sunset_latitude=41
-let g:sunset_longitude=-74
-" Clock offset between EST and UTC
-let g:sunset_utc_offset=-4
-
 " Support for Jenkins pipeline files
 Plug 'martinda/Jenkinsfile-vim-syntax'
 
