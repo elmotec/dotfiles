@@ -127,9 +127,11 @@ nmap <Leader><Leader>n :set number!<CR>
 nmap <Leader><Leader>r :set relativenumber!<CR>
 " Show/Hide cursor line
 nmap <Leader><Leader>c :set cursorline!<CR>
+" Bind scrolling of windows
+nmap <Leader><Leader>s :set scrollbind!<CR>
 set cursorline
 " Hilights searched terms on/off.
-nmap <Leader><Leader>s :set hlsearch!<CR>
+nmap <Leader><Leader>h :set hlsearch!<CR>
 " Starts file explorer.
 nmap <Leader><Leader>e :Ex<CR>
 " Loops through tags instead of sticking to the first one.
@@ -240,21 +242,27 @@ let g:airline#extensions#tabline#enabled = 1
 " Command line fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-nmap <leader>fo :Files<CR>
-nmap <leader>ff :Rg
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'none' } }
+" find files
+nmap <leader>ff :Files<CR>
+" find in git files
+nmap <leader>fg :GFiles<CR>
+" grep equivalent
+nmap <leader>ft :Rg
+" find in snippets
 nmap <leader>fs :Snippets<CR>
 
 " Asynchronous linter
 Plug 'dense-analysis/ale'
-let g:ale_fixers = {
-    \ "python": ["black", "isort"]
-\}
-let g:ale_python_pylint_options = '-j 0 -r n'
+let g:ale_fixers = { "python": ["black"] }
+let g:ale_linters = { "python": ["pylint"] }
+let g:ale_python_pylint_options = '-j 0 -r n --rcfile ../pylintrc '
 let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 let g:airline#extensions#ale#enabled = 1
-"nmap <silent> <C-j> <Plug>(ale_previous_wrap)
-"nmap <silent> <C-k> <Plug>(ale_next_wrap)
+"let g:ale_fix_on_save = 1
+nmap <silent> [w <Plug>(ale_previous_wrap)
+nmap <silent> ]w <Plug>(ale_next_wrap)
 
 " Problems with ultisnips, nvim and Windows
 if !has('nvim')
