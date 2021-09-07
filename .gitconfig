@@ -8,3 +8,5 @@
 	email = 1107551+elmotec@users.noreply.github.com
 [format]
 	pretty = %C(auto,cyan)%h%C(auto,magenta)% G? %C(auto)%>(12,trunc)%ar %C(auto,green)%<(12,trunc)%an%C(auto,reset)%>(70,trunc)%s%C(auto)% gD% D
+[alias]
+	changelog = log --format='* %s%n%w(,4,4)%+b'
