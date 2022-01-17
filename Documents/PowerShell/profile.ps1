@@ -11,9 +11,9 @@ Set-Alias ls ls_alias -Option AllScope
 
 # My PATH
 $Env:Path += ";$home\scripts"
-$Env:Path += ';C:\Program Files\Git\bin\'
-$Env:Path += ';C:\Users\jlecomte\AppData\Local\Programs\Python\Python38'
-$Env:Path += ';C:\Program Files\WinMerge\'
+$Env:Path += ";C:\Program Files\Git\bin\"
+$Env:Path += ";C:\Program Files\WinMerge\"
+$Env:Path += ";${Env:APPDATA}\Python\Scripts"
 
 # Set the virual editor for subversion, git, ...
 $Env:EDITOR="nvim.exe"
