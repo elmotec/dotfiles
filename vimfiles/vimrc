@@ -257,7 +257,7 @@ Plug 'dense-analysis/ale'
 let g:ale_fixers = { "python": ["black"] }
 let g:ale_linters = { "python": ["pylint"] }
 "let g:ale_python_pylint_options = '-j 0 -r n --rcfile pylintrc'
-let g:ale_python_pylint_options = '--rcfile pylintrc'
+"let g:ale_python_pylint_options = '--rcfile pylintrc'
 let g:ale_sign_error = 'E'
 let g:ale_sign_warning = 'W'
 let g:airline#extensions#ale#enabled = 1
