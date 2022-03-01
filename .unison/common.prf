@@ -56,3 +56,4 @@ ignore = Name tmp
 ignore = Name venv
 ignore = Path .unison/[^\.]*
 ignore = Path WindowsPowerShell
+ignore = Path build
