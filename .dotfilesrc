@@ -1,6 +1,6 @@
 [dotfiles]
 repository = .  # current directory.
-ignore = .git .git\* .gitignore .gitmodules
+ignore = .git .git/* .gitignore .gitmodules
     *.swp dotfiles.py README.rst
     .unison/ar* .unison/fp* *.bak
     __pycache__ manage.py test_manage.py *.pyc

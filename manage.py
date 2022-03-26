@@ -168,7 +168,7 @@ class DotfileManager(object):
         assert iter(targets), "iterable expected"
         assert not isinstance(targets, str), "non-string expected"
         target_files = []
-        targets = [self.dotfiles_dir / tar for tar in targets]
+        targets = [self.dotfiles_dir / target for target in targets]
         for target in targets:
             if pl.Path(target).is_dir():
                 files = pl.Path(target).glob("**/*")
