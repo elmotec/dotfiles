@@ -1,10 +1,13 @@
 *.pyc
 *.swp
 *.tmp
+.gitignore
+.subversion/auth/
+.subversion/README.txt
+.subversion/servers
 .unison/ar*
 .unison/fp*
 tags
 vimfiles/.*
-.gitignore
 vimfiles/plugged
 vimfiles/plugged/.*
