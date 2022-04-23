@@ -110,14 +110,14 @@ syntax on
 
 " Moves around between buffers with Ctrl+j and Ctrl+k.
 " We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
-nnoremap <c-s-k> :bn<CR>
-nnoremap <c-s-j> :bp<CR>
+nmap <c-s-k> :bn<CR>
+nmap <c-s-j> :bp<CR>
 
 " Could not let those go... mimics Visual Studio interface.
 " Control S saves current file.
-noremap <c-S> :w<CR>
+nmap <c-S> :w<CR>
 " Control-F4 closes the buffer.
-noremap <c-F4> :bd<CR>
+nmap <c-F4> :bd<CR>
 
 " Train myself to not use arrow keys in Vim.
 noremap <Up> <NOP>
@@ -138,10 +138,25 @@ nmap <Leader><Leader>s :set scrollbind!<CR>
 set cursorline
 " Hilights searched terms on/off.
 nmap <Leader><Leader>h :set hlsearch!<CR>
-" Starts file explorer.
-nmap <Leader><Leader>e :Ex<CR>
 " Loops through tags instead of sticking to the first one.
 nmap <c-T> <c-T><z><z>
+
+" From https://gist.github.com/atripes/15372281209daf5678cded1d410e6c16
+" URL encode buffer.
+function! UrlEncode(lines)
+let urlsafe = ""
+for char in split(a:lines, '.\zs')
+    if matchend(char, '[-_.~a-zA-Z0-9]') >= 0
+        let urlsafe = urlsafe . char
+    else
+        let decimal = char2nr(char)
+        let urlsafe = urlsafe . "%" . printf("%02X", decimal)
+    endif
+endfor
+return urlsafe
+endfunction
+
+nmap <Leader><Leader>u :s/\(.*\)/\=UrlEncode(submatch(1))/g<CR>
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
