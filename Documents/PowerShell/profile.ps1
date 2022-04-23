@@ -8,6 +8,7 @@ if (Test-Path alias::diff) {
 }
 function ls_alias { wsl ls --color=auto -hF $args }
 Set-Alias ls ls_alias -Option AllScope
+Set-Alias "ll" "ls"
 
 # My PATH
 $Env:Path += ";$home\scripts"
