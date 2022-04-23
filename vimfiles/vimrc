@@ -1,4 +1,10 @@
-"VIM ressource file
+"VIM ressource file.  Edit as $MYVIMRC.
+"
+" From https://vimhelp.org/starting.txt.html#vimrc, place in:
+" Unix            $HOME/.vimrc or $HOME/.vim/vimrc
+" MS-Windows      $HOME/_vimrc, $HOME/vimfiles/vimrc
+"                 or $VIM/_vimrc
+
 set encoding=utf-8
 scriptencoding utf-8
 
@@ -41,8 +47,8 @@ set autoindent
 if &termencoding == ""
     let &termencoding = &encoding
 endif
+set encoding=utf-8
 setglobal fileencodings=utf-8
-"setglobal bomb
 set fileencodings=ucs-bom,utf-8,latin1
 
 " Sets visual bell instead of the beep
@@ -86,7 +92,7 @@ set scrolloff=7
 "set shell=/bin/bash
 
 " Sets the location of tag files up to 5 levels up.
-set tag+=../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
+set tag+=./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
 
 " Sets the number of command to remember in history (20 is default)
 set history=60
@@ -208,7 +214,7 @@ endif
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/vimfiles/plugged')
+call plug#begin(g:vim_config_root . '/plugged')
 
 " Call :StartupTime to profile vim startup
 Plug 'tweekmonster/startuptime.vim'
