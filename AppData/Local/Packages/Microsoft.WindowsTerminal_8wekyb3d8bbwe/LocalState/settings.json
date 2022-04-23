@@ -1,4 +1,5 @@
 {
+    "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
     "actions": 
     [
@@ -43,8 +44,11 @@
             "colorScheme": "Nono",
             "cursorColor": "#22CC22",
             "cursorShape": "vintage",
-            "fontFace": "Consolas",
-            "fontSize": 14,
+            "font": 
+            {
+                "face": "Consolas",
+                "size": 14
+            },
             "hidden": false
         },
         "list": 
@@ -58,13 +62,11 @@
             },
             {
                 "backgroundImage": "C:\\Users\\jlecomte\\OneDrive\\backgrounds\\black-diamnonds.jpg",
-                "commandline": "powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell"
             },
             {
-                "commandline": "cmd.exe",
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt"
@@ -76,22 +78,27 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{c6eaf9f4-32a7-5fdc-b5cf-066e8a4b1e40}",
-                "hidden": false,
-                "name": "Ubuntu-18.04",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
-                "guid": "{6e9fa4d2-a4aa-562d-b1fa-0789dc1f83d7}",
-                "hidden": false,
-                "name": "Legacy",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
+                "bellStyle": 
+                [
+                    "window",
+                    "taskbar"
+                ],
                 "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
                 "hidden": false,
                 "name": "Ubuntu-20.04",
                 "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{ed90ec02-984d-5fb6-a4da-d0b4f7695563}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 2019",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{50fae866-627d-5a78-8c1b-5e5fd29e72d5}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 2019",
+                "source": "Windows.Terminal.VisualStudio"
             }
         ]
     },
