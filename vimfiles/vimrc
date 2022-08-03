@@ -95,7 +95,7 @@ set scrolloff=7
 set tag+=./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
 
 " Sets the number of command to remember in history (20 is default)
-set history=60
+set history=200
 
 " Sets the font for windows.
 if has("gui_win32")
@@ -136,9 +136,9 @@ nmap <Leader><Leader>c :set cursorline!<CR>
 " Bind scrolling of windows
 nmap <Leader><Leader>s :set scrollbind!<CR>
 set cursorline
-" Hilights searched terms on/off.
+" Hilights searched terms on/off
 nmap <Leader><Leader>h :set hlsearch!<CR>
-" Loops through tags instead of sticking to the first one.
+" Center tags to the middle of the screen
 nmap <c-T> <c-T><z><z>
 
 " From https://gist.github.com/atripes/15372281209daf5678cded1d410e6c16
