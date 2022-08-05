@@ -59,7 +59,7 @@ set vb
 set confirm
 
 " Add to the list the path where to look for files.
-set path+=${HOME}/etc,${HOME}/scripts
+set path+=${HOME}/etc,${HOME}/scripts,**
 
 " Always display line and column
 set ruler
@@ -97,21 +97,13 @@ set tag+=./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../..
 " Sets the number of command to remember in history (20 is default)
 set history=200
 
-" Sets the font for windows.
-if has("gui_win32")
-    set guifont=Source\ Code\ Pro:h12,Consolas:h13
-" Sets the font for Linux.
-elseif has("gui")
-    set guifont=Source\ Code\ Pro\ 12
-endif
-
 " Turns syntax hiligting on and associate s to toggle hilight on/off.
 syntax on
 
 " Moves around between buffers with Ctrl+j and Ctrl+k.
 " We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
-nmap <c-s-k> :bn<CR>
-nmap <c-s-j> :bp<CR>
+nmap <c-k> :bn<CR>
+nmap <c-j> :bp<CR>
 
 " Could not let those go... mimics Visual Studio interface.
 " Control S saves current file.
@@ -211,7 +203,7 @@ endif
 " Temp directory to default to $TEMP on Windows.
 if has("win32") || has("win64")
     " Support for Python is needed for some plugins (e.g. deoplete, ultisnips).
-    let $PATH = $LOCALAPPDATA . "\\Programs\\Python\\Python38;" . $PATH
+    let $PATH = $LOCALAPPDATA . "\\Programs\\Python\\Python310;" . $PATH
     set directory=$TEMP
 end
 
@@ -227,9 +219,13 @@ if empty(glob(g:VIM_PLUG_PATH))
 endif
 
 " Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
-call plug#begin(g:vim_config_root . '/plugged')
+" Avoid using standard Vim directory names like 'plugin'
+if has("nvim")
+    let g:vim_plugged_dir = stdpath('data') . '/plugged'
+else
+    let g:vim_plugged_dir = g:vim_config_root . '/plugged'
+endif
+call plug#begin(g:vim_plugged_dir)
 
 " Call :StartupTime to profile vim startup
 Plug 'tweekmonster/startuptime.vim'
@@ -243,6 +239,27 @@ Plug 'tpope/vim-fugitive'
 " Startup screen with mru and cool quotes.
 Plug 'mhinz/vim-startify'
 
+let g:startify_skiplist = [
+        \ 'COMMIT_EDITMSG',
+        \ ]
+
+let g:startify_bookmarks = [
+        \ { 'c': '~/vimfiles/vimrc' },
+        \ { 'gc': '~/vimfiles/gvimrc' },
+        \ ]
+
+let g:startify_lists = [
+        \ { 'type': 'files',     'header': ['   MRU']            },
+        \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+        \ { 'type': 'sessions',  'header': ['   Sessions']       },
+        \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+        \ { 'type': 'commands',  'header': ['   Commands']       },
+        \ ]
+
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_relative_path = 1
+
 " Powershell
 Plug 'pprovost/vim-ps1'
 
@@ -253,41 +270,53 @@ let g:vimwiki_folding = 'expr'
 autocmd FileType vimwiki setlocal syntax=markdown
 autocmd FileType vimwiki setlocal foldenable
 
-" Airline status bar
-Plug 'vim-airline/vim-airline'
+if has("nvim")
 
-" Controls which airline sections get truncated and at what width.
-let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
-let g:airline#extensions#tabline#enabled = 1
+    Plug 'nvim-lualine/lualine.nvim'
+    " If you want to have icons in your statusline choose one of these
+    Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'nvim-telescope/telescope.nvim'
+    " Auto install LSP servers
+    Plug 'williamboman/mason.nvim'
+    Plug 'neovim/nvim-lspconfig'
 
-" Command line fuzzy finder
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'none' } }
-" find files
-nmap <leader>ff :Files<CR>
-" find in git files
-nmap <leader>fg :GFiles<CR>
-" grep equivalent
-nmap <leader>ft :Rg
-" find in snippets
-nmap <leader>fs :Snippets<CR>
+    " Setup occurs in $MYVIMRC
 
-" Asynchronous linter
-Plug 'dense-analysis/ale'
-let g:ale_fixers = { "python": ["black"] }
-let g:ale_linters = { "python": ["pylint"] }
-"let g:ale_python_pylint_options = '-j 0 -r n --rcfile pylintrc'
-"let g:ale_python_pylint_options = '--rcfile pylintrc'
-let g:ale_sign_error = 'E'
-let g:ale_sign_warning = 'W'
-let g:airline#extensions#ale#enabled = 1
-"let g:ale_fix_on_save = 1
-nmap <silent> [w <Plug>(ale_previous_wrap)
-nmap <silent> ]w <Plug>(ale_next_wrap)
+else  " not nvim => regular vim
 
-" Problems with ultisnips, nvim and Windows
-if !has('nvim')
+    " Airline status bar
+    Plug 'vim-airline/vim-airline'
+
+    " Controls which airline sections get truncated and at what width.
+    let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+    let g:airline#extensions#tabline#enabled = 1
+
+    " Command line fuzzy finder
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'none' } }
+    " find files
+    nmap <leader>ff :Files<CR>
+    " find in git files
+    nmap <leader>fg :GFiles<CR>
+    " grep equivalent
+    nmap <leader>ft :Rg
+    " find in snippets
+    nmap <leader>fs :Snippets<CR>
+
+    " Asynchronous linter
+    Plug 'dense-analysis/ale'
+    let g:ale_fixers = { "python": ["black"] }
+    let g:ale_linters = { "python": ["pylint"] }
+    "let g:ale_python_pylint_options = '-j 0 -r n --rcfile pylintrc'
+    "let g:ale_python_pylint_options = '--rcfile pylintrc'
+    let g:ale_sign_error = 'E'
+    let g:ale_sign_warning = 'W'
+    let g:airline#extensions#ale#enabled = 1
+    "let g:ale_fix_on_save = 1
+    nmap <silent> [w <Plug>(ale_previous_wrap)
+    nmap <silent> ]w <Plug>(ale_next_wrap)
+
     " Snippet library
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
@@ -299,7 +328,8 @@ if !has('nvim')
     let g:UltiSnipsJumpBackwardTrigger="<c-s-tab>"
     " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
     let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
-endif
+
+endif  " nvim
 
 " Support for Jenkins pipeline files
 Plug 'martinda/Jenkinsfile-vim-syntax'
