@@ -12,12 +12,12 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "command": "find",
-            "keys": "ctrl+shift+f"
-        },
-        {
             "command": "paste",
             "keys": "ctrl+shift+v"
+        },
+        {
+            "command": "find",
+            "keys": "ctrl+shift+f"
         },
         {
             "command": 
@@ -46,7 +46,7 @@
             "cursorShape": "vintage",
             "font": 
             {
-                "face": "Consolas",
+                "face": "UbuntuMono NF",
                 "size": 14
             },
             "hidden": false
