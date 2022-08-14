@@ -24,6 +24,6 @@ call s:setbackground()
 autocmd CursorHold * nested call s:setbackground()
 
 " Default size is a little bigger than 80 columns to accomodate line numbers.
-set columns=120
+set columns=100
 set lines=60
 
