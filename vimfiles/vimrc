@@ -303,7 +303,9 @@ if has("nvim")
     " Plug 'dcampos/nvim-snippy'
     " Plug 'dcampos/cmp-snippy'
 
-    " Setup occurs in $MYVIMRC
+    Plug 'github/copilot.vim'
+
+    " Other setup occurs in $MYVIMRC
 
 else  " not nvim => regular vim
 
