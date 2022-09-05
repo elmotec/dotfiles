@@ -57,7 +57,7 @@ function prompt {
 }
 
 # Turn on fuzzy finder fzf at the command line.
-Import-Module PSFzf -ArgumentList 'Ctrl+t', 'Alt+r' -Force
+Import-Module PSFzf -ArgumentList 'Ctrl+f', 'Alt+r' -Force
 
 # Quickly cd to preferred directories.
 Import-Module CDPath
@@ -68,5 +68,5 @@ Import-Module ZLocation
 
 # Display import PS variables
 echo "`$VTSettings=$VTSettings"
-echo "`$PROFILE=$PROFILE"
+echo "`$PROFILE.CurrentUserAllHosts=$($PROFILE.CurrentUserAllHosts.ToString())" 
 echo ""
