@@ -6,7 +6,7 @@ ignore = .git .git/* .gitignore .gitmodules
     __pycache__ manage.py test_manage.py *.pyc
     .bash_history .inputrc .ipython .pypirc
     .ssh .vim .viminfo .pylint.d .sqldeveloper .vft*
-    .gitattributes
+    .gitattributes .dotfilesrc
 ;difftool = gvim.bat -d {} {}
 ;difftool = "C:\Program Files\TortoiseSVN\bin\TortoiseMerge.exe" "{}" "{}"
 difftool = "C:\Program Files\WinMerge\WinMergeU.exe" "{}" "{}"
