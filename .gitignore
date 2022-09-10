@@ -8,6 +8,6 @@
 .unison/ar*
 .unison/fp*
 tags
-vimfiles/.*
-vimfiles/plugged
-vimfiles/plugged/.*
+.vim/.*
+.vim/plugged
+.vim/plugged/.*
