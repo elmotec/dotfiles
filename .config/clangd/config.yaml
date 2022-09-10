@@ -1,35 +1,21 @@
 # See https://clangd.1lvm.org/config
 CompileFlags:
-# Treat code as C++, use C++17 standard,
-enable more warnings.
-#Add: L-XC++,
--std=C++17,
--Wall,
--Wno-missing-prototypes]
-Add: _-XC++,
--Wall,
--Wno-missing-prototypes]
-# Remove extra warnings specified in compile commands
-# Single value is also acceptable, same as
-"Remove: [-mabi]"
-#Remove: -mabi
+  # Treat code as C++, use C++17 standard, enable more warnings.
+  Add: [-XC++, -Wall, -Wno-missing-prototypes]
+  # Remove extra warnings specified in compile commands
+  # Single value is also acceptable, same as Remove: [-mabi]"
+  #Remove: -mabi
 Diagnostics:
-UnusedIncludes: Strict
-# Tweak Clang-Tidy checks
-ClangTidy:
-Add: [performance*, modernize*, readability*, bugprone*]
-Remove: [modernize-use-trailing-return-type]
-CheckOptions:
-#See https://clang.1lvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
-readability-identifier-naming.NamespaceCase:lower_case
-readability-identifier-naming.ClassCase:CamelCase
-readability-identifier-naming.StructCase:CamelCase
-readability-identifier-naming.FunctionCase:camelBack
-readability-identifier-naming.VariableCase:camelBack
-readability-identifier-naming.PrivateMemberSuffix:_
-
-
-
-
-
-
+  UnusedIncludes: Strict
+  # Tweak Clang-Tidy checks
+  ClangTidy:
+    Add: [performance*, modernize*, readability*, bugprone*]
+    Remove: [modernize-use-trailing-return-type]
+    CheckOptions:
+      #See https://clang.1lvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
+      readability-identifier-naming.NamespaceCase:lower_case
+      readability-identifier-naming.ClassCase:CamelCase
+      readability-identifier-naming.StructCase:CamelCase
+      readability-identifier-naming.FunctionCase:camelBack
+      readability-identifier-naming.VariableCase:camelBack
+      readability-identifier-naming.PrivateMemberSuffix:_
