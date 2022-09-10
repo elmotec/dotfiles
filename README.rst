@@ -9,6 +9,16 @@ interesting is ``manage.py`` which is an attempt to have the whole process
 handled in a self contained and portable script.
 
 
+Windows
+-------
+
+Run the following commands with elevated privileges in the home directory:
+.. code:: powershell
+    New-Item -Type SymbolicLink -Target .\dotfiles\.vim -Path .vim
+    New-Item -Type SymbolicLink -Target .\.vim -Path vimfiles
+   
+
+
 Not so obvious git commands
 ---------------------------
 
