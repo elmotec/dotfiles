@@ -106,10 +106,11 @@ nmap <c-k> :bn<CR>
 nmap <c-j> :bp<CR>
 
 " Could not let those go... mimics Visual Studio interface.
-" Control S saves current file.
-nmap <c-S> :w<CR>
 " Control-F4 closes the buffer.
 nmap <c-F4> :bd<CR>
+" Shortcut to see buffers and prepare switch to a different buffer
+" Note Ctrl+6 also switch to last used buffer (alternate)
+nmap <Leader>b :buffers<CR>:buffer<space>
 
 " Train myself to not use arrow keys in Vim.
 noremap <Up> <NOP>
@@ -132,6 +133,11 @@ set cursorline
 nmap <Leader><Leader>h :set hlsearch!<CR>
 " Center tags to the middle of the screen
 nmap <c-T> <c-T><z><z>
+" Go to next/previous error in quickfix (mirrors default nvim LSP settings)
+nmap [d :cprev<CR>
+nmap ]d :cnext<CR>
+" Find references to <word> in the same directory or subdirectory
+nmap gr :grep -r -w <word> %:h<CR>
 
 " From https://gist.github.com/atripes/15372281209daf5678cded1d410e6c16
 " URL encode buffer.
@@ -272,6 +278,7 @@ autocmd FileType vimwiki setlocal foldenable
 
 if has("nvim")
 
+    Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-lualine/lualine.nvim'
     " If you want to have icons in your statusline choose one of these
     Plug 'kyazdani42/nvim-web-devicons'
