@@ -1,6 +1,7 @@
 # Aliases
 Set-Alias vi nvim
 Set-Alias gvi nvim-qt
+Set-Alias python3 python
 Set-Alias which Get-Command
 # Remove diff aliast because it conflicts with the command of the same name.
 if (Test-Path alias::diff) {
