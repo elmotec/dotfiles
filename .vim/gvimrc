@@ -5,7 +5,7 @@ if has("nvim")
     GuiTabline 0
     colorscheme gruvbox
 else
-    set guifont=SauceCodePro\ Nerd\ Font:h14,source\ code\ pro:h14,consolas:h14
+    set guifont=Hack\ NF:h14,consolas:h14
     colorscheme lucius
 endif
 
