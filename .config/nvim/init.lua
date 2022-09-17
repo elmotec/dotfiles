@@ -1,6 +1,6 @@
 vim.cmd([[
   set runtimepath^=~/vimfiles runtimepath+=~/vimfiles/after
-  source ~/vimfiles/vimrc
+  source ~/.vim/vimrc
 ]])
 
 vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { noremap = true })
@@ -141,12 +141,8 @@ sources = {
 
 -- Use cmdline & path source for ":" (if you enabled `native_menu`, this won"t work anymore).
 cmp.setup.cmdline(":", {
-mapping = cmp.mapping.preset.cmdline(),
-sources = cmp.config.sources({
-  { name = "path" }
-}, {
-  { name = "cmdline" }
-})
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({ { name = "path" } })
 })
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
@@ -204,7 +200,7 @@ require'lspconfig'.sumneko_lua.setup{
 
 local null_ls = require("null-ls")
 local pylint_commmand = "pylint"
-if vim.fn.has("windows") == 1 then
+if vim.fn.has("win32") == 1 then
     pylint_commmand = "pylint.exe"
 end
 null_ls.setup({

@@ -19,7 +19,7 @@ set nocompatible
 autocmd! bufwritepost .vimrc source %
 
 " Adds vimfiles to the runtimepath (not by default for unix).
-set runtimepath+=~/vimfiles
+set runtimepath+=~/.vim
 
 " Leaves leader as the default \
 " let g:mapleader = "\"
@@ -241,9 +241,6 @@ call plug#begin(g:vim_plugged_dir)
 " Call :StartupTime to profile vim startup
 Plug 'tweekmonster/startuptime.vim'
 
-" quoting/parenthesizing made simple
-Plug 'tpope/vim-surround'
-
 " Git in vim
 Plug 'tpope/vim-fugitive'
 
@@ -255,8 +252,8 @@ let g:startify_skiplist = [
         \ ]
 
 let g:startify_bookmarks = [
-        \ { 'c': '~/vimfiles/vimrc' },
-        \ { 'gc': '~/vimfiles/gvimrc' },
+        \ { 'c': '~/.vim/vimrc' },
+        \ { 'gc': '~/.vim/gvimrc' },
         \ ]
 
 let g:startify_lists = [
@@ -365,8 +362,8 @@ else  " not nvim => regular vim
     let g:UltiSnipsListSnippets="<c-tab><c-tab>"
     let g:UltiSnipsJumpForwardTrigger="<c-tab>"
     let g:UltiSnipsJumpBackwardTrigger="<c-s-tab>"
-    " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
-    let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
+    " Otherwise defaults to ~/_.vim (?!). Note snippets is for snipmate.
+    let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 
 endif  " nvim
 
