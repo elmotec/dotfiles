@@ -20,9 +20,6 @@ iabbrev pdb import pdb; pdb.set_trace()
 " Convert files to utf-8
 set fileencoding=utf-8
 
-" Show column 81 to 9999 as different background.
-let &colorcolumn=join(range(81, 9999), ",")
-
 " Python documentation style. 
 let g:ultisnips_python_style="sphinx"
 
