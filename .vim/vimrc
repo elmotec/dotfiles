@@ -156,6 +156,11 @@ endfunction
 
 nmap <Leader><Leader>u :s/\(.*\)/\=UrlEncode(submatch(1))/g<CR>
 
+" Set python3 provider to be python on windows, otherwise defaults to python3
+if has("windows")
+    let g:python3_host_prog = 'python'
+endif
+
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
   " Enable file type detection.
@@ -311,6 +316,8 @@ if has("nvim")
     " Plug 'dcampos/cmp-snippy'
 
     " Plug 'github/copilot.vim'
+
+    Plug 'jose-elias-alvarez/null-ls.nvim'
 
     " Other setup occurs in $MYVIMRC
 
