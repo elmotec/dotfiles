@@ -1,14 +1,15 @@
+*.old
 *.pyc
 *.swp
 *.tmp
 .gitignore
-.subversion/auth/
 .subversion/README.txt
+.subversion/auth/
 .subversion/servers
 .unison/ar*
 .unison/fp*
-tags
 .vim/.*
 .vim/plugged
 .vim/plugged/.*
+tags
 venv
