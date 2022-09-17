@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 
 """Manages dot file relationship between home and dotfiles directories."""
 
@@ -30,31 +29,33 @@ __license__ = 'MIT'
 
 
 import sys
-assert sys.version_info >= (3, 8) or sys.platfom != "win32", \
+assert sys.version_info >= (3, 8) or sys.platform != "win32", \
     "program requires Python 3.8 for Windows"
-import pathlib as pl
-import logging
 import argparse
-import glob
+import configparser
+import difflib
 import filecmp
 import fnmatch
-import configparser
-import shutil
+import logging
 import os
+import pathlib as pl
+import shlex
+import shutil
+import subprocess
+import typing
 if sys.platform == 'win32':
     import _winapi
 
 
-module = sys.modules['__main__'].__file__
+module = sys.modules['__main__'].__file__  # pylint: disable=no-member
 log = logging.getLogger(module)
 
 
 class DotfileError(RuntimeError):
     """Error raised by the Editor class."""
-    pass
 
 
-class DotfileStatus(object):  # pylint: disable=R0903
+class DotfileStatus:  # pylint: disable=R0903
     """Helper class to hold the status of a dotfile."""
     def __init__(self, name, description):
         self.name = name
@@ -64,10 +65,10 @@ class DotfileStatus(object):  # pylint: disable=R0903
         return self.name
 
     def __repr__(self):
-        return "<{}: {}>".format(self.__class__.__name__, str(self))
+        return f"<{self.__class__.__name__} {self}>"
 
 
-class Dotfile(object):  # pylint: disable=R0903
+class Dotfile:  # pylint: disable=R0903
     """Abstraction for a (possible) link between repository and home dir."""
 
     synced = DotfileStatus('synced', 'symbolic link to dotfile')
@@ -82,13 +83,20 @@ class Dotfile(object):  # pylint: disable=R0903
         self.status = status
 
     def __repr__(self):
-        return "<{}: {}>".format(self.__class__.__name__, vars(self))
+        return f"<{self.__class__.__name__}: {vars(self)}>"
 
     def __eq__(self, rhs):
         return self.name == rhs.name and self.status == rhs.status
 
 
-class DotfileManager(object):
+def read_all_file(file_name: str, encoding: str = "utf-8") -> typing.List[str]:
+    """Read and return all the lines in a file."""
+    with open(file_name, encoding=encoding) as fh:
+        return fh.readlines()
+    return []
+
+
+class DotfileManager:
 
     """Manages dotfiles."""
 
@@ -147,7 +155,7 @@ class DotfileManager(object):
         elif not home_name.exists():
             status = Dotfile.missing
         elif home_name.is_dir() and dotfile_name.is_dir():
-            status = Dotfile.same 
+            status = Dotfile.same
         elif not dotfile_name.exists():
             status = Dotfile.unmanaged
         elif filecmp.cmp(str(dotfile_name), str(home_name)):
@@ -184,7 +192,7 @@ class DotfileManager(object):
                 continue
             log.debug("processing %s ...", target_file)
             yield self.get_dotfile(target_file)
-        return
+
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
@@ -269,23 +277,20 @@ class DotfileManager(object):
             return
         home_filename = self.home_dir / dotfile.name
         if self.difftool:
-            import subprocess
-            import shlex
             cmd = self.difftool.format(str(dotfile.name), str(home_filename))
             log.info(cmd)
             try:
                 cmd_split = shlex.split(cmd)
                 subprocess.check_call(cmd_split)
             except Exception as err:
-                log.error('failed to execute {}: {}'.format(cmd, err))
+                log.error('failed to execute %s: %s', cmd, err)
                 raise
         else:
-            import difflib
-            fromlines = open(dotfile.name).readlines()
-            tolines = open(home_filename).readlines()
+            fromlines = read_all_file(dotfile.name)
+            tolines = read_all_file(home_filename)
             diffs = list(difflib.unified_diff(fromlines, tolines))
             if diffs:
-                header = "diff {} {}\n".format(str(dotfile.name), str(home_filename))
+                header = f"diff {dotfile.name} {home_filename}\n"
                 sys.stdout.write(header)
             sys.stdout.writelines(diffs)
 
@@ -301,7 +306,7 @@ def make_dotfile_manager(args):
     config = configparser.ConfigParser()
     ignore_patterns = None
     difftool = None
-    with open(args.config_file) as config_file:
+    with open(args.config_file, encoding="utf-8") as config_file:
         config.read_file(config_file)
         try:
             ignore_patterns = config['dotfiles']['ignore'].split()
@@ -331,11 +336,11 @@ def get_status(args):
     for dfile in dotfiles:
         file_or_dir = 'F'
         if (manager.dotfiles_dir / dfile.name).is_dir():
-            file_or_dir = 'D' 
+            file_or_dir = 'D'
         status = str(dfile.status)
         if args.diffs and status in ['synced', 'same']:
             continue
-        print("{} {:<10} {}".format(file_or_dir, status, dfile.name))
+        print(f"{file_or_dir} {status:<10} {dfile.name}")
 
 
 def sync(args):
@@ -364,14 +369,14 @@ def copy(args):
     manager.copy(args.dotfiles)
 
 
-def main():
+def main() -> None:
     """Parses command line arguments and dispatch to the correct function."""
     # Main parser.
     home_dir = pl.Path.home()
     parser = argparse.ArgumentParser(description=__doc__,
                                      epilog=None)
     parser.add_argument("-V", "--version", action="version",
-                        version="{} {}".format(module, __version__))
+                        version=f"{module} {__version__}")
     parser.add_argument("-v", "--verbose", dest="verbose_count",
                         action="count", default=0,
                         help="increases log verbosity each time found.")
@@ -386,10 +391,10 @@ def main():
     subparsers = parser.add_subparsers(help="commands to execute")
 
     # status sub-command.
-    status_list = ", ".join(["{} ({})".format(status.name, status.description)
+    status_list = ", ".join([f"{status.name} ({status.description})"
                              for status in Dotfile.__dict__.values()
                              if isinstance(status, DotfileStatus)])
-    status_epilog = "Possible statuses include: {}".format(status_list)
+    status_epilog = f"Possible statuses include: {status_list}"
     status_parser = subparsers.add_parser('status', help=get_status.__doc__,
                                           epilog=status_epilog)
     status_parser.add_argument("-d", "--diffs", dest="diffs",
@@ -428,13 +433,10 @@ def main():
     if 'func' not in args:
         log.error("missing argument. Try -h option.")
         return
-    return args.func(args)
+    args.func(args)
 
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
                         format='%(name)s (%(levelname)s): %(message)s')
-    try:
-        main()
-    finally:
-        logging.shutdown()
+    main()
