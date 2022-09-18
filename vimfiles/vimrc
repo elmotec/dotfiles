@@ -1,0 +1,288 @@
+"VIM ressource file
+set encoding=utf-8
+scriptencoding utf-8
+
+" For debugging purpose if needed.
+set verbose=0
+
+" Use Vim settings, rather then Vi settings.
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" Auto-source .vimrc when it is saved.
+autocmd! bufwritepost .vimrc source %
+
+" Adds vimfiles to the runtimepath (not by default for unix).
+set runtimepath+=~/vimfiles
+
+" Leaves leader as the default \
+" let g:mapleader = "\"
+" Set Leader as space
+let mapleader = " "
+
+" No need for backup.
+set nobackup
+" ... or swap file.
+set noswapfile
+
+" Set tabulation to 4 spaces
+set tabstop=4
+
+" Causes tab at the begining of a line to insert spaces.
+set expandtab
+set smarttab
+set shiftwidth=4
+
+" Auto indent program in a C-like fashion
+set autoindent
+
+" Sets file encodings to UTF-8 if possible.
+" Based on http://vim.wikia.com/wiki/Working_with_Unicode.
+if &termencoding == ""
+    let &termencoding = &encoding
+endif
+setglobal fileencodings=utf-8
+"setglobal bomb
+set fileencodings=ucs-bom,utf-8,latin1
+
+" Sets visual bell instead of the beep
+set vb
+
+" Instead of failing a command because of unsaved changes,
+" raise a dialogue asking if you wish to save changed files.
+set confirm
+
+" List the path where to look for files
+set path=.,${HOME}/etc,${HOME}/cpp/libs/**,${HOME}/scripts
+
+" Set the characters acceptable as part of a file name for gf command.
+" Needed for /home/jlecomte/myfile as { and } aren't built in
+set isfname=@,48-57,/,.,-,_,+,,,$,~,{,}
+
+" Always display line and column
+set ruler
+
+" Show status line of last command
+set laststatus=2
+
+" Hilight matching parenthesis
+set showmatch
+
+" Shows line number in the margin
+set number
+
+" Repeat last command and put cursor at the start of the changes
+nmap . .`[
+
+" Replace %% with the current file directory in command line.
+" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
+cabbr <expr> %% expand('%:p:h')
+
+" Keep the cursor line at least 7 lines away from the top/bottom
+" the screen so we can have some context.
+set scrolloff=7
+
+"(*) There is a default policy is $VIM is not defined
+" please, refer to Vim documentation (www.vim.org)
+
+" Sets the shell to use (bash inherit variable in the
+" shell that started vim)
+"set shell=/bin/bash
+
+" Sets the location of tag files up to 5 levels up.
+set tag=tags,./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
+
+" Sets the number of command to remember in history (20 is default)
+set history=60
+
+" Sets the font for windows.
+if has("gui_win32")
+    set guifont=Source\ Code\ Pro:h12,Consolas:h13
+" Sets the font for Linux.
+elseif has("gui")
+    set guifont=Source\ Code\ Pro\ 12
+endif
+
+" Turns syntax hiligting on and associate s to toggle hilight on/off.
+syntax on
+
+" Moves around between buffers with Ctrl+j and Ctrl+k.
+" We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
+nnoremap <c-s-k> :bn<CR>
+nnoremap <c-s-j> :bp<CR>
+
+" Could not let those go... mimics Visual Studio interface.
+" Control S saves current file.
+noremap <c-S> :w<CR>
+" Control-F4 closes the buffer.
+noremap <c-F4> :bd<CR>
+
+" Train myself to not use arrow keys in Vim.
+noremap <Up> <NOP>
+noremap <Right> <NOP>
+noremap <Left> <NOP>
+noremap <Down> <NOP>
+
+" Wrap/unwrap lines
+nmap <Leader><Leader>w :set wrap!<CR>
+" Show/Hide line numbers (absolute)
+nmap <Leader><Leader>n :set number!<CR>
+" Show/Hide line numbers (relative)
+nmap <Leader><Leader>r :set relativenumber!<CR>
+" Show/Hide cursor line
+nmap <Leader><Leader>c :set cursorline!<CR>
+set cursorline
+" Hilights searched terms on/off.
+nmap <Leader><Leader>s :set hlsearch!<CR>
+" Starts file explorer.
+nmap <Leader><Leader>e :Ex<CR>
+" Loops through tags instead of sticking to the first one.
+nmap <c-T> <c-T><z><z>
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+  " Enable file type detection.
+  filetype on
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " Auto load python specific extensions (bring in
+  " $VIMRUNTIME/ftplugin/python* files and directories).
+  autocmd BufNewFile,BufRead *.py set filetype=python
+  " Handles log files with special syntax hilighting.
+  autocmd BufNewFile,BufRead *.log set filetype=log
+  " Handles .build (nant) files as xml.
+  autocmd BufNewFile,BufRead *.build set filetype=xml
+  autocmd BufNewFile,BufRead *.config set filetype=xml
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+endif " has("autocmd")
+
+" Make tabs and trailing spaces visible...
+set list
+" ... as Unicode characters
+if has("multi_byte")
+    set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
+endif
+
+" Enhanced file choices.
+set wildmenu
+set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
+
+" redraw only when needed
+set lazyredraw
+
+" Make sure env variable $TERM set to xterm-256colors on linux.
+if has("linux")
+    set t_CO=256
+endif
+
+" Keep the colorscheme of the terminal.
+" colorscheme lucius
+
+" Temp directory to default to $TEMP on Windows.
+if has("win32") || has("win64")
+    " Support for Python is needed for some plugins (e.g. deoplete, ultisnips).
+    let $PATH = $LOCALAPPDATA . "\\Programs\\Python\\Python38;" . $PATH
+    set directory=$TEMP
+end
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                          Plugins with plug.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:vim_config_root = expand('<sfile>:p:h')
+let g:VIM_PLUG_PATH = expand(g:vim_config_root . '/autoload/plug.vim')
+if empty(glob(g:VIM_PLUG_PATH))
+    echoerr 'You have to install plug.vim in ' . g:vim_config_root . '/autoload/'
+    finish
+endif
+
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/vimfiles/plugged')
+
+" quoting/parenthesizing made simple
+Plug 'tpope/vim-surround'
+
+" Startup screen with mru and cool quotes.
+Plug 'mhinz/vim-startify'
+
+" Airline status bar
+Plug 'vim-airline/vim-airline'
+
+" Powershell
+Plug 'pprovost/vim-ps1'
+
+" Markdown (.md) handling and wiki features
+Plug 'vimwiki/vimwiki'
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_folding = 'expr'
+" autocmd FileType vimwiki setlocal syntax=markdown
+autocmd FileType vimwiki setlocal foldenable
+
+" Controls which airline sections get truncated and at what width.
+let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+let g:airline#extensions#tabline#enabled = 1
+
+" Integrate ripgrep search tool in vim.
+Plug 'jremmen/vim-ripgrep'
+
+" Command line fuzzy finder
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+nmap <leader>fo :Files<CR>
+nmap <leader>ff :Rg
+nmap <leader>fs :Snippets<CR>
+
+" Asynchronous linter
+Plug 'dense-analysis/ale'
+let g:ale_fixers = {
+    \ "python": ["black", "isort"]
+\}
+let g:ale_python_pylint_options = '-j 0 -r n'
+let g:ale_sign_error = 'E'
+let g:ale_sign_warning = 'W'
+let g:airline#extensions#ale#enabled = 1
+"nmap <silent> <C-j> <Plug>(ale_previous_wrap)
+"nmap <silent> <C-k> <Plug>(ale_next_wrap)
+
+" Problems with ultisnips, nvim and Windows
+if !has('nvim')
+    " Snippet library
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
+
+    " UltiSnips customization to use <tab> to trigger jumps.
+    let g:UltiSnipsExpandTrigger="<c-tab>"
+    let g:UltiSnipsListSnippets="<c-tab><c-tab>"
+    let g:UltiSnipsJumpForwardTrigger="<c-tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<c-s-tab>"
+    " Otherwise defaults to ~/_vimfiles (?!). Note snippets is for snipmate.
+    let g:UltiSnipsSnippetsDir="~/vimfiles/UltiSnips"
+endif
+
+" Sunset changes background depending on the day/night.
+" Registered in vimrc and activated in gvimrc only.
+Plug 'vim-scripts/Sunset', { 'on': [] }
+" Approximate geo location NY.
+let g:sunset_latitude=41
+let g:sunset_longitude=-74
+" Clock offset between EST and UTC
+let g:sunset_utc_offset=-4
+
+Plug 'martinda/Jenkinsfile-vim-syntax'
+
+" Complete the plugin section.
+call plug#end()
+

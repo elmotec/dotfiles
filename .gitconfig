@@ -1,0 +1,10 @@
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[user]
+	name = elmotec
+	email = 1107551+elmotec@users.noreply.github.com
+[format]
+	pretty = %C(auto,cyan)%h%C(auto,magenta)% G? %C(auto)%>(12,trunc)%ar %C(auto,green)%<(8,trunc)%an%C(auto,reset)%>(60,trunc)%s%C(auto)% gD% D

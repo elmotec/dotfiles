@@ -1,0 +1,10 @@
+# roots
+root = ssh://<host>
+root = <local>
+
+# Unison preferences file
+include common
+
+fastcheck = true
+perms = 0
+sshargs = -C
