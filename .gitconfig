@@ -1,3 +1,6 @@
+[user]
+	name = elmotec
+	email = 1107551+elmotec@users.noreply.github.com
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
@@ -6,14 +9,16 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-[user]
-	name = elmotec
-	email = 1107551+elmotec@users.noreply.github.com
 [format]
     pretty = %C(auto,cyan)%h%C(auto,magenta)% G? %C(auto)%>(17,trunc)%ad %C(auto,green)%<(8,trunc)%al%C(auto,reset)%>(60,trunc)%s%C(auto)% gD% D
 [log]
     date = human
 [alias]
-	changelog = log --format='* %s%n%w(,4,4)%+b'
+    changelog = log --format='* %s%n%w(,4,4)%+b'
+    co = checkout
+[mergetool "fugitive"]
+    cmd = vim -f -c \"Gdiffsplit!\" \"$MERGED\"
+[merge]
+    tool = fugitive
 [credential "https://gitlab.com"]
 	provider = generic
