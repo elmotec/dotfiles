@@ -1,12 +1,10 @@
 " Sets the color scheme in gui mode.
 
 if has("nvim")
-    GuiFont! SauceCodePro\ Nerd\ Font:h14
+    GuiFont! Hack\ NF\ Font:h14
     GuiTabline 0
-    colorscheme gruvbox
 else
     set guifont=Hack\ NF:h14,consolas:h14
-    colorscheme lucius
 endif
 
 " Set background to light between 7:00 and 18:30. Dark otherwise.

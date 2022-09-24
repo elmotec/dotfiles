@@ -105,12 +105,11 @@ syntax on
 nmap <c-k> :bn<CR>
 nmap <c-j> :bp<CR>
 
-" Could not let those go... mimics Visual Studio interface.
 " Control-F4 closes the buffer.
 nmap <c-F4> :bd<CR>
 " Shortcut to see buffers and prepare switch to a different buffer
 " Note Ctrl+6 also switch to last used buffer (alternate)
-nmap <Leader>b :buffers<CR>:buffer<space>
+nmap <Leader>b :buffers<CR>:buffer<Space>
 
 " Train myself to not use arrow keys in Vim.
 noremap <Up> <NOP>
@@ -137,7 +136,7 @@ nmap <c-T> <c-T><z><z>
 nmap [d :cprev<CR>
 nmap ]d :cnext<CR>
 " Find references to <word> in the same directory or subdirectory
-nmap gr :grep -r -w <word> %:h<CR>
+nmap <Leader>gr :grep -r -w <cword> %:h<CR>
 
 " From https://gist.github.com/atripes/15372281209daf5678cded1d410e6c16
 " URL encode buffer.
@@ -202,14 +201,6 @@ set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
 
 " redraw only when needed
 set lazyredraw
-
-" Make sure env variable $TERM set to xterm-256colors on linux.
-if has("linux")
-    set t_CO=256
-endif
-
-" Keep the colorscheme of the terminal.
-" colorscheme lucius
 
 " Temp directory to default to $TEMP on Windows.
 if has("win32") || has("win64")
@@ -287,8 +278,6 @@ if has("nvim")
     Plug 'nvim-telescope/telescope.nvim'
     " Auto install LSP servers
     Plug 'williamboman/mason.nvim'
-    Plug 'neovim/nvim-lspconfig'
-
     Plug 'neovim/nvim-lspconfig'
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
