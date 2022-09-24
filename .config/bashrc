@@ -4,3 +4,10 @@ export XDG_CONFIG_HOME=${HOME}/.config
 
 . ${XDG_CONFIG_HOME}/aliases
 . ${XDG_CONFIG_HOME}/vars
+
+if [ -f /etc/bash_completion.d/git ]; then
+    . /etc/bash_completion.d/git
+fi
+
+PS1='\[\e[0;32m\]\u\[\e[0;32m\]@\[\e[0;32m\]\h\[\e[0m\]:\[\e[0;36m\]\W\[\e[0m\]\[\e[0m\]$(__git_ps1)\[\e[0m\]\[\e[0m\]$ \[\e[0m\]'
+export PS1
