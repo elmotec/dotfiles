@@ -5,9 +5,25 @@ export XDG_CONFIG_HOME=${HOME}/.config
 . ${XDG_CONFIG_HOME}/aliases
 . ${XDG_CONFIG_HOME}/vars
 
-if [ -f /etc/bash_completion.d/git ]; then
-    . /etc/bash_completion.d/git
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWUPSTREAM="auto"
+export GIT_PS1_SHOWSTASHSTATE=true
+export GIT_PS1_DESCRIBE_STYLE="branch"
+export GIT_PS1_SHOWCOLORHINTS=true
+
+if [ -f /etc/bash_completion.d/git-prompt ]; then
+    . /etc/bash_completion.d/git-prompt
 fi
 
-PS1='\[\e[0;32m\]\u\[\e[0;32m\]@\[\e[0;32m\]\h\[\e[0m\]:\[\e[0;36m\]\W\[\e[0m\]\[\e[0m\]$(__git_ps1)\[\e[0m\]\[\e[0m\]$ \[\e[0m\]'
+__cmd_status() {
+    rc=$?
+    if [[ $rc -eq 0 ]]; then
+        echo -e '\e[0;32m$\e[0;0m';
+    else
+        echo -e "\e[0;31m$rc💥\e[0;0m";
+    fi
+    return 0
+}
+
+PS1='\[\e[0;32m\]\u\[\e[0;32m\]@\[\e[0;32m\]\h\[\e[0m\]:\[\e[0;36m\]\W\[\e[0m\]\[\e[0m\]$(__git_ps1)\[\e[0m\]\[\e[0m\] $(__cmd_status) '
 export PS1
