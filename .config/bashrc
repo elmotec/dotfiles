@@ -1,0 +1,4 @@
+set -o vi
+
+. .config/aliases
+. .config/vars

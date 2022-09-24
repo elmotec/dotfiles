@@ -1,0 +1,5 @@
+# Aliases
+
+# No real need to use python 2
+alias py=python3
+
