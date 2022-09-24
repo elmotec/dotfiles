@@ -1,4 +1,6 @@
 set -o vi
 
-. .config/aliases
-. .config/vars
+export XDG_CONFIG_HOME=${HOME}/.config
+
+. ${XDG_CONFIG_HOME}/aliases
+. ${XDG_CONFIG_HOME}/vars
