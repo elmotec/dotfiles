@@ -157,7 +157,7 @@ endfunction
 nmap <Leader><Leader>u :s/\(.*\)/\=UrlEncode(submatch(1))/g<CR>
 
 " Set python3 provider to be python on windows, otherwise defaults to python3
-if has("windows")
+if has("win32")
     let g:python3_host_prog = 'python'
 endif
 
