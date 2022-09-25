@@ -45,5 +45,5 @@ __cmd_status() {
 
 export PROMPT_DIRTRIM=2  # shortern the path to 2 directory levels.
 
-PS1="$(__userhost):$(__workdir)$(__job_status)$(__git_ps1)\$(__cmd_status)${ResetColor} "
+PS1="$(__userhost):$(__workdir)$(__job_status)\$(__git_ps1)\$(__cmd_status)${ResetColor} "
 export PS1
