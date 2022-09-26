@@ -37,9 +37,9 @@ __job_status() {
 __cmd_status() {
     rc=$?
     if [ $rc -eq 0 ]; then
-        echo -e "\e[0;32m\$"
+        echo -e "\e[0;32m\n\$"
     else
-        echo -e "\e[0;31m\$ ($rc) "
+        echo -e "\e[0;31m 💥 $rc\n\$"
     fi
 }
 

@@ -6,5 +6,10 @@ alias dc='docker compose'
 alias ll='ls --color=auto -Fltrah'
 alias vi=$EDITOR
 alias apt='sudo apt'
-alias gs='git status'
-alias bell='echo -e "\007"'
+alias gts='git status'
+alias gtl='git log -5'
+alias bell='echo -e "\a"'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias k=true
+alias grep='grep --color=auto'

@@ -1,8 +1,9 @@
 # Environment variables
 
 export USERPROFILE=/mnt/c/Users/`whoami`
-export EDITOR=nvim
-export VISUAL=nvim
+[ -f /usr/bin/vim ] && EDITOR=nvim
+export EDITOR
+export VISUAL=$EDITOR
 
 export HISTCONTROL="ignorespace:ignoredups:erasedups"
 export HISTSIZE=2000
