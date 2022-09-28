@@ -365,3 +365,5 @@ Plug 'editorconfig/editorconfig-vim'
 " Complete the plugin section.
 call plug#end()
 
+" Always dark by default in console.
+set background=dark
