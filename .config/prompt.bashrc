@@ -6,8 +6,8 @@ fi
 
 . ~/.config/prompt-colors.sh
 
-showcolors() {
-    for x in {0..8}; do
+colortest() {
+    for x in {0..2}; do
         for i in {30..37}; do
             echo -ne "\e[$x;$i""m\\\e[$x;$i""m \e[0m ";
             for a in {40..47}; do
