@@ -22,7 +22,7 @@
     changelog = log --format='* %s%n%w(,4,4)%+b'
     co = checkout
 [diff]
-    tool = vim -d
+    tool = nvimdiff
 [mergetool "fugitive"]
     cmd = vim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 [merge]
