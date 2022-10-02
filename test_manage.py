@@ -28,9 +28,9 @@ import pathlib as pl
 import shutil
 import tempfile
 import unittest
-import unittest.mock as mock
+from unittest import mock
 
-from manage import Dotfile, DotfileManager
+from manage import Dotfile, DotfileManager, build_parser
 
 
 class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
@@ -44,12 +44,11 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
         manager object set up with it.
         """
         self.tmp_dir = tempfile.mkdtemp()
-        home_dir = pl.Path(self.tmp_dir) / 'home'
+        home_dir = pl.Path(self.tmp_dir) / "home"
         home_dir.mkdir()
-        dotfiles_dir = home_dir / 'dotfiles'
+        dotfiles_dir = home_dir / "dotfiles"
         dotfiles_dir.mkdir()
-        self.dfm = DotfileManager(home_dir=home_dir,
-                                  dotfiles_dir=dotfiles_dir)
+        self.dfm = DotfileManager(home_dir=home_dir, dotfiles_dir=dotfiles_dir)
         logging.disable(logging.WARNING)
 
     def tearDown(self):
@@ -58,12 +57,12 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
 
     def assert_exists(self, path):
         """Helper to assert a path exists."""
-        self.assertTrue(path.exists(), "{} does not exist".format(path))
+        self.assertTrue(path.exists(), f"{path} does not exist")
 
     def assert_dir_exists(self, directory):
         """Helper to assert a path exists and is a directory."""
         self.assert_exists(directory)
-        self.assertTrue(directory.is_dir(), "{} is not a directory".format(directory))
+        self.assertTrue(directory.is_dir(), f"{directory} is not a directory")
 
     def create_dir(self, dirname, newdirname):
         """Creates a directory."""
@@ -71,6 +70,12 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
             dirname = self.dfm.home_dir / dirname
         dirpath = dirname / newdirname
         dirpath.mkdir()
+        return dirpath
+
+    def as_str(self, path: pl.Path) -> str:
+        """Return path relative to the home directory."""
+        # FIXME: use posix() method
+        return str(path.relative_to(self.dfm.dotfiles_dir))
 
     def create_symlink(self, dirname, filename, target):
         """Creates a symlink."""
@@ -87,10 +92,11 @@ class DotfileManagerTest(unittest.TestCase):  # pylint: disable=R0904
 
     def test_status_dir_synced(self):
         """Checks status of synced (dot)subdirectories."""
-        subdir_name = 'subdir'
+        subdir_name = "subdir"
         self.create_dir(self.dfm.dotfiles_dir, subdir_name)
         target = self.dfm.dotfiles_dir / subdir_name
         self.create_symlink(self.dfm.home_dir, subdir_name, target)
+        self.dfm.linked_dirs = [subdir_name]
         dotfiles = list(self.dfm.get_dotfiles())
         expected_dotfile = Dotfile(subdir_name, status=Dotfile.synced)
         self.assertEqual(dotfiles, [expected_dotfile])
@@ -102,15 +108,16 @@ class DotfileManagerSingleFileTest(DotfileManagerTest):
     def setUp(self):
         """Initializes test with file_name."""
         super().setUp()
-        self.file_name = 'testrc'
+        self.file_name = "testrc"
 
-    def create_file(self, dirname, filename, content):
+    def create_file(self, dirname, filename, content="content of file"):
         """Creates a file."""
         if not dirname.exists():
             dirname = self.dfm.home_dir / dirname
         filepath = dirname / filename
-        with open(filepath, 'w') as fh:
+        with open(filepath, "w", encoding="utf-8") as fh:
             fh.write(content)
+        return filepath
 
     def test_status_missing(self):
         """Checks status of missing dotfiles in home directory."""
@@ -121,7 +128,7 @@ class DotfileManagerSingleFileTest(DotfileManagerTest):
 
     def notest_status_unmanaged(self):
         """Checks status of missing dotfiles in home directory."""
-        self.create_file(self.dfm.home_dir, self.file_name, 'blah')
+        self.create_file(self.dfm.home_dir, self.file_name, "blah")
         dotfiles = list(self.dfm.get_dotfiles())
         expected_dotfile = Dotfile(self.file_name, status=Dotfile.unmanaged)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
@@ -145,7 +152,7 @@ class DotfileManagerSingleFileTest(DotfileManagerTest):
     def test_status_external(self):
         """Checks status of dotfiles in home linked to somewhere else."""
         self.create_file(self.dfm.dotfiles_dir, self.file_name, "[dotfile]")
-        self.create_symlink(self.dfm.home_dir, self.file_name, 'bogus')
+        self.create_symlink(self.dfm.home_dir, self.file_name, "bogus")
         dotfiles = list(self.dfm.get_dotfiles())
         expected_dotfile = Dotfile(self.file_name, status=Dotfile.external)
         self.assertSequenceEqual(dotfiles, [expected_dotfile])
@@ -166,52 +173,108 @@ class DotfileManagerSingleFileTest(DotfileManagerTest):
         dotfiles = list(self.dfm.get_dotfiles())
         self.assertEqual(dotfiles, [])
 
-    def test_sync_missing(self):
+    def test_sync_missing_file(self):
         """Tests syncing of a missing file."""
-        self.create_file(self.dfm.dotfiles_dir, self.file_name, 'blah')
+        self.create_file(self.dfm.dotfiles_dir, self.file_name, "blah")
         dotfiles_before = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_before,
-                         [Dotfile(self.file_name, status=Dotfile.missing)])
+        self.assertEqual(
+            dotfiles_before, [Dotfile(self.file_name, status=Dotfile.missing)]
+        )
         self.dfm.sync()
         dotfiles_after = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_after,
-                         [Dotfile(self.file_name, status=Dotfile.synced)])
+        self.assertEqual(
+            dotfiles_after, [Dotfile(self.file_name, status=Dotfile.synced)]
+        )
+
+    def test_sync_missing_linked_subdir(self):
+        """Tests syncing of a missing subdirectory."""
+        subdir = self.create_dir(self.dfm.dotfiles_dir, "subdir")
+        self.dfm.linked_dirs.add("subdir")
+        dotfiles_before = list(self.dfm.get_dotfiles())
+        self.assertEqual(
+            dotfiles_before, [Dotfile(self.as_str(subdir), status=Dotfile.missing)]
+        )
+        self.dfm.sync()
+        symlink = self.dfm.home_dir / subdir.name
+        self.assertTrue(symlink.is_symlink())
+
+    def test_sync_missing_subdir(self):
+        """Tests syncing of a missing file inside of missing subdirectory."""
+        subdir = self.create_dir(self.dfm.dotfiles_dir, "subdir")
+        file = self.create_file(self.dfm.dotfiles_dir / "subdir", self.file_name)
+        dotfiles_before = list(self.dfm.get_dotfiles())
+        self.assertEqual(
+            dotfiles_before,
+            [
+                Dotfile(self.as_str(file), status=Dotfile.missing),
+            ],
+        )
+        self.dfm.sync()
+        symlink = self.dfm.home_dir / subdir.name / file.name
+        self.assertTrue(symlink.is_symlink())
 
     def test_nosync_conflict(self):
         """Tests syncing of a missing file."""
-        self.create_file(self.dfm.dotfiles_dir, self.file_name, 'blah')
-        self.create_file(self.dfm.home_dir, self.file_name, 'not blah')
+        self.create_file(self.dfm.dotfiles_dir, self.file_name, "blah")
+        self.create_file(self.dfm.home_dir, self.file_name, "not blah")
         dotfiles_before = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_before,
-                         [Dotfile(self.file_name, status=Dotfile.conflict)])
+        self.assertEqual(
+            dotfiles_before, [Dotfile(self.file_name, status=Dotfile.conflict)]
+        )
         self.dfm.sync()
         dotfiles_after = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_after,
-                         [Dotfile(self.file_name, status=Dotfile.conflict)])
+        self.assertEqual(
+            dotfiles_after, [Dotfile(self.file_name, status=Dotfile.conflict)]
+        )
 
     def test_copy_missing(self):
         """Tests copy of a missing file."""
-        self.create_file(self.dfm.dotfiles_dir, self.file_name, 'blah')
+        self.create_file(self.dfm.dotfiles_dir, self.file_name, "blah")
         dotfiles_before = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_before,
-                         [Dotfile(self.file_name, status=Dotfile.missing)])
+        self.assertEqual(
+            dotfiles_before, [Dotfile(self.file_name, status=Dotfile.missing)]
+        )
         self.dfm.copy()
         dotfiles_after = list(self.dfm.get_dotfiles())
-        self.assertEqual(dotfiles_after,
-                         [Dotfile(self.file_name, status=Dotfile.same)])
+        self.assertEqual(dotfiles_after, [Dotfile(self.file_name, status=Dotfile.same)])
 
     def test_difftool(self):
         """Test difftool option."""
-        self.dfm.difftool = 'gvim -d {} {}'
-        self.create_file(self.dfm.dotfiles_dir, self.file_name, 'blah')
-        self.create_file(self.dfm.home_dir, self.file_name, 'other')
+        self.dfm.difftool = "gvim -d {} {}"
+        self.create_file(self.dfm.dotfiles_dir, self.file_name, "blah")
+        self.create_file(self.dfm.home_dir, self.file_name, "other")
         dotfile = next(self.dfm.get_dotfiles())
-        with mock.patch('subprocess.check_call') as check_call:
+        with mock.patch("subprocess.check_call") as check_call:
             self.dfm.show_diff(dotfile)
             dotfile = self.file_name
             homefile = self.dfm.home_dir / self.file_name
-            check_call.assert_called_once_with(['gvim', '-d', dotfile, str(homefile)])
+            check_call.assert_called_once_with(["gvim", "-d", dotfile, str(homefile)])
 
 
-if __name__ == '__main__':
+class FullIntregrationTest(unittest.TestCase):
+    """Full integration test based on current dotfiles."""
+
+    def setUp(self):
+        """Create DotfileManager."""
+        self.home_dir = pl.Path(tempfile.mkdtemp()) / "home"
+        self.home_dir.mkdir()
+        self.parser = build_parser(self.home_dir)
+
+    def tearDown(self):
+        """Cleans up test home and dotfiles directories."""
+        shutil.rmtree(self.home_dir)
+
+    def test_full_sync(self):
+        """Sync whole folder to temporary location.
+
+        Just make sure it completes without errors and spot check a few typical files.
+
+        """
+        args = self.parser.parse_args("sync .".split())
+        args.func(args)
+        self.assertTrue((self.home_dir / ".vim").is_symlink())
+        self.assertTrue((self.home_dir / ".config" / "bashrc").is_symlink())
+
+
+if __name__ == "__main__":
     unittest.main()

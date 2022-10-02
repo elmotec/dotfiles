@@ -44,7 +44,7 @@ import pathlib as pl
 import shlex
 import shutil
 import subprocess
-import typing
+import typing as t
 
 if sys.platform == "win32":
     import _winapi
@@ -93,7 +93,7 @@ class Dotfile:  # pylint: disable=R0903
         return self.name == rhs.name and self.status == rhs.status
 
 
-def read_all_file(file_name: str, encoding: str = "utf-8") -> typing.List[str]:
+def read_all_file(file_name: str, encoding: str = "utf-8") -> t.List[str]:
     """Read and return all the lines in a file."""
     with open(file_name, encoding=encoding) as fh:
         return fh.readlines()
@@ -105,7 +105,12 @@ class DotfileManager:
     """Manages dotfiles."""
 
     def __init__(
-        self, home_dir=None, dotfiles_dir=None, ignore_patterns=None, difftool=None
+        self,
+        home_dir=None,
+        dotfiles_dir=None,
+        linked_dirs=None,
+        ignore_patterns=None,
+        difftool=None,
     ):
         """Sets variable that will be needed by the manager.
 
@@ -118,9 +123,13 @@ class DotfileManager:
         self.ignore_patterns = []
         if ignore_patterns:
             self.ignore_patterns = [self.dotfiles_dir / ip for ip in ignore_patterns]
+        self.linked_dirs = set()
+        if linked_dirs:
+            self.linked_dirs = linked_dirs
         self.difftool = difftool
         log.info("home directory: %s", self.home_dir)
         log.info("dotfiles directory: %s", self.dotfiles_dir)
+        log.info("linked directories: %s", self.linked_dirs)
         log.info("ignored patterns: %s", self.ignore_patterns)
         log.info("difftool: %s", self.difftool)
         assert self.invariants()
@@ -169,41 +178,59 @@ class DotfileManager:
             status = Dotfile.conflict
         return Dotfile(str(relative), status=status)
 
-    def get_dotfiles(self, targets=None):
+    def iter_files_and_dirs(self, root: pl.Path) -> t.Iterator[pl.Path]:
+        """Iterate through files and subdirectories
+
+        Takes into account self.linked_dirs and self.ignore_patterns
+
+        """
+        if not root.is_dir():
+            log.debug("will process %s", root)
+            yield root
+        # Directory case can be a linked directory
+        rel_root_str = root.relative_to(self.dotfiles_dir).as_posix()
+        if rel_root_str in self.linked_dirs:
+            self.ignore_patterns.append(rel_root_str + "/*")
+            log.debug("will process %s as a linked directory", root)
+            yield root
+        else:  # Or a directory to iterate on
+            for entry in root.glob("*"):
+                match = [fnmatch.fnmatch(entry, ipat) for ipat in self.ignore_patterns]
+                if any(match):
+                    log.debug("ignored %s", entry)
+                    continue
+                yield from self.iter_files_and_dirs(entry)
+
+    def get_dotfiles(
+        self, arguments: t.Optional[t.Iterable[str]] = None
+    ) -> t.Iterator[Dotfile]:
         """Gets a generator that loops through the dotfiles.
 
         targets:
             Can be files or directories.
 
         """
-        if targets is None:
-            targets = ["."]
-        assert iter(targets), "iterable expected"
-        assert not isinstance(targets, str), "non-string expected"
-        target_files = []
-        targets = [self.dotfiles_dir / target for target in targets]
+        if arguments is None:
+            arguments = ["."]
+        assert iter(arguments), "iterable expected"
+        assert not isinstance(arguments, str), "non-string expected"
+        targets = set()
+        # Could be a file or a subdirectory.
+        abs_path_args = [self.dotfiles_dir / arg for arg in arguments]
+        # Process arguments
+        for abs_path_arg in abs_path_args:
+            targets = targets | set(
+                tgt for tgt in self.iter_files_and_dirs(pl.Path(abs_path_arg))
+            )
         for target in targets:
-            if pl.Path(target).is_dir():
-                files = pl.Path(target).glob("**/*")
-            else:
-                files = [target]
-            target_files += files
-        for target_file in target_files:
-            log.debug("%s ...", target_file)
-            str_target_file = str(target_file)
-            match = [
-                fnmatch.fnmatch(str_target_file, ipat) for ipat in self.ignore_patterns
-            ]
-            if any(match):
-                log.debug("ignored %s", target_file)
-                continue
-            log.debug("processing %s ...", target_file)
-            yield self.get_dotfile(target_file)
+            yield self.get_dotfile(target)
 
     def make_symlink(self, dotfile, force=False):
         """Creates a symbolic link in the home directory to the dotfile."""
         can_create_symlink = dotfile.status in [Dotfile.missing, Dotfile.same]
         home_filename = self.home_dir / dotfile.name
+        # Create parent dir if not exits
+        home_filename.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         if force:
             log.info("deleting %s ...", home_filename)
             os.unlink(home_filename)  # Remove existing symlink.
@@ -248,7 +275,8 @@ class DotfileManager:
         patterns -- list of unix-like file pattern to be matched.
         force -- forces a sync even if the file is already sync'd elsewhere.
         """
-        for dotfile in self.get_dotfiles(targets):
+        dotfiles = list(self.get_dotfiles(targets))
+        for dotfile in dotfiles:
             self.make_symlink(dotfile, force=force)
 
     def make_copy(self, dotfile, force=False):
@@ -309,10 +337,21 @@ class DotfileManager:
 def make_dotfile_manager(args):
     """Creates a DotfileManager instance based on command line arguments."""
     config = configparser.ConfigParser()
+    linked_dirs = None
     ignore_patterns = None
     difftool = None
     with open(args.config_file, encoding="utf-8") as config_file:
         config.read_file(config_file)
+        try:
+            linked_dirs = config["dotfiles"]["linked_dirs"].split()
+        except KeyError as error:
+            log.debug(
+                "cannot find dotfiles/linked_dirs configuration in %s: %s",
+                args.config_file,
+                error,
+            )
+            if args.ignore_patterns:
+                linked_dirs = args.linked_dirs
         try:
             ignore_patterns = config["dotfiles"]["ignore"].split()
         except KeyError as error:
@@ -335,6 +374,7 @@ def make_dotfile_manager(args):
                 difftool = args.difftool
         manager = DotfileManager(
             home_dir=pl.Path(args.home_dir),
+            linked_dirs=linked_dirs,
             ignore_patterns=ignore_patterns,
             difftool=difftool,
         )
@@ -346,7 +386,7 @@ def get_status(args):
     manager = make_dotfile_manager(args)
     dotfiles = sorted(
         manager.get_dotfiles(args.dotfiles),
-        key=lambda df: df.status.name + str(df.name),
+        key=lambda df: df.status.name + df.name.as_posix(),
     )
     for dfile in dotfiles:
         file_or_dir = "F"
@@ -384,10 +424,8 @@ def copy(args):
     manager.copy(args.dotfiles)
 
 
-def main() -> None:
-    """Parses command line arguments and dispatch to the correct function."""
-    # Main parser.
-    home_dir = pl.Path.home()
+def build_parser(home_dir: pl.Path) -> argparse.ArgumentParser:
+    """Build command line parser."""
     parser = argparse.ArgumentParser(description=__doc__, epilog=None)
     parser.add_argument(
         "-V", "--version", action="version", version=f"{module} {__version__}"
@@ -477,7 +515,13 @@ def main() -> None:
         help="dot files to diff. Defaults to all.",
     )
     diff_parser.set_defaults(func=diff)
+    return parser
 
+
+def main() -> None:
+    """Parses command line arguments and dispatch to the correct function."""
+    # Main parser.
+    parser = build_parser(pl.Path.home())
     args = parser.parse_args(sys.argv[1:])
 
     # Sets log level to WARN going more verbose for each new -V.

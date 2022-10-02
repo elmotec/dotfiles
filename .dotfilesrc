@@ -1,12 +1,40 @@
 [dotfiles]
 repository = .  # current directory.
-ignore = .git .git/* .gitignore .gitmodules
-    *.swp dotfiles.py README.rst
-    .unison/ar* .unison/fp* *.bak
-    __pycache__ manage.py test_manage.py *.pyc
-    .bash_history .inputrc .ipython .pypirc
-    .ssh .vim .viminfo .pylint.d .sqldeveloper .vft*
-    .gitattributes .dotfilesrc venv venv/*
+ignore =
+    *.bak
+    *.pyc
+    *.swp
+    *.log
+    .bash_history
+    .dotfilesrc
+    .git/
+    .gitalttributes
+    .gitignore
+    .gitmodules
+    .inputrc
+    .ipython
+    .pytest_cache
+    .pylint.d
+    .pypirc
+    .sqldeveloper
+    .ssh
+    .unison/ar*
+    .unison/fp*
+    .vft*
+    .viminfo
+    README.md
+    README.rst
+    __pycache__
+    dotfiles.py
+    manage.py
+    test_manage.py
+    venv/
+# directories to be symlinked directly.
+linked_dirs =
+    .vim
+    .config/nvim
+    .config/clangd
+    .config/git
 ;difftool = gvim.bat -d {} {}
 ;difftool = "C:\Program Files\TortoiseSVN\bin\TortoiseMerge.exe" "{}" "{}"
 difftool = "C:\Program Files\WinMerge\WinMergeU.exe" "{}" "{}"
