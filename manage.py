@@ -386,7 +386,7 @@ def get_status(args):
     manager = make_dotfile_manager(args)
     dotfiles = sorted(
         manager.get_dotfiles(args.dotfiles),
-        key=lambda df: df.status.name + df.name.as_posix(),
+        key=lambda df: df.status.name + df.name,
     )
     for dfile in dotfiles:
         file_or_dir = "F"
