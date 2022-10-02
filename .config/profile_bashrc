@@ -1,7 +1,4 @@
-if [ -x /usr/games/fortune ]; then
-    echo
-    /usr/games/fortune -a | sed 's|^|   ¦    |g'
-    echo '   ¦    '
-    echo
-fi
+[ -x /usr/games/fortune -a -x /usr/bin/boxes ] && fortune | boxes -d ian_jones
+
+. ~/.bashrc
 
