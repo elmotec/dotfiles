@@ -121,8 +121,9 @@ noremap <Down> <NOP>
 nmap <Leader><Leader>w :set wrap!<CR>
 " Show/Hide line numbers (absolute)
 nmap <Leader><Leader>n :set number!<CR>
-" Show/Hide line numbers (relative)
+" Show/Hide line numbers (relative), default to relative.
 nmap <Leader><Leader>r :set relativenumber!<CR>
+set relativenumber
 " Show/Hide cursor line
 nmap <Leader><Leader>c :set cursorline!<CR>
 " Bind scrolling of windows
@@ -366,4 +367,4 @@ Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
 " Always dark by default in console.
-set background=dark
+colorscheme cterm
