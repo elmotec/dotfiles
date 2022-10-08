@@ -132,7 +132,7 @@
             "brightYellow": "#F9F1A5",
             "cursorColor": "#FFFFFF",
             "cyan": "#3A96DD",
-            "foreground": "#CCCCCC",
+            "foreground": "#F2F2F2",
             "green": "#13A10E",
             "name": "Campbell Powershell",
             "purple": "#881798",
@@ -232,29 +232,6 @@
             "selectionBackground": "#FFFFFF",
             "white": "#D9D9D9",
             "yellow": "#A9A969"
-        },
-        {
-            "background": "#1D2936",
-            "black": "#000000",
-            "blue": "#8FA3CC",
-            "brightBlack": "#545454",
-            "brightBlue": "#476FB3",
-            "brightCyan": "#47B38F",
-            "brightGreen": "#326614",
-            "brightPurple": "#D4932E",
-            "brightRed": "#B34747",
-            "brightWhite": "#FFFFFF",
-            "brightYellow": "#B3A147",
-            "cursorColor": "#FFFFFF",
-            "cyan": "#8FCCB8",
-            "foreground": "#D9E6F2",
-            "green": "#5E804D",
-            "name": "Nono2",
-            "purple": "#664761",
-            "red": "#CC7A7A",
-            "selectionBackground": "#000000",
-            "white": "#A8A8A8",
-            "yellow": "#CCB88F"
         },
         {
             "background": "#282C34",
@@ -485,6 +462,29 @@
             "selectionBackground": "#FFFFFF",
             "white": "#B6B6B6",
             "yellow": "#88531D"
+        },
+        {
+            "background": "#1D2936",
+            "black": "#000000",
+            "blue": "#8FA3CC",
+            "brightBlack": "#545454",
+            "brightBlue": "#476FB3",
+            "brightCyan": "#47B38F",
+            "brightGreen": "#326614",
+            "brightPurple": "#D4932E",
+            "brightRed": "#B34747",
+            "brightWhite": "#FFFFFF",
+            "brightYellow": "#B3A147",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#8FCCB8",
+            "foreground": "#D9E6F2",
+            "green": "#5E804D",
+            "name": "Nono2",
+            "purple": "#664761",
+            "red": "#CC7A7A",
+            "selectionBackground": "#000000",
+            "white": "#A8A8A8",
+            "yellow": "#CCB88F"
         }
     ]
-}
+
