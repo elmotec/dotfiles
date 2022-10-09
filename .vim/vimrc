@@ -306,6 +306,9 @@ if has("nvim")
 
     Plug 'jose-elias-alvarez/null-ls.nvim'
 
+    " Needed for treesitter.
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
     " Other setup occurs in $MYVIMRC
 
 else  " not nvim => regular vim
