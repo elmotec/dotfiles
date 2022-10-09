@@ -1,4 +1,4 @@
-" Maps terminal colors to vim for consistency.
+" Maps terminal colors to vim for consistency. Use numbers for it to work.
 " :so $VIMRUNTIME/syntax/hitest.vim
 " :so $VIMRUNTIME/syntax/colortest.vim
 
@@ -11,40 +11,48 @@
 " 6 — darkcyan    14 — cyan
 " 7 — lightgray   15 — white 
 
-highlight Comment        ctermfg=green
-highlight Conceal        ctermfg=lightgray ctermbg=lightgray
-highlight Constant       ctermfg=brown
-highlight CursorColumn   ctermbg=lightgray
+highlight Comment        ctermfg=10
+highlight Conceal        ctermfg=7 ctermbg=7
+highlight Constant       ctermfg=3
+highlight CursorColumn   ctermbg=7
 highlight CursorLine     cterm=underline
-highlight Directory      ctermfg=darkblue
-highlight Error          ctermfg=white ctermbg=red
-highlight ErrorMsg       ctermfg=white ctermbg=darkred
-highlight Identifier     cterm=NONE ctermfg=cyan
-highlight Ignore         ctermfg=white
+highlight Directory      ctermfg=4
+highlight Error          ctermfg=15 ctermbg=9
+highlight ErrorMsg       ctermfg=15 ctermbg=1
+highlight Identifier     cterm=NONE ctermfg=14
+highlight Ignore         ctermfg=15
 highlight IncSearch      cterm=reverse
 highlight LineNr         ctermfg=darkgrey ctermbg=NONE
-highlight MatchParen     ctermbg=cyan
+highlight MatchParen     ctermbg=14
 highlight ModeMsg        cterm=bold
-highlight MoreMsg        ctermfg=darkgreen
-highlight NonText        ctermfg=blue
-highlight Normal         ctermbg=NONE ctermfg=lightgray
-highlight PmenuSbar      ctermbg=darkgray
-highlight PmenuThumb     ctermbg=black
-highlight PreProc        ctermfg=darkmagenta
+highlight MoreMsg        ctermfg=2
+highlight NonText        ctermfg=12
+highlight Normal         ctermbg=NONE ctermfg=7
+highlight PmenuSbar      ctermbg=8
+highlight PmenuThumb     ctermbg=0
+highlight PreProc        ctermfg=5
 highlight Question       ctermfg=6
-highlight Special        ctermfg=darkmagenta
-highlight SpecialKey     ctermfg=darkblue
-highlight SpellBad       ctermbg=red
-highlight SpellLocal     ctermbg=cyan
-highlight SpellRare      ctermbg=magenta
-highlight Statement      ctermfg=darkblue cterm=NONE
-highlight TabLine        cterm=underline ctermfg=black ctermbg=lightgray
+highlight Special        ctermfg=5
+highlight SpecialKey     ctermfg=4
+highlight SpellBad       ctermbg=9
+highlight SpellLocal     ctermbg=14
+highlight SpellRare      ctermbg=13
+highlight Statement      ctermfg=4 cterm=NONE
+highlight TabLine        cterm=underline ctermfg=0 ctermbg=7
 highlight TabLineFill    cterm=reverse
 highlight TabLineSel     cterm=bold
 highlight TermCursor     cterm=reverse
-highlight Title          ctermfg=darkmagenta
-highlight Todo           ctermfg=black ctermbg=yellow
-highlight Type           ctermfg=darkgreen
-highlight Underlined     cterm=underline ctermfg=darkmagenta
-highlight WarningMsg     ctermfg=darkred
-highlight WildMenu       ctermfg=black ctermbg=yellow
+highlight Title          ctermfg=5
+highlight Todo           ctermfg=0 ctermbg=11
+highlight Type           ctermfg=2
+highlight Underlined     cterm=underline ctermfg=5
+highlight WarningMsg     ctermfg=1
+highlight WildMenu       ctermfg=0 ctermbg=11
+highlight! link Folded LineNr
+
+" for Diffs
+highlight DiffText ctermfg=15 ctermbg=3 cterm=NONE
+highlight DiffAdd ctermfg=NONE ctermbg=8 cterm=NONE
+highlight DiffDelete ctermfg=8 ctermbg=NONE cterm=NONE
+highlight DiffChange ctermfg=NONE ctermbg=8 cterm=NONE
+
