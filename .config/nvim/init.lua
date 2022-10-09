@@ -198,6 +198,16 @@ require'lspconfig'.sumneko_lua.setup{
    },
 }
 
+require 'lspconfig'.dockerls.setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+}
+
+require 'lspconfig'.yamlls.setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+}
+
 local null_ls = require("null-ls")
 local pylint_commmand = "pylint"
 if vim.fn.has("win32") == 1 then
