@@ -21,10 +21,14 @@
 [alias]
     changelog = log --format='* %s%n%w(,4,4)%+b'
     co = checkout
+    sm = sumbodule
+    sw = switch
+    swa = switch --recurse-submodule
+    cp = cherry-pick
 [diff]
-    tool = nvimdiff
+    tool = nvim -d
 [mergetool "fugitive"]
-    cmd = vim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 [merge]
     tool = fugitive
 [credential "https://gitlab.com"]
