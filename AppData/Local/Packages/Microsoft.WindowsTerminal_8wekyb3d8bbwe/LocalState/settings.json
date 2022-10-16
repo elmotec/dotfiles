@@ -78,12 +78,6 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
-                "hidden": false,
-                "name": "Ubuntu-20.04",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
                 "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
                 "hidden": false,
                 "name": "Ubuntu-22.04",
@@ -232,10 +226,10 @@
             "yellow": "#A9A969"
         },
         {
-            "background": "#1D2936",
-            "black": "#1D2936",
+            "background": "#2A414D",
+            "black": "#2A414D",
             "blue": "#8FA3CC",
-            "brightBlack": "#002603",
+            "brightBlack": "#000000",
             "brightBlue": "#476FB3",
             "brightCyan": "#47B38F",
             "brightGreen": "#198019",
