@@ -1,9 +1,6 @@
 [user]
     name = elmotec
     email = 1107551+elmotec@users.noreply.github.com
-[credential "https://github.com"]
-    helper = 
-    helper = !/usr/bin/gh auth git-credential
 [filter "lfs"]
     required = true
     clean = git-lfs clean -- %f
