@@ -45,5 +45,10 @@ __cmd_status() {
 
 export PROMPT_DIRTRIM=2  # shortern the path to 2 directory levels.
 
+# Get the function from git-prompt.sh
+if type __git_ps1 | grep "is a function" > /dev/null; then
 PS1="$(__userhost):$(__workdir)$(__job_status)\$(__git_ps1)\$(__cmd_status)${ResetColor} "
+else
+PS1="$(__userhost):$(__workdir)$(__job_status)\$(__cmd_status)${ResetColor} "
+fi
 export PS1
