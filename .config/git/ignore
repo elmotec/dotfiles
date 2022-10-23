@@ -2,6 +2,7 @@
 *.bak
 *.cache
 *.dll
+*.egg-info/
 *.exe
 *.ilk
 *.lib
@@ -22,6 +23,8 @@
 *.vspscc
 *_i.c
 *_p.c
+*secret*
+.env
 .gitignore
 .subversion/README.txt
 .subversion/auth/
@@ -31,6 +34,5 @@
 .vim/.*
 .vim/plugged
 .vim/plugged/.*
-/setup.*
-tags
 /venv
+tags
