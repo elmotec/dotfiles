@@ -297,6 +297,8 @@ if has("nvim")
     " For ultisnips users.
     Plug 'SirVer/ultisnips'
     Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Python documentation style. 
+    let g:ultisnips_python_style="sphinx"
 
     " For snippy users.
     " Plug 'dcampos/nvim-snippy'
