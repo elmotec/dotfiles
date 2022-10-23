@@ -11,7 +11,7 @@
 " 6 — darkcyan    14 — cyan
 " 7 — lightgray   15 — white 
 
-highlight Comment        ctermfg=10
+highlight Comment        ctermfg=2
 highlight Conceal        ctermfg=7 ctermbg=7
 highlight Constant       ctermfg=3
 highlight CursorColumn   ctermbg=7
