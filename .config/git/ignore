@@ -10,6 +10,7 @@
 *.ncb
 *.obj
 *.old
+*.orig
 *.pch
 *.pdb
 *.pyc
