@@ -48,7 +48,10 @@ highlight Type           ctermfg=2
 highlight Underlined     cterm=underline ctermfg=5
 highlight WarningMsg     ctermfg=1
 highlight WildMenu       ctermfg=0 ctermbg=11
+" Exclamation mark to overwrite any existing highlight
 highlight! link Folded LineNr
+highlight! link DiagnosticError ErrorMsg
+highlight! link DiagnosticWarn WarningMsg
 
 " for Diffs
 highlight DiffText ctermfg=15 ctermbg=3 cterm=NONE
