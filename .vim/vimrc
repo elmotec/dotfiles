@@ -123,7 +123,6 @@ nmap <Leader><Leader>w :set wrap!<CR>
 nmap <Leader><Leader>n :set number!<CR>
 " Show/Hide line numbers (relative), default to relative.
 nmap <Leader><Leader>r :set relativenumber!<CR>
-set relativenumber
 " Show/Hide cursor line
 nmap <Leader><Leader>c :set cursorline!<CR>
 " Bind scrolling of windows
@@ -295,10 +294,10 @@ if has("nvim")
     " Plug 'saadparwaiz1/cmp_luasnip'
 
     " For ultisnips users.
-    Plug 'SirVer/ultisnips'
-    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Plug 'SirVer/ultisnips'
+    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     " Python documentation style. 
-    let g:ultisnips_python_style="sphinx"
+    " let g:ultisnips_python_style="sphinx"
 
     " For snippy users.
     " Plug 'dcampos/nvim-snippy'
@@ -347,18 +346,6 @@ else  " not nvim => regular vim
     "let g:ale_fix_on_save = 1
     nmap <silent> [w <Plug>(ale_previous_wrap)
     nmap <silent> ]w <Plug>(ale_next_wrap)
-
-    " Snippet library
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
-
-    " UltiSnips customization to use <tab> to trigger jumps.
-    let g:UltiSnipsExpandTrigger="<c-tab>"
-    let g:UltiSnipsListSnippets="<c-tab><c-tab>"
-    let g:UltiSnipsJumpForwardTrigger="<c-tab>"
-    let g:UltiSnipsJumpBackwardTrigger="<c-s-tab>"
-    " Otherwise defaults to ~/_.vim (?!). Note snippets is for snipmate.
-    let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 
 endif  " nvim
 
