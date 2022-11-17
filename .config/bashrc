@@ -13,6 +13,6 @@ export GIT_PS1_SHOWCOLORHINTS=true
 
 . $XDG_CONFIG_HOME/prompt.bashrc
 
-if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]]; then
-  tmux attach-session -t default || tmux new-session -s default
-fi
+# if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]]; then
+  # tmux attach-session -t default || tmux new-session -s default
+# fi
