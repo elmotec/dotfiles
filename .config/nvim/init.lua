@@ -81,7 +81,7 @@ local on_attach = function(client, bufnr)
   vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
   vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
   vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-  vim.keymap.set("n", "<leader>f", vim.lsp.buf.formatting, bufopts)
+  vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, bufopts)
 end
 
 local signs = {
@@ -146,7 +146,7 @@ cmp.setup.cmdline(":", {
 })
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lsp_flags = {
   -- This is the default in Nvim 0.7+
   debounce_text_changes = 150,
