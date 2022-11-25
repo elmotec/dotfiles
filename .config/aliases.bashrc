@@ -13,3 +13,4 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias k=true
 alias grep='grep --color=auto'
+alias cz='python3 -m commitizen'
