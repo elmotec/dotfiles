@@ -127,6 +127,9 @@ nmap <Leader><Leader>r :set relativenumber!<CR>
 nmap <Leader><Leader>c :set cursorline!<CR>
 " Bind scrolling of windows
 nmap <Leader><Leader>s :set scrollbind!<CR>
+" Hide sign columnn
+nmap <Leader><Leader>d :set signcolumn=no<CR>
+set signcolumn=no
 set cursorline
 " Hilights searched terms on/off
 nmap <Leader><Leader>h :set hlsearch!<CR>
