@@ -2,10 +2,10 @@
 repository = .  # current directory.
 ignore =
     *.bak
-    *.pyc
-    *.swp
     *.log
     *.orig
+    *.pyc
+    *.swp
     .bash_history
     .dotfilesrc
     .git/
@@ -14,15 +14,16 @@ ignore =
     .gitmodules
     .inputrc
     .ipython
-    .pytest_cache
     .pylint.d
     .pypirc
+    .pytest_cache
     .sqldeveloper
     .ssh
     .unison/ar*
     .unison/fp*
     .vft*
     .viminfo
+    AppData/
     README.md
     README.rst
     __pycache__
