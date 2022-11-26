@@ -18,6 +18,13 @@ New-Item -Type SymbolicLink -Target .\dotfiles\.vim -Path .vim
 New-Item -Type SymbolicLink -Target .\.vim -Path vimfiles
 ```
 
+and hardlinks
+```dos
+cd C:\Users\jlecomte\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\
+del settings.json
+mklink /H settings.json C:\Users\jlecomte\Documents\GitHub\dotfiles\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
+```
+
 
 Not so obvious git commands
 ---------------------------
