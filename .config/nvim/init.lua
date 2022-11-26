@@ -8,10 +8,53 @@ vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope find_live_grep<cr>", 
 vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope find_buffers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope find_tags<cr>", { noremap = true })
 
+-- leverage builtin colors ...
+local colors = {
+    black = 0,
+    darkred = 1,
+    darkgreen = 2,
+    brown = 3,
+    darkblue = 4,
+    darkmagenta = 5,
+    darkcyan = 6,
+    lightgray = 7,
+    darkgray = 8,
+    red = 9,
+    green = 10,
+    yellow = 11,
+    blue = 12,
+    magenta = 13,
+    cyan = 14,
+    white = 15,
+}
+
+local console_theme = {
+    normal = {
+        a = { fg = colors.black, bg = colors.green, },
+        b = { fg = colors.white, bg = colors.black, },
+        c = { fg = colors.lightgray, bg = colors.black, },
+    },
+    insert = {
+        a = { fg = colors.black, bg = colors.blue, },
+    },
+    visual = {
+        a = { fg = colors.black, bg = colors.cyan, },
+    },
+    replace = {
+        a = { fg = colors.black, bg = colors.red, },
+    },
+    inactive = {
+        a = { fg = colors.lightgray, bg = colors.black, },
+        b = { fg = colors.lightgray, bg = colors.black, },
+        c = { fg = colors.lightgray, bg = colors.black, },
+    },
+}
+
 require("lualine").setup {
   options = {
     icons_enabled = true,
-    theme = "auto",
+    --theme = "auto",
+    theme = console_theme,
     component_separators = { left = "", right = ""},
     section_separators = { left = "", right = ""},
     disabled_filetypes = {
