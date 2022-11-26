@@ -5,5 +5,6 @@ export USERPROFILE=/mnt/c/Users/`whoami`
 export EDITOR
 export VISUAL=$EDITOR
 
-export HISTCONTROL="ignorespace:ignoredups:erasedups"
+export HISTCONTROL="ignoreboth:erasedups"
+export HISTFILE="${HOME}/.local/history.$(uname -n)"
 export HISTSIZE=2000
