@@ -10,43 +10,43 @@ vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope find_tags<cr>", { nor
 
 -- leverage builtin colors ...
 local colors = {
-    black = 0,
+    background = 0,  -- black
     darkred = 1,
     darkgreen = 2,
     brown = 3,
     darkblue = 4,
     darkmagenta = 5,
     darkcyan = 6,
-    lightgray = 7,
-    darkgray = 8,
+    text = 7,  -- gray
+    accentBackground = 8,
     red = 9,
     green = 10,
     yellow = 11,
     blue = 12,
     magenta = 13,
     cyan = 14,
-    white = 15,
+    accentText = 15,  -- white
 }
 
 local console_theme = {
     normal = {
-        a = { fg = colors.black, bg = colors.green, },
-        b = { fg = colors.white, bg = colors.black, },
-        c = { fg = colors.lightgray, bg = colors.black, },
+        a = { fg = colors.accentText, bg = colors.green, },
+        b = { fg = colors.lightgrey, bg = colors.background, },
+        c = { fg = colors.text, bg = colors.accentBackground, },
     },
     insert = {
-        a = { fg = colors.black, bg = colors.blue, },
+        a = { fg = colors.background, bg = colors.blue, },
     },
     visual = {
-        a = { fg = colors.black, bg = colors.cyan, },
+        a = { fg = colors.background, bg = colors.cyan, },
     },
     replace = {
-        a = { fg = colors.black, bg = colors.red, },
+        a = { fg = colors.background, bg = colors.red, },
     },
     inactive = {
-        a = { fg = colors.lightgray, bg = colors.black, },
-        b = { fg = colors.lightgray, bg = colors.black, },
-        c = { fg = colors.lightgray, bg = colors.black, },
+        a = { fg = colors.text, bg = colors.background, },
+        b = { fg = colors.text, bg = colors.background, },
+        c = { fg = colors.text, bg = colors.background, },
     },
 }
 
