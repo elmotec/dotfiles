@@ -2,22 +2,22 @@
 " :so $VIMRUNTIME/syntax/hitest.vim
 " :so $VIMRUNTIME/syntax/colortest.vim
 
-" 0 — black (accent background)
+" 0 — background (black)
 " 1 — darkred
 " 2 — darkgreen
 " 3 — brown
 " 4 — darkblue
 " 5 — darkmagenta
 " 6 — darkcyan
-" 7 — lightgray/white (text, lower left in terminal settings)
-" 8 — darkgray/brightblack (background, upper right in terminal settings)
+" 7 — text (white, lower left in terminal settings)
+" 8 — accent background (bright black, upper right in terminal settings)
 " 9 — red
 " 10 — green
 " 11 — yellow
 " 12 — blue
 " 13 — magenta
 " 14 — cyan
-" 15 — white/brightwhite (accent text)
+" 15 — accent text (white/brightwhite)
 "
 " For windows terminal:
 " background: darkgrey (swap white and black)
@@ -36,7 +36,7 @@ highlight Identifier     cterm=NONE ctermfg=14
 highlight Ignore         ctermfg=15
 highlight IncSearch      cterm=reverse
 highlight CursorLineNr   ctermfg=11
-highlight LineNr         ctermfg=7
+highlight LineNr         ctermfg=8
 highlight MatchParen     ctermbg=14
 highlight MoreMsg        ctermfg=2
 highlight NonText        ctermfg=12

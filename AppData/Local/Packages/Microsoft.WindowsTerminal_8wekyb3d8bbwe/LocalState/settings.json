@@ -218,7 +218,7 @@
             "background": "#2A414D",
             "black": "#2A414D",
             "blue": "#8FA3CC",
-            "brightBlack": "#000000",
+            "brightBlack": "#1C2C33",
             "brightBlue": "#476FB3",
             "brightCyan": "#47B38F",
             "brightGreen": "#198019",
@@ -228,7 +228,7 @@
             "brightYellow": "#CFCF3E",
             "cursorColor": "#FFFFFF",
             "cyan": "#8FCCB8",
-            "foreground": "#D9E6F2",
+            "foreground": "#A6A6A6",
             "green": "#83B36B",
             "name": "Nono Dark",
             "purple": "#B57EAC",
@@ -307,7 +307,7 @@
             "yellow": "#B58900"
         },
         {
-            "background": "#FDF6E3",
+            "background": "#EEE8D5",
             "black": "#EEE8D5",
             "blue": "#268BD2",
             "brightBlack": "#FDF6E3",
