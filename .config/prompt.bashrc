@@ -36,10 +36,11 @@ __job_status() {
 # Turn text to green if success otherwise red exit code.
 __cmd_status() {
     rc=$?
+    newline="\n$"
     if [ $rc -eq 0 ]; then
-        echo -e "\e[0;32m\n\$"
+        echo -e "\e[0;32m${newline}"
     else
-        echo -e "\e[0;31m 💥 $rc\n\$"
+        echo -e "\e[0;31m 💥 $rc${newline}"
     fi
 }
 
