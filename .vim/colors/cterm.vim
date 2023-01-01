@@ -24,7 +24,7 @@
 " foreground: lightgray (swap lightgray and darkgray)
 " cursor color: to taste 
 
-highlight Comment        ctermfg=10
+highlight Comment        ctermfg=8
 highlight Conceal        ctermfg=7 ctermbg=7
 highlight Constant       ctermfg=3
 highlight CursorColumn   ctermbg=7
@@ -36,13 +36,13 @@ highlight Identifier     cterm=NONE ctermfg=14
 highlight Ignore         ctermfg=15
 highlight IncSearch      cterm=reverse
 highlight CursorLineNr   ctermfg=11
-highlight LineNr         ctermfg=8
+highlight LineNr         ctermfg=10
 highlight MatchParen     ctermbg=14
 highlight MoreMsg        ctermfg=2
 highlight NonText        ctermfg=12
 highlight Normal         ctermfg=7
 highlight Pmenu          ctermbg=7
-highlight PmenuSbar      ctermbg=8
+highlight PmenuSbar      ctermbg=10
 highlight PmenuThumb     ctermbg=0
 highlight PreProc        ctermfg=5
 highlight Question       ctermfg=6
@@ -73,7 +73,7 @@ highlight! link DiagnosticHint HintMsg
 
 " for Diffs
 highlight DiffText ctermfg=15 ctermbg=3 cterm=NONE
-highlight DiffAdd ctermfg=NONE ctermbg=8 cterm=NONE
+highlight DiffAdd ctermfg=NONE ctermbg=10 cterm=NONE
 highlight DiffDelete ctermfg=7 ctermbg=NONE cterm=NONE
 highlight DiffChange ctermfg=NONE ctermbg=7 cterm=NONE
 
