@@ -25,3 +25,5 @@ autocmd CursorHold * nested call s:setbackground()
 set columns=100
 set lines=60
 
+" Default color scheme
+colorscheme base16-nono-dark

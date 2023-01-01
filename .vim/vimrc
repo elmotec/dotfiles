@@ -361,5 +361,5 @@ Plug 'editorconfig/editorconfig-vim'
 " Complete the plugin section.
 call plug#end()
 
-" Always dark by default in console.
+" Follow console colors (see base16 guidelines)
 colorscheme cterm
