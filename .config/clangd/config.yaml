@@ -1,9 +1,9 @@
-# See https://clangd.1lvm.org/config
+# See https://clangd.lvm.org/config
 CompileFlags:
   # Treat code as C++, use C++17 standard, enable more warnings.
   Add: [-xc++, -Wall, -Wno-missing-prototypes]
-  # Remove extra warnings specified in compile commands
-  # Single value is also acceptable, same as Remove: [-mabi]"
+  # Remove extra warnings specified in compile commands.
+  # Single value is also acceptable, same as "Remove: [-mabi]"
   #Remove: -mabi
 Diagnostics:
   UnusedIncludes: Strict

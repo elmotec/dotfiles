@@ -204,10 +204,10 @@ require('lspconfig')['jedi_language_server'].setup{
 require'lspconfig'.clangd.setup{
     cmd = {
         "clangd",
-    -- "--log=verbose",
-    "--enable-config",
-    -- "--query-driver=...",  -- path to clang bin
-    -- "--ressource-dir=..."  -- path to clang include files
+        -- "--log=verbose",
+        "--enable-config",
+        -- "--query-driver=...",  -- path to clang bin
+        -- "--ressource-dir=..."  -- path to clang include files
     },
     on_attach = on_attach,
     flags = lsp_flags,
@@ -267,5 +267,4 @@ null_ls.setup({
     },
     debug = true,
 })
-
 
