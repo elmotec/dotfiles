@@ -1,15 +1,16 @@
 # Aliases
 Set-Alias vi nvim
 Set-Alias gvi nvim-qt
-Set-Alias python3 python
 Set-Alias which Get-Command
+Set-Alias python3 python
 # Remove diff aliast because it conflicts with the command of the same name.
 if (Test-Path alias::diff) {
     Remove-Item alias:diff -force
 }
-function ls_alias { wsl ls --color=auto -hF $args }
+function ls_alias { wsl ls --color=no -hF $args }
 Set-Alias ls ls_alias -Option AllScope
-Set-Alias "ll" "ls"
+function ll_alias { wsl ls --color=no -hFltr $args }
+Set-Alias ll ll_alias -Option AllScope
 
 # My PATH
 $Env:Path += ";$home\scripts"
@@ -52,7 +53,7 @@ function prompt {
     $regex = [regex]::new("(([\\][^\\]{2})[^\\]+)(?=\\*\\)");
     $folder = $regex.replace($pwd,'$2')
     $GitPromptSettings.DefaultPromptPath = "PS $folder"
-    $GitPromptSettings.DefaultPromptPath.ForegroundColor = 0x00FF00
+    $GitPromptSettings.DefaultPromptPath.ForegroundColor = "Green"
     $prompt += & $GitPromptScriptBlock
     if ($prompt) { "$prompt" } else { "PS $folder" }
 }
@@ -66,6 +67,19 @@ Set-CDPath -Path ~,~\Documents,~\Documents\Github,~\Documents\Gitlab,~\Documents
 
 # Quickly navigate directories based on usage.
 Import-Module ZLocation
+
+# Fix hard to read colors
+Set-PSReadLineOption -Colors @{
+  Command            = 'Gray'
+  Number             = 'DarkYellow'
+  Member             = 'DarkYellow'
+  Operator           = 'Yellow'
+  Type               = 'Green'
+  Variable           = 'DarkGreen'
+  Parameter          = 'DarkGreen'
+  ContinuationPrompt = 'Gray'
+  Default            = 'Gray'
+}
 
 # Display import PS variables
 echo "`$VTSettings=$VTSettings"
