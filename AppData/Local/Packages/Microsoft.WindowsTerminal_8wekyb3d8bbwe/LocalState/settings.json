@@ -4,6 +4,14 @@
     "actions": 
     [
         {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "right"
+            },
+            "keys": "alt+shift+\\"
+        },
+        {
             "command": "paste",
             "keys": "ctrl+shift+v"
         },
@@ -27,6 +35,10 @@
                 "splitMode": "duplicate"
             },
             "keys": "alt+shift+d"
+        },
+        {
+            "command": "unbound",
+            "keys": "alt+shift+plus"
         }
     ],
     "copyFormatting": "none",
@@ -836,26 +848,27 @@
             "yellow": "#F4BC87"
         },
         {
-            "name": "base16-nono-dark",
-            "background": "#1b3340",
-            "selectionBackground": "#546a78",
-            "black": "#1b3340",
-            "blue": "#2b56a6",
-            "brightBlack": "#6f8493",
-            "brightBlue": "#8b9fae",
+            "background": "#1B3340",
+            "black": "#1B3340",
+            "blue": "#62A1BB",
+            "brightBlack": "#6F8493",
+            "brightBlue": "#8B9FAE",
             "brightCyan": "#406940",
-            "brightGreen": "#384f5d",
-            "brightPurple": "#d2d4e4",
-            "brightRed": "#b5b532",
-            "brightWhite": "#ddeeff",
-            "brightYellow": "#546a78",
-            "cyan": "#578bb4",
-            "foreground": "#a6b9c9",
-            "green": "#77bf77",
-            "purple": "#cc829c",
-            "red": "#c7522a",
-            "white": "#a6b9c9",
-            "yellow": "#83c0c2"
+            "brightGreen": "#384F5D",
+            "brightPurple": "#D2D4E4",
+            "brightRed": "#B3782B",
+            "brightWhite": "#DDEEFF",
+            "brightYellow": "#546A78",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#83C0C2",
+            "foreground": "#A6B9C9",
+            "green": "#77BF77",
+            "name": "base16-nono-dark",
+            "purple": "#4181B3",
+            "red": "#C7522A",
+            "selectionBackground": "#546A78",
+            "white": "#A6B9C9",
+            "yellow": "#9E9E2B"
         },
         {
             "background": "#2A414D",
