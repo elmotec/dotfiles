@@ -105,7 +105,7 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -114,7 +114,7 @@ local on_attach = function(client, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-    vim.keymap.set("n", "H", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<C-h>", vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
@@ -170,7 +170,7 @@ cmp.setup({
         -- { name = "vsnip" }, -- For vsnip users.
         -- { name = "luasnip" }, -- For luasnip users.
         -- { name = "snippy" }, -- For snippy users.
-        { name = "ultisnips" }, -- For ultisnips users.
+        -- { name = "ultisnips" }, -- For ultisnips users.
     }, {
         { name = "buffer" },
     })
@@ -254,6 +254,27 @@ require 'lspconfig'.yamlls.setup {
 }
 
 local null_ls = require("null-ls")
+local methods = require("null-ls.methods")
+local helpers = require("null-ls.helpers")
+
+local function ruff_fix()
+    return helpers.make_builtin({
+        name = "ruff",
+        meta = {
+            url = "https://github.com/charliermarsh/ruff/",
+            description = "An extremely fast Python linter, written in Rust.",
+        },
+        method = methods.internal.FORMATTING,
+        filetypes = { "python" },
+        generator_opts = {
+            command = "ruff",
+            args = { "--fix", "-e", "-n", "--stdin-filename", "$FILENAME", "-" },
+            to_stdin = true
+        },
+        factory = helpers.formatter_factory
+    })
+end
+
 local pylint_commmand = "pylint"
 if vim.fn.has("win32") == 1 then
     pylint_commmand = "pylint.exe"
@@ -266,7 +287,14 @@ null_ls.setup({
         null_ls.builtins.diagnostics.pylint.with({
             command = pylint_commmand,
             env = { PATH = os.getenv("PATH") },
+            extra_args = { "--rcfile=pylintrc" },
         }),
+        null_ls.builtins.formatting.black,
+        --ruff_fix(),
+        --null_ls.builtins.diagnostics.ruff,
     },
+    on_attach = on_attach,
     debug = true,
+    default_timeout = 10000,
 })
+
