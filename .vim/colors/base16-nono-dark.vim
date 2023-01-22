@@ -31,22 +31,22 @@ let s:gui06        = "d2d4e4"
 let g:base16_gui06 = "d2d4e4"
 let s:gui07        = "ddeeff"
 let g:base16_gui07 = "ddeeff"
-let s:gui08        = "c7522a"
-let g:base16_gui08 = "c7522a"
-let s:gui09        = "b3782b"
-let g:base16_gui09 = "b3782b"
+let s:gui08        = "b37c71"
+let g:base16_gui08 = "b37c71"
+let s:gui09        = "c75757"
+let g:base16_gui09 = "c75757"
 let s:gui0A        = "9e9e2b"
 let g:base16_gui0A = "9e9e2b"
 let s:gui0B        = "77bf77"
 let g:base16_gui0B = "77bf77"
 let s:gui0C        = "83c0c2"
 let g:base16_gui0C = "83c0c2"
-let s:gui0D        = "62a1bb"
-let g:base16_gui0D = "62a1bb"
-let s:gui0E        = "4181b3"
-let g:base16_gui0E = "4181b3"
-let s:gui0F        = "406940"
-let g:base16_gui0F = "406940"
+let s:gui0D        = "5b95c2"
+let g:base16_gui0D = "5b95c2"
+let s:gui0E        = "326ac2"
+let g:base16_gui0E = "326ac2"
+let s:gui0F        = "4b7a4b"
+let g:base16_gui0F = "4b7a4b"
 
 " Terminal color definitions
 let s:cterm00        = "00"
@@ -100,19 +100,19 @@ endif
 " Neovim terminal colours
 if has("nvim")
   let g:terminal_color_0 =  "#1b3340"
-  let g:terminal_color_1 =  "#c7522a"
+  let g:terminal_color_1 =  "#b37c71"
   let g:terminal_color_2 =  "#77bf77"
   let g:terminal_color_3 =  "#9e9e2b"
-  let g:terminal_color_4 =  "#62a1bb"
-  let g:terminal_color_5 =  "#4181b3"
+  let g:terminal_color_4 =  "#5b95c2"
+  let g:terminal_color_5 =  "#326ac2"
   let g:terminal_color_6 =  "#83c0c2"
   let g:terminal_color_7 =  "#a6b9c9"
   let g:terminal_color_8 =  "#6f8493"
-  let g:terminal_color_9 =  "#c7522a"
+  let g:terminal_color_9 =  "#b37c71"
   let g:terminal_color_10 = "#77bf77"
   let g:terminal_color_11 = "#9e9e2b"
-  let g:terminal_color_12 = "#62a1bb"
-  let g:terminal_color_13 = "#4181b3"
+  let g:terminal_color_12 = "#5b95c2"
+  let g:terminal_color_13 = "#326ac2"
   let g:terminal_color_14 = "#83c0c2"
   let g:terminal_color_15 = "#ddeeff"
   let g:terminal_color_background = g:terminal_color_0
@@ -124,19 +124,19 @@ if has("nvim")
 elseif has("terminal")
   let g:terminal_ansi_colors = [
         \ "#1b3340",
-        \ "#c7522a",
+        \ "#b37c71",
         \ "#77bf77",
         \ "#9e9e2b",
-        \ "#62a1bb",
-        \ "#4181b3",
+        \ "#5b95c2",
+        \ "#326ac2",
         \ "#83c0c2",
         \ "#a6b9c9",
         \ "#6f8493",
-        \ "#c7522a",
+        \ "#b37c71",
         \ "#77bf77",
         \ "#9e9e2b",
-        \ "#62a1bb",
-        \ "#4181b3",
+        \ "#5b95c2",
+        \ "#326ac2",
         \ "#83c0c2",
         \ "#ddeeff",
         \ ]
