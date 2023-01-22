@@ -4,16 +4,8 @@
     "actions": 
     [
         {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "right"
-            },
-            "keys": "alt+shift+\\"
-        },
-        {
-            "command": "paste",
-            "keys": "ctrl+shift+v"
+            "command": "find",
+            "keys": "ctrl+shift+f"
         },
         {
             "command": 
@@ -24,8 +16,16 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "command": "find",
-            "keys": "ctrl+shift+f"
+            "command": "paste",
+            "keys": "ctrl+shift+v"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "right"
+            },
+            "keys": "alt+shift+\\"
         },
         {
             "command": 
@@ -829,7 +829,7 @@
             "background": "#1b3340",
             "selectionBackground": "#546a78",
             "black": "#1b3340",
-            "blue": "#5b95c2",
+            "blue": "#326ac2",
             "brightBlack": "#6f8493",
             "brightBlue": "#8b9fae",
             "brightCyan": "#4b7a4b",
@@ -841,7 +841,7 @@
             "cyan": "#83c0c2",
             "foreground": "#a6b9c9",
             "green": "#77bf77",
-            "purple": "#326ac2",
+            "purple": "#5b95c2",
             "red": "#b37c71",
             "white": "#a6b9c9",
             "yellow": "#9e9e2b"
