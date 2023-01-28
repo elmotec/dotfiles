@@ -74,9 +74,18 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
+                "backgroundImage": null,
+                "backgroundImageStretchMode": "fill",
+                "experimental.retroTerminalEffect": false,
+                "font": 
+                {
+                    "weight": "normal"
+                },
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
-                "name": "Windows PowerShell"
+                "name": "Windows PowerShell",
+                "opacity": 100,
+                "useAcrylic": false
             },
             {
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
@@ -87,12 +96,6 @@
                 "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
                 "hidden": false,
                 "name": "Ubuntu-22.04",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
-                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
-                "hidden": false,
-                "name": "Ubuntu-20.04",
                 "source": "Windows.Terminal.Wsl"
             },
             {
@@ -825,26 +828,27 @@
             "yellow": "#F4BC87"
         },
         {
+            "background": "#1B3340",
+            "black": "#1B3340",
+            "blue": "#3876D9",
+            "brightBlack": "#6F8493",
+            "brightBlue": "#8B9FAE",
+            "brightCyan": "#4B7A4B",
+            "brightGreen": "#384F5D",
+            "brightPurple": "#D2D4E4",
+            "brightRed": "#C75757",
+            "brightWhite": "#DDEEFF",
+            "brightYellow": "#546A78",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#83C0C2",
+            "foreground": "#A6B9C9",
+            "green": "#77BF77",
             "name": "base16-nono-dark",
-            "background": "#1b3340",
-            "selectionBackground": "#546a78",
-            "black": "#1b3340",
-            "blue": "#326ac2",
-            "brightBlack": "#6f8493",
-            "brightBlue": "#8b9fae",
-            "brightCyan": "#4b7a4b",
-            "brightGreen": "#384f5d",
-            "brightPurple": "#d2d4e4",
-            "brightRed": "#c75757",
-            "brightWhite": "#ddeeff",
-            "brightYellow": "#546a78",
-            "cyan": "#83c0c2",
-            "foreground": "#a6b9c9",
-            "green": "#77bf77",
-            "purple": "#5b95c2",
-            "red": "#b37c71",
-            "white": "#a6b9c9",
-            "yellow": "#9e9e2b"
+            "purple": "#5B95C2",
+            "red": "#B37C71",
+            "selectionBackground": "#546A78",
+            "white": "#A6B9C9",
+            "yellow": "#9E9E2B"
         },
         {
             "background": "#2E3440",
