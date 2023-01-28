@@ -16,12 +16,19 @@
 [log]
     date = human
 [alias]
+    br = branch
     changelog = log --format='* %s%n%w(,4,4)%+b'
+    c = commit -v
     co = checkout
+    cp = cherry-pick
+    fetchmain = fetch upstream main:main
+    p = push
+    pl = pull --rebase --autostash
+    s = status -s
     sm = submodule
+    st = status
     sw = switch
     swa = switch --recurse-submodule
-    cp = cherry-pick
 [diff]
     tool = nvim -d
 [mergetool "fugitive"]
@@ -31,8 +38,8 @@
 [credential "https://gitlab.com"]
     provider = generic
 [credential "https://github.com"]
-	helper = 
-	helper = !gh auth git-credential
+    helper = 
+    helper = !gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
-	helper = !gh auth git-credential
+    helper = 
+    helper = !gh auth git-credential
