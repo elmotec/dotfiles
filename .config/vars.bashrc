@@ -3,7 +3,7 @@
 export USERPROFILE=/mnt/c/Users/`whoami`
 EDITOR="vim"
 # If we can, use neovim
-[ -f /usr/bin/vim ] && EDITOR=nvim
+[ -x /usr/bin/nvim ] && EDITOR=nvim
 export EDITOR
 export VISUAL=$EDITOR
 
