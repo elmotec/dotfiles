@@ -13,5 +13,9 @@ export GIT_PS1_SHOWCOLORHINTS=true
 
 . $XDG_CONFIG_HOME/prompt.bashrc
 
-# Enable SSO via keychain and ssh-agent
+# Enable SSO via keychain and ssh-agent.
 [[ -f ${HOME}/.ssh/id_ecdsa ]] && eval `keychain -q --eval --agents ssh id_ecdsa`
+
+# Set the window title to the hostname by default so it shows in tmux. See
+# aliases.bashrc for the title alias.
+title @$(hostname)
