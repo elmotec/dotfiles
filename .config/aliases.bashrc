@@ -14,3 +14,5 @@ alias ...='cd ../..'
 alias k=true
 alias grep='grep --color=auto'
 alias cz='python3 -m commitizen'
+alias reset-time='sudo hwclock --hctosys'
+alias update-apt='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y'
