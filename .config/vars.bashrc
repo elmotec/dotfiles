@@ -10,7 +10,14 @@ export VISUAL=$EDITOR
 export HISTCONTROL="ignoreboth:erasedups"
 export HISTFILE="${HOME}/.local/history.$(uname -n)"
 export HISTSIZE=2000
+export HISTIGNORE="&:ls:[bf]g:exit:history:clear:ll:gs"
 
-# Fix PATH variable to avoid conflicts with Windows pyenv
-PATH=$(echo $PATH | tr ':' '\012' | grep -v pyenv | tr '\012' ':')
-export PATH
+export PATH=${HOME}/.local/bin:${PATH}
+
+# Fix PATH variable dupes and avoid conflicts with Windows pyenv
+if UPDATED_PATH=$(echo $PATH | tr ':' '\012' | uniq | grep -v pyenv | tr '\012' ':'); then
+    export PATH=$UPDATED_PATH
+else
+    echo "WARNING: cannot clean PATH variable"
+fi
+
