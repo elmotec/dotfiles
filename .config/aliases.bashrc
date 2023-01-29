@@ -18,6 +18,7 @@ alias ll='ls --color=auto -Fltrah'
 alias ls='ls --color=none'
 
 # Alias for git
+alias ga='git add'
 alias gc='git commit -v'
 alias gca='git commit --amend'
 alias gcam='git commit --amend -m'
