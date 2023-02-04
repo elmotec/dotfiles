@@ -317,13 +317,6 @@ if has("nvim")
 
 else  " not nvim => regular vim
 
-    " Airline status bar
-    Plug 'vim-airline/vim-airline'
-
-    " Controls which airline sections get truncated and at what width.
-    let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
-    let g:airline#extensions#tabline#enabled = 1
-
     " Command line fuzzy finder
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
@@ -350,6 +343,15 @@ else  " not nvim => regular vim
     nmap <silent> [w <Plug>(ale_previous_wrap)
     nmap <silent> ]w <Plug>(ale_next_wrap)
 
+    " Airline status bar
+    Plug 'vim-airline/vim-airline'
+    " Controls which airline sections get truncated and at what width.
+    let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+    " Enable nerdfont.
+    let g:airline_powerline_fonts = 1
+    " Follow base16 theme. See .vim/autoload/airline/themes/base16.vim
+    let g:airline_theme='base16'
+
 endif  " nvim
 
 " Support for Jenkins pipeline files
@@ -358,8 +360,9 @@ Plug 'martinda/Jenkinsfile-vim-syntax'
 " Add supports for editorconfig
 Plug 'editorconfig/editorconfig-vim'
 
+" Follow console colors (see base16 guidelines)
+colorscheme cterm
+
 " Complete the plugin section.
 call plug#end()
 
-" Follow console colors (see base16 guidelines)
-colorscheme cterm
