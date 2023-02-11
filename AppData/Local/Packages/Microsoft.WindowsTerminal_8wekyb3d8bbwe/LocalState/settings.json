@@ -16,16 +16,16 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "command": "paste",
-            "keys": "ctrl+shift+v"
-        },
-        {
             "command": 
             {
                 "action": "splitPane",
                 "split": "right"
             },
             "keys": "alt+shift+\\"
+        },
+        {
+            "command": "paste",
+            "keys": "ctrl+shift+v"
         },
         {
             "command": 
@@ -41,6 +41,8 @@
             "keys": "alt+shift+plus"
         }
     ],
+    "alwaysShowNotificationIcon": true,
+    "autoHideWindow": true,
     "copyFormatting": "none",
     "copyOnSelect": true,
     "defaultProfile": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
@@ -60,7 +62,7 @@
             "font": 
             {
                 "face": "Hack NF",
-                "size": 14
+                "size": 14.0
             },
             "hidden": false,
             "padding": "10"
@@ -919,5 +921,7 @@
             "white": "#586E75",
             "yellow": "#B58900"
         }
-    ]
+    ],
+    "theme": "system",
+    "themes": []
 }
