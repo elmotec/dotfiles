@@ -20,22 +20,19 @@ colortest() {
   echo ""
 }
 
+# User name and host name.
 __userhost() {
   echo -e "${Green}\u@\h${ResetColor}"
 }
 
+# Current working directory.
 __workdir() {
   echo -e "${Cyan}\w${ResetColor}"
 }
 
-# Current time
-__time() {
-  echo -e " ${BrightCyan}\$(date +%H:%M:%S)${ResetColor}"
-}
-
 # Number of jobs running in the background controlled by this shell.
 __job_status() {
-  echo -e "$(__time) ${BrightCyan}\j&${ResetColor}"
+  echo -e "${Cyan}\j&${ResetColor}"
 }
 
 # Turn text to green if success otherwise red exit code.
@@ -51,12 +48,14 @@ __cmd_status() {
 
 export PROMPT_DIRTRIM=2  # shortern the path to 2 directory levels.
 
-# Get the function from git-prompt.sh
-if [[ -z ${container} ]]; then
-  if type __git_ps1 | grep "is a function" > /dev/null; then
-    PS1="$(__userhost):$(__workdir)$(__job_status)\$(__git_ps1)\$(__cmd_status)${ResetColor} "
-  else
-    PS1="$(__userhost):$(__workdir)$(__job_status)\$(__cmd_status)${ResetColor} "
-  fi
+# Don't change the prompt within a container.
+if [[ -n ${container} ]]; then
+  exit 0
 fi
+PS1="$(__userhost):$(__workdir)${BrightCyan} \j& \t${ResetColor}"
+# Get __git_ps1 from git-prompt.sh
+if type __git_ps1 | grep "is a function" > /dev/null; then
+PS1="$PS1\$(__git_ps1)"
+fi
+PS1="$PS1\$(__cmd_status)${ResetColor} "
 export PS1
