@@ -18,13 +18,18 @@
 [alias]
     br = branch
     changelog = log --format='* %s%n%w(,4,4)%+b'
-    c = commit -v
+    c = commit --verbose
     co = checkout
     cp = cherry-pick
+    cpc = cherry-pick --continue
+    d = diff
     fetchmain = fetch upstream main:main
-    p = push
-    pl = pull --rebase --autostash
-    s = status -s
+    pras = pull --rebase --autostash
+    prsm = pull --recurse-submodules
+    rb = rebase
+    rbc = rebase --continue
+    rbm = rebase main
+    s = status --short
     sm = submodule
     st = status
     sw = switch

@@ -19,7 +19,7 @@ alias ls='ls --color=none'
 
 # Alias for git
 alias ga='git add'
-alias gc='git commit -v'
+alias gc='git commit --verbose'
 alias gca='git commit --amend'
 
 # Alias for docker

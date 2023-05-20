@@ -13,6 +13,10 @@ Diagnostics:
     Remove: [modernize-use-trailing-return-type]
     CheckOptions:
       #See https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
+      readability-implicit-bool-conversion.AllowPointerConditions: true
+      readability-function-cognitive-complexity.Threshold: 15
+      readability-function-cognitive-complexity.IgnoreMacros: true
+      cppcoreguidelines-pro-bounds-array-to-pointer-decay: false
       readability-identifier-naming.NamespaceCase:lower_case
       readability-identifier-naming.ClassCase:CamelCase
       readability-identifier-naming.StructCase:CamelCase

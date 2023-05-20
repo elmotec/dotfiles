@@ -107,6 +107,7 @@ nmap <c-j> :bp<CR>
 
 " Control-F4 closes the buffer.
 nmap <c-F4> :bd<CR>
+" nmap <c-w> :bd<CR>  # breaks compat with vim window default prefix <c-w>
 " Shortcut to see buffers and prepare switch to a different buffer
 " Note Ctrl+6 also switch to last used buffer (alternate)
 nmap <Leader>b :buffers<CR>:buffer<Space>
@@ -123,6 +124,7 @@ nmap <Leader><Leader>w :set wrap!<CR>
 nmap <Leader><Leader>n :set number!<CR>
 " Show/Hide line numbers (relative), default to relative.
 nmap <Leader><Leader>r :set relativenumber!<CR>
+"set relativenumber
 " Show/Hide cursor line
 nmap <Leader><Leader>c :set cursorline!<CR>
 " Bind scrolling of windows
@@ -258,17 +260,25 @@ let g:startify_lists = [
         \ { 'type': 'commands',  'header': ['   Commands']       },
         \ ]
 
+" Options for Startify. Left here for now in case they are needed.
 let g:startify_change_to_dir = 1
 let g:startify_change_to_vcs_root = 1
 let g:startify_relative_path = 1
+" let g:startify_enable_unsafe = 1
 
-" Powershell
-Plug 'pprovost/vim-ps1'
+" Add supports for editorconfig
+Plug 'editorconfig/editorconfig-vim'
+
+if has('win32')
+    " Powershell
+    Plug 'pprovost/vim-ps1'
+endif
 
 " Markdown (.md) handling and wiki features
 Plug 'vimwiki/vimwiki'
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 let g:vimwiki_folding = 'expr'
+let g:vimwiki_markdown_link_ext = 1
 autocmd FileType vimwiki setlocal syntax=markdown
 autocmd FileType vimwiki setlocal foldenable
 
@@ -356,9 +366,6 @@ endif  " nvim
 
 " Support for Jenkins pipeline files
 Plug 'martinda/Jenkinsfile-vim-syntax'
-
-" Add supports for editorconfig
-Plug 'editorconfig/editorconfig-vim'
 
 " Follow console colors (see base16 guidelines)
 colorscheme cterm

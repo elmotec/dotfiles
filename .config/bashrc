@@ -26,4 +26,4 @@ export GIT_PS1_SHOWCOLORHINTS=true
 
 # Set the window title to the hostname by default so it shows in tmux. See
 # aliases.bashrc for the title alias.
-title @$(hostname)
+[[ $(which hostname) ]] && set-title @$(hostname)

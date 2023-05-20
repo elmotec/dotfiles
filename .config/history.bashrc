@@ -2,7 +2,7 @@
 
 # Avoid duplicate entries
 HISTCONTROL=ignoreboth
-HISTFILE="${HOME}/.local/history.$(uname -n)"
+HISTFILE="${HOME}/.local/share/history/history.$(uname -n)"
 
 # Huge history. Doesn't appear to slow things down, so why not?
 HISTSIZE=50000

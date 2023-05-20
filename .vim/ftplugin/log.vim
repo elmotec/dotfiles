@@ -47,13 +47,13 @@ syn match logDate '^20\d\{6}'
 syn keyword logDate Mon Tue Wed Thu Fri Sat Sun Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec nextgroup=logDateDay
 syn match logDateDay '\s\{1,2}\d\{1,2}' contained
 
-" Matches 12:09:38 or 00:03:38.129Z or 01:32:12.102938 +0700
-syn match logTime '\d\{2}:\d\{2}:\d\{2}\(\.\d\{2,6}\)\?\(\s\?[-+]\d\{2,4}\|Z\)\?\>' nextgroup=logTimeZone,logSysColumns skipwhite
+" Matches 12:09:38 or 00:03:38.129Z or 01:32:12.102938 +07:00
+" syn match logTime '\d\{2}:\d\{2}:\d\{2}\(\.\d\{2,6}\)\?\(\s*-\d\{2}:\d\{2}\|Z\)\?' nextgroup=logTimeZone,logSysColumns skipwhite
+syn match logTime '\d\{2}:\d\{2}:\d\{2}\(\.\d\{2,6}\)\?' nextgroup=logTimeZone,logSysColumns skipwhite
 
-" Follows logTime, matches UTC or PDT 2019 or 2019 EDT
+" Follows logTime, matches UTC or PDT 2019 or 2019 EDT or -05:00
 syn match logTimeZone '[A-Z]\{2,5}\>\( \d\{4}\)\?' contained
 syn match logTimeZone '\d\{4} [A-Z]\{2,5}\>' contained
-
 
 " Entities
 "---------------------------------------------------------------------------
@@ -148,11 +148,9 @@ hi def link logLevelCritical ErrorMsg
 hi def link logLevelError ErrorMsg
 hi def link logLevelWarning WarningMsg
 hi def link logLevelNotice Character
-hi def link logLevelInfo Repeat
+hi def link logLevelInfo Character
 hi def link logLevelDebug Debug
 hi def link logLevelTrace Comment
-
-
 
 let b:current_syntax = 'log'
 

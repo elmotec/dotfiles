@@ -31,6 +31,7 @@ ignore =
     manage.py
     test_manage.py
     venv/
+    AppData/
 # directories to be symlinked directly.
 linked_dirs =
     .vim

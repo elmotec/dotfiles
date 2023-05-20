@@ -1,10 +1,10 @@
 # Environment variables
 
 USERPROFILE=/mnt/c/Users/`whoami`
-EDITOR="vim"
-# If we can, use neovim
-[ -x /usr/bin/nvim ] && EDITOR=nvim
-VISUAL=$EDITOR
+# Set EDITOR variable to neovim, else vim
+[ -z "$EDITOR" -a -x nvim ] && export EDITOR=nvim
+[ -z "$EDITOR" -a -x vim ] && export EDITOR=vim
+export VISUAL=$EDITOR
 
 PATH=${HOME}/.local/bin:${PATH}
 

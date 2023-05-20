@@ -7,8 +7,9 @@ vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { no
 vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope tags<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope registrs<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope registers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fm", "<cmd>Telescope mark<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>Telescope symbols<cr>", { noremap = true })
 
 -- leverage builtin colors ...
 local colors = {
@@ -30,6 +31,7 @@ local colors = {
     accentText = 15, -- white
 }
 
+-- ... for the theme
 local console_theme = {
     normal = {
         a = { fg = colors.accentText, bg = colors.green, },
@@ -74,8 +76,8 @@ require("lualine").setup {
     },
     sections = {
         lualine_a = { "mode" },
-        lualine_b = { "branch", "diff", "diagnostics" },
-        lualine_c = { { "filename", path = 1 } },
+        lualine_b = { { "filename", path = 1 } },
+        lualine_c = { "branch", "diff", "diagnostics" },
         lualine_x = { "encoding", "fileformat", "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" }
@@ -127,6 +129,7 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, bufopts)
+  --vim.keymap.set("v", "<leader>f", vim.lsp.buf.formatexpr, bufopts)
 end
 
 local signs = {
@@ -192,6 +195,7 @@ cmp.setup.cmdline(":", {
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+--local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
