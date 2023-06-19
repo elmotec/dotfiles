@@ -237,6 +237,13 @@ call plug#begin(g:vim_plugged_dir)
 " Call :StartupTime to profile vim startup
 Plug 'tweekmonster/startuptime.vim'
 
+" Display tips on startup and on demand with <leader>t
+function! Vtip()
+  echomsg system('curl -s -m 3 https://vtip.43z.one')
+endfunction
+:call Vtip()
+noremap <leader> :call Vtip()<CR>
+
 " Git in vim
 Plug 'tpope/vim-fugitive'
 
@@ -297,6 +304,8 @@ if has("nvim")
     Plug 'hrsh7th/cmp-path'
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'hrsh7th/nvim-cmp'
+
+    Plug 'skywind3000/asyncrun.vim'
 
     " For vsnip users.
     " Plug 'hrsh7th/cmp-vsnip'
