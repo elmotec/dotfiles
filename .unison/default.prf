@@ -1,6 +1,6 @@
 # roots
-root = ssh://<host>
-root = <local>
+root = \\synology\homes\jlecomte\backup
+root = C:\Users\jlecomte
 
 # Unison preferences file
 include common
