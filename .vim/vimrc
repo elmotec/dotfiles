@@ -173,7 +173,7 @@ if has("autocmd")
   filetype plugin indent on
 
   " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+  autocmd FileType text setlocal textwidth=99
 
   " Auto load python specific extensions (bring in
   " $VIMRUNTIME/ftplugin/python* files and directories).
@@ -325,7 +325,7 @@ if has("nvim")
     " Plug 'dcampos/nvim-snippy'
     " Plug 'dcampos/cmp-snippy'
 
-    " Plug 'github/copilot.vim'
+    Plug 'github/copilot.vim'
 
     Plug 'jose-elias-alvarez/null-ls.nvim'
 

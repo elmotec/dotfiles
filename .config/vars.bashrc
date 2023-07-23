@@ -14,4 +14,5 @@ if UPDATED_PATH=$(echo $PATH | tr ':' '\012' | uniq | grep -v pyenv | tr '\012' 
 else
     echo "WARNING: cannot clean PATH variable"
 fi
+export PATH
 
