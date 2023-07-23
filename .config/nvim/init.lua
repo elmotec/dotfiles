@@ -187,14 +187,16 @@ cmp.setup.cmdline("/", {
     }
 })
 
+-- Commented out for now because it breaks auto-completion in the command line.
 -- Use cmdline & path source for ":" (if you enabled `native_menu`, this won"t work anymore).
-cmp.setup.cmdline(":", {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({ { name = "path" } })
-})
+-- cmp.setup.cmdline(":", {
+    -- mapping = cmp.mapping.preset.cmdline(),
+    -- sources = cmp.config.sources({ { name = "path" } })
+-- })
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- update_capabilities is deprecated
 --local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
