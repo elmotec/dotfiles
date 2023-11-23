@@ -46,3 +46,4 @@ set-title() {
 }
 alias title=set-title
 
+alias make='make -j'
