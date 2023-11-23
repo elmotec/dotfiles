@@ -2,7 +2,10 @@
 
 # Avoid duplicate entries
 HISTCONTROL=ignoreboth
-HISTFILE="${HOME}/.local/share/history/history.$(uname -n)"
+HISTNAME=$(uname -n)
+# For docker, merge all historiy in the same file because hostname keeps changing
+[[ -n $container ]] && HISTNAME=$container
+HISTFILE="${HOME}/.local/share/history/history.${HISTNAME}"
 
 # Huge history. Doesn't appear to slow things down, so why not?
 HISTSIZE=50000
