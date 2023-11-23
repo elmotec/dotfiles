@@ -9,6 +9,8 @@
 [core]
     filemode = false
     eol = lf
+[commit]
+    verbose = true
 [init]
     defaultBranch = main
 [format]
@@ -18,7 +20,7 @@
 [alias]
     br = branch
     changelog = log --format='* %s%n%w(,4,4)%+b'
-    c = commit --verbose
+    c = commit
     co = checkout
     cp = cherry-pick
     cpc = cherry-pick --continue
