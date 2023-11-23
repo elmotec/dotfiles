@@ -257,48 +257,11 @@ require 'lspconfig'.yamlls.setup {
     flags = lsp_flags,
 }
 
-local null_ls = require("null-ls")
-local methods = require("null-ls.methods")
-local helpers = require("null-ls.helpers")
-
-local function ruff_fix()
-    return helpers.make_builtin({
-        name = "ruff",
-        meta = {
-            url = "https://github.com/charliermarsh/ruff/",
-            description = "An extremely fast Python linter, written in Rust.",
-        },
-        method = methods.internal.FORMATTING,
-        filetypes = { "python" },
-        generator_opts = {
-            command = "ruff",
-            args = { "--fix", "-e", "-n", "--stdin-filename", "$FILENAME", "-" },
-            to_stdin = true
-        },
-        factory = helpers.formatter_factory
-    })
-end
-
 local pylint_commmand = "pylint"
 if vim.fn.has("win32") == 1 then
     pylint_commmand = "pylint.exe"
 end
-null_ls.setup({
-    sources = {
-        null_ls.builtins.completion.spell.with({
-            filetypes = { "md" }
-        }),
-        null_ls.builtins.diagnostics.pylint.with({
-            command = pylint_commmand,
-            env = { PATH = os.getenv("PATH") },
-            extra_args = { "--rcfile=pylintrc" },
-        }),
-        null_ls.builtins.formatting.black,
-        --ruff_fix(),
-        --null_ls.builtins.diagnostics.ruff,
-    },
-    on_attach = on_attach,
+require('lspconfig').pylsp.setup({
     debug = true,
-    default_timeout = 10000,
 })
 
