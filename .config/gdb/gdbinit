@@ -1,0 +1,58 @@
+set history save on
+set history remove-duplicates 10
+
+# allow background execution when running commands.
+set mi-async off
+# let unblocked thread blocked continue running
+set non-stop off
+# persist history
+set history filename ~/.local/gdbhistory
+# limit how much data we show with print
+set print max-depth 3
+set print pretty on
+
+# from https://stackoverflow.com/questions/3832964/
+define ostr
+    call (void)operator<<(std::cerr, $arg0)
+    call (void)fflush(0)
+    print "\n"
+end
+document ostr
+Syntax: ostr VARIABLE
+  Attempt to use the ostream<< operator to print out VARIABLE
+end
+
+define ll
+    list -
+    list
+end
+document ll
+Syntax: ll
+  List 10 lines above and after the current line.
+end
+
+define sbps
+    save breakpoints .gdb_breakpoints
+end
+document spbs
+Syntax: sbps
+  Save breakpoints to local .gdb_breakpoints file.
+end
+
+define lbps
+    source .gdb_breakpoints
+end
+document lpbs
+Syntax: lbps
+  Source local .gdb_breakpoints file.
+end
+
+define bl
+    info breakpoints
+end
+document bl
+Syntax: bl
+  List all breakpoints.
+end
+
+echo gdbinit loaded!\n
