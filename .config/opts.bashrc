@@ -1,5 +1,8 @@
 # Bash options.
 
+# vi style
+set -o vi
+
 # Update window size after every command
 shopt -s checkwinsize
 

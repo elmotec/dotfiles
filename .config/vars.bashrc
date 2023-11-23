@@ -1,9 +1,11 @@
 # Environment variables
 
+# For windows wsl
 USERPROFILE=/mnt/c/Users/`whoami`
+
 # Set EDITOR variable to neovim, else vim
-[ -z "$EDITOR" -a -x nvim ] && export EDITOR=nvim
-[ -z "$EDITOR" -a -x vim ] && export EDITOR=vim
+[[ -z "$EDITOR" && -x $(which nvim) ]] && export EDITOR=$(which nvim)
+[[ -z "$EDITOR" && -x $(which vim) ]] && export EDITOR=$(which vim)
 export VISUAL=$EDITOR
 
 PATH=${HOME}/.local/bin:${PATH}

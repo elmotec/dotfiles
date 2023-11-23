@@ -3,13 +3,18 @@ vim.cmd([[
   source ~/.vim/vimrc
 ]])
 
-vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope git_files<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fF", "<cmd>Telescope find_files search_dir=~<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope grep_string search_dir=../..<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope tags<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope registers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fm", "<cmd>Telescope mark<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>Telescope symbols<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fc", "<cmd>Telescope git_bcommits<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fx", "<cmd>Telescope quickfix<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { noremap = true })
 
 -- leverage builtin colors ...
 local colors = {
