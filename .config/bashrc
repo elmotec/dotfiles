@@ -1,6 +1,7 @@
-set -o vi
-
 export XDG_CONFIG_HOME=${HOME}/.config
+
+# Firm specific settings, see also firm-post below.
+[[ -f ${XDG_CONFIG_HOME}/firm-pre.bashrc ]] && . ${XDG_CONFIG_HOME}/firm-pre.bashrc
 
 # Unique Bash version check
 if ((BASH_VERSINFO[0] < 4))
@@ -23,6 +24,9 @@ export GIT_PS1_SHOWCOLORHINTS=true
 
 # Enable SSO via keychain and ssh-agent.
 [[ -f ${HOME}/.ssh/id_ecdsa ]] && eval `keychain -q --eval --agents ssh id_ecdsa`
+
+# Firm specific settings, see also firm-pre above.
+[[ -f ${XDG_CONFIG_HOME}/firm-post.bashrc ]] && . ${XDG_CONFIG_HOME}/firm-post.bashrc
 
 # Set the window title to the hostname by default so it shows in tmux. See
 # aliases.bashrc for the title alias.
