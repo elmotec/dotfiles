@@ -325,7 +325,7 @@ if has("nvim")
     " Plug 'dcampos/nvim-snippy'
     " Plug 'dcampos/cmp-snippy'
 
-    Plug 'github/copilot.vim'
+    " Plug 'github/copilot.vim'
 
     Plug 'jose-elias-alvarez/null-ls.nvim'
 
