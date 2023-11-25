@@ -62,7 +62,7 @@
             "backgroundImageOpacity": 0.25,
             "bellStyle": "none",
             "closeOnExit": "graceful",
-            "colorScheme": "base16-nono-dark",
+            "colorScheme": "base16-nono-light",
             "cursorColor": "#228822",
             "cursorShape": "vintage",
             "font": 
@@ -789,6 +789,28 @@
             "selectionBackground": "#546A78",
             "white": "#A6B9C9",
             "yellow": "#9E9E2B"
+        },
+        {
+            "name": "base16-nono-light",
+            "background": "#ddeeff",
+            "selectionBackground": "#a6b9c9",
+            "black": "#ddeeff",
+            "blue": "#3876d9",
+            "brightBlack": "#8b9fae",
+            "brightBlue": "#6f8493",
+            "brightCyan": "#4b7a4b",
+            "brightGreen": "#d2d4e4",
+            "brightPurple": "#384f5d",
+            "brightRed": "#d4a75e",
+            "brightWhite": "#1b3340",
+            "brightYellow": "#a6b9c9",
+            "cyan": "#83c0c2",
+            "foreground": "#546a78",
+            "green": "#77bf77",
+            "purple": "#5b95c2",
+            "red": "#b36b6b",
+            "white": "#546a78",
+            "yellow": "#9e9e2b"
         },
         {
             "background": "#2E3440",
