@@ -24,7 +24,7 @@ alias gca='git commit --amend'
 
 # Alias for docker
 alias d='docker'
-alias dc='docker-compose'
+alias dc='docker compose'
 
 # Alias for common commands
 alias h='history'
