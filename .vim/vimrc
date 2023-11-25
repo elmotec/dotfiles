@@ -246,6 +246,8 @@ noremap <leader> :call Vtip()<CR>
 
 " Git in vim
 Plug 'tpope/vim-fugitive'
+" Show context in code
+Plug 'welle/context.vim'
 
 " Startup screen with mru and cool quotes.
 Plug 'mhinz/vim-startify'
@@ -359,8 +361,8 @@ else  " not nvim => regular vim
     let g:ale_sign_warning = 'W'
     let g:airline#extensions#ale#enabled = 1
     "let g:ale_fix_on_save = 1
-    nmap <silent> [w <Plug>(ale_previous_wrap)
-    nmap <silent> ]w <Plug>(ale_next_wrap)
+    nmap <silent> [d <Plug>(ale_previous_wrap)
+    nmap <silent> ]d <Plug>(ale_next_wrap)
 
     " Airline status bar
     Plug 'vim-airline/vim-airline'
