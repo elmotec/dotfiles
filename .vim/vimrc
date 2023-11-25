@@ -163,6 +163,8 @@ nmap <Leader><Leader>u :s/\(.*\)/\=UrlEncode(submatch(1))/g<CR>
 " Set python3 provider to be python on windows, otherwise defaults to python3
 if has("win32")
     let g:python3_host_prog = 'python'
+else
+    let g:python3_host_prog = 'python3'
 endif
 
 " Only do this part when compiled with support for autocommands.
@@ -197,6 +199,7 @@ endif " has("autocmd")
 set list
 " ... as Unicode characters
 if has("multi_byte")
+    set ambiwidth=single  " Silence E834 on Sun
     set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
 endif
 
