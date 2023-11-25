@@ -93,7 +93,7 @@ fun <sid>hi(group, guifg, guibg, ctermfg, ctermbg, attr, guisp)
 endfun
 
 " Vim editor colors
-call <sid>hi("Normal",        s:cterm05, s:cterm00, s:cterm05, s:cterm00, "", "")
+call <sid>hi("Normal",        s:cterm04, "", s:cterm04, "", "", "")
 call <sid>hi("Bold",          "", "", "", "", "bold", "")
 call <sid>hi("Debug",         s:cterm05, "", s:cterm05, "", "", "")
 call <sid>hi("Directory",     s:cterm0D, "", s:cterm0D, "", "", "")
@@ -199,7 +199,6 @@ call <sid>hi("DiffRemoved",  s:cterm08, s:cterm00,  s:cterm08, s:cterm00, "", ""
 " Git highlighting
 call <sid>hi("gitcommitOverflow",       s:cterm08, "", s:cterm08, "", "", "")
 call <sid>hi("gitcommitSummary",        s:cterm0B, "", s:cterm0B, "", "", "")
-call <sid>hi("gitcommitComment",        s:cterm03, "", s:cterm03, "", "", "")
 call <sid>hi("gitcommitUntracked",      s:cterm03, "", s:cterm03, "", "", "")
 call <sid>hi("gitcommitDiscarded",      s:cterm03, "", s:cterm03, "", "", "")
 call <sid>hi("gitcommitSelected",       s:cterm03, "", s:cterm03, "", "", "")
