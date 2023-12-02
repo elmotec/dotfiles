@@ -115,7 +115,7 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, opts)
 -- after the language server attaches to the current buffer
 local on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    --vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -135,7 +135,7 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, bufopts)
-  --vim.keymap.set("v", "<leader>f", vim.lsp.buf.formatexpr, bufopts)
+    --vim.keymap.set("v", "<leader>f", vim.lsp.buf.formatexpr, bufopts)
 end
 
 local signs = {
@@ -149,7 +149,8 @@ for type, icon in pairs(signs) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
--- Setup nvim-cmp.
+-- Setup nvim-cmp for auto-completion (replaces omnifunc).
+-- from https://github.com/hrsh7th/nvim-cmp
 local cmp = require "cmp"
 
 cmp.setup({
@@ -179,41 +180,58 @@ cmp.setup({
         -- { name = "vsnip" }, -- For vsnip users.
         -- { name = "luasnip" }, -- For luasnip users.
         -- { name = "snippy" }, -- For snippy users.
-        -- { name = "ultisnips" }, -- For ultisnips users.
+        { name = "ultisnips" }, -- For ultisnips users.
     }, {
         { name = "buffer" },
     })
 })
 
--- Use buffer source for `/` (if you enabled `native_menu`, this won"t work anymore).
-cmp.setup.cmdline("/", {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-        { name = "buffer" }
-    }
+-- Set configuration for specific filetype.
+cmp.setup.filetype('gitcommit', {
+  sources = cmp.config.sources({
+    { name = 'git' }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
+  }, {
+    { name = 'buffer' },
+  })
 })
 
--- Commented out for now because it breaks auto-completion in the command line.
--- Use cmdline & path source for ":" (if you enabled `native_menu`, this won"t work anymore).
--- cmp.setup.cmdline(":", {
-    -- mapping = cmp.mapping.preset.cmdline(),
-    -- sources = cmp.config.sources({ { name = "path" } })
--- })
+-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline({ '/', '?' }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 -- update_capabilities is deprecated
 --local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+-- commnon to following plugins.
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
 }
+
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#jedi_language_server (python)
 require('lspconfig')['jedi_language_server'].setup {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities
 }
+
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#clangd
 require 'lspconfig'.clangd.setup {
     cmd = {
@@ -227,30 +245,32 @@ require 'lspconfig'.clangd.setup {
     flags = lsp_flags,
     capabilities = capabilities
 }
+
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#cmake
 require 'lspconfig'.cmake.setup {}
+
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
-require'lspconfig'.lua_ls.setup {
-  settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = {'vim'},
-      },
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file("", true),
-      },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
-      },
+require 'lspconfig'.lua_ls.setup {
+    settings = {
+        Lua = {
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+            },
+            diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = { 'vim' },
+            },
+            workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file("", true),
+            },
+            -- Do not send telemetry data containing a randomized but unique identifier
+            telemetry = {
+                enable = false,
+            },
+        },
     },
-  },
 }
 
 require 'lspconfig'.dockerls.setup {
@@ -263,11 +283,22 @@ require 'lspconfig'.yamlls.setup {
     flags = lsp_flags,
 }
 
-local pylint_commmand = "pylint"
-if vim.fn.has("win32") == 1 then
-    pylint_commmand = "pylint.exe"
-end
+-- pylint
+-- local pylint_commmand = "pylint"
+-- if vim.fn.has("win32") == 1 then
+--     pylint_commmand = "pylint.exe"
+-- end
 require('lspconfig').pylsp.setup({
-    debug = true,
+    debug = false,
 })
+-- from https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#ruff_lsp
+require 'lspconfig'.ruff_lsp.setup {
+    on_attach = on_attach,
+    init_options = {
+        settings = {
+            -- Any extra CLI arguments for `ruff` go here.
+            args = {},
+        }
+    }
+}
 
