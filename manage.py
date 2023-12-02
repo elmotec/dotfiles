@@ -28,11 +28,6 @@ __author__ = "Jérôme Lecomte"
 __license__ = "MIT"
 
 
-import sys
-
-assert (
-    sys.version_info >= (3, 8) or sys.platform != "win32"
-), "program requires Python 3.8 for Windows"
 import argparse
 import configparser
 import difflib
@@ -44,7 +39,12 @@ import pathlib as pl
 import shlex
 import shutil
 import subprocess
+import sys
 import typing as t
+
+assert (
+    sys.version_info >= (3, 8) or sys.platform != "win32"
+), "program requires Python 3.8 for Windows"
 
 if sys.platform == "win32":
     import _winapi
