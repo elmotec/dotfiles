@@ -250,7 +250,7 @@ noremap <leader> :call Vtip()<CR>
 " Git in vim
 Plug 'tpope/vim-fugitive'
 " Show context in code
-Plug 'welle/context.vim'
+Plug 'wellle/context.vim'
 
 " Startup screen with mru and cool quotes.
 Plug 'mhinz/vim-startify'
