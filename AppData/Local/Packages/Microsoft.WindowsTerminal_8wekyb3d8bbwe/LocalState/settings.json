@@ -10,6 +10,15 @@
         {
             "command": 
             {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "keys": "alt+shift+d"
+        },
+        {
+            "command": 
+            {
                 "action": "copy",
                 "singleLine": false
             },
@@ -26,15 +35,6 @@
         {
             "command": "paste",
             "keys": "ctrl+shift+v"
-        },
-        {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "auto",
-                "splitMode": "duplicate"
-            },
-            "keys": "alt+shift+d"
         },
         {
             "command": "unbound",
@@ -62,7 +62,7 @@
             "backgroundImageOpacity": 0.25,
             "bellStyle": "none",
             "closeOnExit": "graceful",
-            "colorScheme": "base16-nono-light",
+            "colorScheme": "base16-nono-dark",
             "cursorColor": "#228822",
             "cursorShape": "vintage",
             "font": 
@@ -70,8 +70,7 @@
                 "face": "Hack NF",
                 "size": 14.0
             },
-            "hidden": false,
-            "padding": "10"
+            "hidden": false
         },
         "list": 
         [
@@ -101,7 +100,10 @@
                 "name": "Command Prompt"
             },
             {
-                "colorScheme": "base16-nono-dark",
+                "colorScheme": 
+                {
+                    "light": "base16-nono-dark"
+                },
                 "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
                 "hidden": false,
                 "name": "Ubuntu-22.04",
@@ -791,26 +793,27 @@
             "yellow": "#9E9E2B"
         },
         {
+            "background": "#DDEEFF",
+            "black": "#DDEEFF",
+            "blue": "#3876D9",
+            "brightBlack": "#8B9FAE",
+            "brightBlue": "#6F8493",
+            "brightCyan": "#4B7A4B",
+            "brightGreen": "#D2D4E4",
+            "brightPurple": "#384F5D",
+            "brightRed": "#D4A75E",
+            "brightWhite": "#1B3340",
+            "brightYellow": "#A6B9C9",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#83C0C2",
+            "foreground": "#546A78",
+            "green": "#77BF77",
             "name": "base16-nono-light",
-            "background": "#ddeeff",
-            "selectionBackground": "#a6b9c9",
-            "black": "#ddeeff",
-            "blue": "#3876d9",
-            "brightBlack": "#8b9fae",
-            "brightBlue": "#6f8493",
-            "brightCyan": "#4b7a4b",
-            "brightGreen": "#d2d4e4",
-            "brightPurple": "#384f5d",
-            "brightRed": "#d4a75e",
-            "brightWhite": "#1b3340",
-            "brightYellow": "#a6b9c9",
-            "cyan": "#83c0c2",
-            "foreground": "#546a78",
-            "green": "#77bf77",
-            "purple": "#5b95c2",
-            "red": "#b36b6b",
-            "white": "#546a78",
-            "yellow": "#9e9e2b"
+            "purple": "#5B95C2",
+            "red": "#B36B6B",
+            "selectionBackground": "#A6B9C9",
+            "white": "#546A78",
+            "yellow": "#9E9E2B"
         },
         {
             "background": "#2E3440",
@@ -883,50 +886,6 @@
         }
     ],
     "theme": "system",
-    "themes": 
-    [
-        {
-            "name": "legacyDark",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "dark",
-                "useMica": false
-            }
-        },
-        {
-            "name": "legacyLight",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "light",
-                "useMica": false
-            }
-        },
-        {
-            "name": "legacySystem",
-            "tab": 
-            {
-                "background": null,
-                "showCloseButton": "always",
-                "unfocusedBackground": null
-            },
-            "window": 
-            {
-                "applicationTheme": "system",
-                "useMica": false
-            }
-        }
-    ],
-    "useAcrylicInTabRow": false
+    "themes": [],
+    "useAcrylicInTabRow": true
 }
