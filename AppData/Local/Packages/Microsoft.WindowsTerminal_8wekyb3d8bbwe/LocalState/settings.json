@@ -4,10 +4,6 @@
     "actions": 
     [
         {
-            "command": "find",
-            "keys": "ctrl+shift+f"
-        },
-        {
             "command": 
             {
                 "action": "splitPane",
@@ -17,12 +13,8 @@
             "keys": "alt+shift+d"
         },
         {
-            "command": 
-            {
-                "action": "copy",
-                "singleLine": false
-            },
-            "keys": "ctrl+shift+c"
+            "command": "find",
+            "keys": "ctrl+shift+f"
         },
         {
             "command": 
@@ -31,6 +23,14 @@
                 "split": "right"
             },
             "keys": "alt+shift+\\"
+        },
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "keys": "ctrl+shift+c"
         },
         {
             "command": "paste",
@@ -48,7 +48,7 @@
     "defaultProfile": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
     "initialCols": 120,
     "initialPosition": "100,100",
-    "initialRows": 50,
+    "initialRows": 40,
     "newTabMenu": 
     [
         {
@@ -116,9 +116,9 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{d7b20cea-47a9-518c-95a4-c8bd91e2e1c6}",
+                "guid": "{e5a83caa-4c73-52b3-ae6b-bc438d721ef9}",
                 "hidden": false,
-                "name": "Ubuntu 22.04.2 LTS",
+                "name": "Ubuntu 22.04.3 LTS",
                 "source": "CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc"
             }
         ]
