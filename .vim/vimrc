@@ -284,15 +284,20 @@ Plug 'editorconfig/editorconfig-vim'
 if has('win32')
     " Powershell
     Plug 'pprovost/vim-ps1'
-endif
 
-" Markdown (.md) handling and wiki features
-Plug 'vimwiki/vimwiki'
-let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
-let g:vimwiki_folding = 'expr'
-let g:vimwiki_markdown_link_ext = 1
-autocmd FileType vimwiki setlocal syntax=markdown
-autocmd FileType vimwiki setlocal foldenable
+    " Markdown (.md) handling and wiki features
+    Plug 'vimwiki/vimwiki'
+    let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md', 'auto_tags': 1}]
+    let g:vimwiki_folding = 'list'
+    let g:vimwiki_global_ext = 0
+    let g:vimwiki_markdown_link_ext = 1
+    "let g:vimwiki_global_vars.web_schemes1 = join(['http', 'https', 'file', 'ftp', 'gopher',
+        "\ 'telnet', 'nntp', 'ldap', 'rsync', 'imap', 'pop', 'irc', 'ircs', 'cvs', 'svn', 'svn+ssh',
+        "\ 'git', 'ssh', 'fish', 'sftp', 'bbg'], '\|')
+    autocmd FileType vimwiki setlocal syntax=markdown
+    autocmd FileType vimwiki setlocal foldenable
+    nmap <C-X><C-X> :VimwikiToggleListItem<CR>
+endif
 
 if has("nvim")
 
@@ -356,7 +361,7 @@ else  " not nvim => regular vim
 
     " Asynchronous linter
     Plug 'dense-analysis/ale'
-    let g:ale_fixers = { "python": ["black"] }
+    let g:ale_fixers = { "python": ["black"], "cpp": [] }
     let g:ale_linters = { "python": ["pylint"] }
     "let g:ale_python_pylint_options = '-j 0 -r n --rcfile pylintrc'
     "let g:ale_python_pylint_options = '--rcfile pylintrc'

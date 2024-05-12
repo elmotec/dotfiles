@@ -8,7 +8,7 @@ USERPROFILE=/mnt/c/Users/`whoami`
 [[ -z "$EDITOR" && -x $(which vim) ]] && export EDITOR=$(which vim)
 export VISUAL=$EDITOR
 
-PATH=${HOME}/.local/bin:${PATH}
+PATH=${HOME}/bin:${HOME}/.local/bin:${HOME}/lib:${HOME}/.local/lib:${PATH}
 
 # Fix PATH variable dupes and avoid conflicts with Windows pyenv
 if UPDATED_PATH=$(echo $PATH | tr ':' '\012' | uniq | grep -v pyenv | tr '\012' ':'); then

@@ -18,28 +18,34 @@
 [log]
     date = human
 [alias]
-    br = branch
-    changelog = log --format='* %s%n%w(,4,4)%+b'
+    br = branch -v
+    br-clean = branch -d $(git branch --merged=main | grep -v main)
+    changelog = log --format='* %s%n%w(,4,4)%+b' --no-merges
     c = commit
     co = checkout
     cp = cherry-pick
-    cpc = cherry-pick --continue
+    cp-c = cherry-pick --continue
+    cp-s = cherry-pick --skip
     d = diff
     fetchmain = fetch upstream main:main
-    pras = pull --rebase --autostash
-    prsm = pull --recurse-submodules
+    p-rbas = pull --rebase --autostash
+    p-rc = pull --recurse-submodules
     rb = rebase
-    rbc = rebase --continue
+    rb-c = rebase --continue
     rbm = rebase main
     s = status --short
     sm = submodule
     st = status
     sw = switch
-    swa = switch --recurse-submodule
+    sw-rc = switch --recurse-submodule
+    bl = blame -w
+    blc = blame -w -C -C -C
+    patch = cherry-pick --no-commit
 [diff]
     tool = nvim -d
 [mergetool "fugitive"]
     cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+    keepBackup = false
 [merge]
     tool = fugitive
 [credential "https://gitlab.com"]

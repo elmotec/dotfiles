@@ -22,7 +22,11 @@ colortest() {
 
 # User name and host name.
 __userhost() {
-  echo -e "${Green}\u@\h${ResetColor}"
+  if [[ -n ${container} ]]; then
+    echo -e "${Green}\u@${container}-\h${ResetColor}"
+  else
+    echo -e "${Green}\u@\h${ResetColor}"
+  fi
 }
 
 # Current working directory.
@@ -54,7 +58,7 @@ if [[ -n ${container} ]]; then
 fi
 PS1="$(__userhost):$(__workdir)${BrightCyan} \j& \t${ResetColor}"
 # Get __git_ps1 from git-prompt.sh
-if type __git_ps1 2>/dev/null | grep "is a function" > /dev/null; then
+if (type __git_ps1 2>/dev/null | grep "is a function" > /dev/null); then
 PS1="$PS1\$(__git_ps1)"
 fi
 PS1="$PS1\$(__cmd_status)${ResetColor} "

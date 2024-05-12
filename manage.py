@@ -28,6 +28,11 @@ __author__ = "Jérôme Lecomte"
 __license__ = "MIT"
 
 
+import sys
+
+assert (
+    sys.version_info >= (3, 8) or sys.platform != "win32"
+), "program requires Python 3.8 for Windows"
 import argparse
 import configparser
 import difflib
@@ -41,10 +46,6 @@ import shutil
 import subprocess
 import sys
 import typing as t
-
-assert (
-    sys.version_info >= (3, 8) or sys.platform != "win32"
-), "program requires Python 3.8 for Windows"
 
 if sys.platform == "win32":
     import _winapi
@@ -231,7 +232,7 @@ class DotfileManager:
         home_filename = self.home_dir / dotfile.name
         # Create parent dir if not exits
         home_filename.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-        if force:
+        if not can_create_symlink and force:
             log.info("deleting %s ...", home_filename)
             os.unlink(home_filename)  # Remove existing symlink.
             log.debug("%s deleted", home_filename)

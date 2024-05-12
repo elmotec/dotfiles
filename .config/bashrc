@@ -1,3 +1,9 @@
+# .bashrc
+
+# Source global definitions
+[[ -f /etc/bashrc ]] && . /etc/bashrc
+
+# Default standard location for config files.
 export XDG_CONFIG_HOME=${HOME}/.config
 
 # Firm specific settings, see also firm-post below.
@@ -13,6 +19,7 @@ fi
 . $XDG_CONFIG_HOME/history.bashrc
 . $XDG_CONFIG_HOME/aliases.bashrc
 . $XDG_CONFIG_HOME/vars.bashrc
+. $XDG_CONFIG_HOME/vim.bashrc
 
 export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUPSTREAM="auto"

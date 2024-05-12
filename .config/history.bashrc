@@ -3,9 +3,11 @@
 # Avoid duplicate entries
 HISTCONTROL=ignoreboth
 HISTNAME=$(uname -n)
+HISTDIR=${HOME}/.local/share/history
+[[ -d ${HISTDIR} ]] || mkdir -p ${HISTDIR}
 # For docker, merge all historiy in the same file because hostname keeps changing
 [[ -n $container ]] && HISTNAME=$container
-HISTFILE="${HOME}/.local/share/history/history.${HISTNAME}"
+HISTFILE="${HISTDIR}/history.${HISTNAME}"
 
 # Huge history. Doesn't appear to slow things down, so why not?
 HISTSIZE=50000

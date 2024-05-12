@@ -1,9 +1,10 @@
 set history save on
 set history remove-duplicates 10
+# See https://sourceware.org/gdb/onlinedocs/gdb/Background-Execution.html#Background-Execution
 
 # allow background execution when running commands.
 set mi-async off
-# let unblocked thread blocked continue running
+# let unblocked thread blocked continue running.
 set non-stop off
 # persist history
 set history filename ~/.local/gdbhistory
@@ -11,7 +12,7 @@ set history filename ~/.local/gdbhistory
 set print max-depth 3
 set print pretty on
 
-# from https://stackoverflow.com/questions/3832964/
+# From https://stackoverflow.com/questions/3832964/
 define ostr
     call (void)operator<<(std::cerr, $arg0)
     call (void)fflush(0)
@@ -22,6 +23,18 @@ Syntax: ostr VARIABLE
   Attempt to use the ostream<< operator to print out VARIABLE
 end
 
+define ostrp
+    call (void)$arg0.print(std::cerr, 0, 2)
+    call (void)fflush(0)
+    print "\n"
+end
+document ostrp
+Syntax: ostrp VARIABLE
+  Attempt to use the print method to print out VARIABLE.
+end
+
+
+# List 10 lines before and after the current stack pointer.
 define ll
     list -
     list
@@ -31,22 +44,27 @@ Syntax: ll
   List 10 lines above and after the current line.
 end
 
+
+# Save current breakpoints
 define sbps
     save breakpoints .gdb_breakpoints
 end
-document spbs
+document sbps
 Syntax: sbps
   Save breakpoints to local .gdb_breakpoints file.
 end
 
+
+# Reload current breakpoints
 define lbps
     source .gdb_breakpoints
 end
-document lpbs
+document lbps
 Syntax: lbps
   Source local .gdb_breakpoints file.
 end
 
+# List all breakpoints
 define bl
     info breakpoints
 end

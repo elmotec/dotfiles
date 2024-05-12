@@ -4,15 +4,15 @@ vim.cmd([[
 ]])
 
 vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope git_files<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fF", "<cmd>Telescope find_files search_dir=~<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope grep_string search_dir=../..<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fF", "<cmd>Telescope find_files search_dirs=~<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>f/", "<cmd>Telescope grep_string search_dirs=../..<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>ft", "<cmd>Telescope tags<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fr", "<cmd>Telescope registers<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fm", "<cmd>Telescope mark<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>fc", "<cmd>Telescope git_bcommits<cr>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fc", "<cmd>Telescope git_bcommits<cr>", { noremap = true })  -- buffer commits
 vim.api.nvim_set_keymap("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fx", "<cmd>Telescope quickfix<cr>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>", { noremap = true })
@@ -115,7 +115,7 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.setloclist, opts)
 -- after the language server attaches to the current buffer
 local on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
-    --vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -135,13 +135,13 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, bufopts)
-    --vim.keymap.set("v", "<leader>f", vim.lsp.buf.formatexpr, bufopts)
+  --vim.keymap.set("v", "<leader>f", vim.lsp.buf.formatexpr, bufopts)
 end
 
 local signs = {
-    Error = "",
-    Warn = "",
-    Hint = "",
+    Error = "💣",
+    Warn = "⚠j",
+    Hint = "💡",
     Info = "",
 }
 for type, icon in pairs(signs) do
@@ -149,8 +149,7 @@ for type, icon in pairs(signs) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
--- Setup nvim-cmp for auto-completion (replaces omnifunc).
--- from https://github.com/hrsh7th/nvim-cmp
+-- Setup nvim-cmp.
 local cmp = require "cmp"
 
 cmp.setup({
@@ -180,7 +179,7 @@ cmp.setup({
         -- { name = "vsnip" }, -- For vsnip users.
         -- { name = "luasnip" }, -- For luasnip users.
         -- { name = "snippy" }, -- For snippy users.
-        { name = "ultisnips" }, -- For ultisnips users.
+        -- { name = "ultisnips" }, -- For ultisnips users.
     }, {
         { name = "buffer" },
     })
@@ -215,11 +214,7 @@ cmp.setup.cmdline(':', {
 
 
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
--- update_capabilities is deprecated
---local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
--- commnon to following plugins.
+local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
