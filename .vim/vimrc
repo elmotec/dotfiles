@@ -305,10 +305,10 @@ if has("nvim")
     Plug 'nvim-lualine/lualine.nvim'
     " If you want to have icons in your statusline choose one of these
     Plug 'kyazdani42/nvim-web-devicons'
-    Plug 'nvim-telescope/telescope.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.6' }  " requires nvim 0.7
     " Auto install LSP servers
     Plug 'williamboman/mason.nvim'
-    Plug 'neovim/nvim-lspconfig'
+    Plug 'neovim/nvim-lspconfig', { 'tag': 'v0.1.6' }  " requires nvim 0.7
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/cmp-path'
@@ -391,4 +391,5 @@ colorscheme cterm
 
 " Complete the plugin section.
 call plug#end()
+
 
