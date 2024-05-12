@@ -22,7 +22,7 @@
                 "action": "splitPane",
                 "split": "right"
             },
-            "keys": "alt+shift+\\"
+            "keys": "ctrl+shift+\\"
         },
         {
             "command": 
@@ -33,12 +33,16 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "command": "paste",
-            "keys": "ctrl+shift+v"
+            "command": "unbound",
+            "keys": "alt+shift+plus"
         },
         {
             "command": "unbound",
-            "keys": "alt+shift+plus"
+            "keys": "alt+shift+\\"
+        },
+        {
+            "command": "paste",
+            "keys": "ctrl+shift+v"
         }
     ],
     "alwaysShowNotificationIcon": true,
@@ -81,33 +85,20 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "backgroundImage": null,
-                "backgroundImageStretchMode": "fill",
-                "experimental.retroTerminalEffect": false,
-                "font": 
-                {
-                    "weight": "normal"
-                },
+                "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
+                "hidden": false,
+                "name": "Ubuntu-22.04",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
-                "name": "Windows PowerShell",
-                "opacity": 100,
-                "useAcrylic": false
+                "name": "Windows PowerShell 5"
             },
             {
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt"
-            },
-            {
-                "colorScheme": 
-                {
-                    "light": "base16-nono-dark"
-                },
-                "guid": "{17bf3de4-5353-5709-bcf9-835bd952a95e}",
-                "hidden": false,
-                "name": "Ubuntu-22.04",
-                "source": "Windows.Terminal.Wsl"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
