@@ -342,6 +342,9 @@ if has("nvim")
     " Needed for treesitter.
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+    " Access to ollama models
+    Plug 'David-Kunz/gen.nvim'
+
     " Other setup occurs in $MYVIMRC
 
 else  " not nvim => regular vim
