@@ -14,6 +14,9 @@ if !has("gui_running")
   endif
 endif
 
+" Something broke with neovim 0.10 (black background)
+set notermguicolors
+
 " Terminal color definitions
 let s:cterm00        = 0
 let g:base16_cterm00 = 0
