@@ -6,7 +6,12 @@
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
+[blame]
+    ignoreRevsFile = .git-blame-ignore
+[branch]
+    sort = -committerdate
 [core]
+    excludeFiles = ~/.config/git/ignore
     filemode = false
     eol = lf
 [commit]
@@ -29,7 +34,6 @@
     d = diff
     fetchmain = fetch upstream main:main
     p-rbas = pull --rebase --autostash
-    p-rc = pull --recurse-submodules
     rb = rebase
     rb-c = rebase --continue
     rbm = rebase main
@@ -37,7 +41,6 @@
     sm = submodule
     st = status
     sw = switch
-    sw-rc = switch --recurse-submodule
     bl = blame -w
     blc = blame -w -C -C -C
     patch = cherry-pick --no-commit
@@ -48,6 +51,10 @@
     keepBackup = false
 [merge]
     tool = fugitive
+[rerere]  # Reuse recorded resolutions.
+    enabled = true
+[submodule]  # automatically recuse submodule where it makes sense.
+    recurse = true
 [credential "https://gitlab.com"]
     provider = generic
 [credential "https://github.com"]
@@ -56,3 +63,5 @@
 [credential "https://gist.github.com"]
     helper = 
     helper = !gh auth git-credential
+[maintenance]
+	repo = /home/jlecomte/dotfiles
