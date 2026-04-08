@@ -1,0 +1,5 @@
+[credential]
+    helper = C:/Users/jlecomte/AppData/Local/Programs/Git\\ Credential\\ Manager/git-credential-manager.exe
+[core]
+    sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+

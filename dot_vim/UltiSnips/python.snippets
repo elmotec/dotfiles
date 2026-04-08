@@ -1,0 +1,12 @@
+snippet "# p" "pylint disable" w
+# pylint: disable=${1:errors}
+endsnippet
+
+snippet __ "module meta information"
+__version__ = "${1:1.0}"
+__author__ = "${2:`!p
+import getpass;
+snip.rv = getpass.getuser()`}"
+__license__ = "${3:May not by used without express permission from the author}"
+endsnippet
+

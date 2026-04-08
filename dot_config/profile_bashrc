@@ -1,0 +1,4 @@
+[ -x /usr/games/fortune -a -x /usr/bin/boxes ] && fortune | boxes -d ian_jones
+
+. ~/.bashrc
+

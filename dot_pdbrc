@@ -1,0 +1,22 @@
+import pprint
+import rlcompleter
+import pdb
+import atexit
+import os
+import readline
+
+
+# aliases
+# pretty print a instance variable's dict.
+alias pp pprint.pprint(%1)
+alias pi pprint.pprint(vars(%1))
+alias pd pprint.pprint(dir(%1))
+# show local variables other than modules.
+alias lv pprint.pprint({k: v for (k, v) in locals().items() if type(v).__name__ != 'module'})
+
+pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
+
+history_path = os.path.expanduser("~/.pdbhistory")
+def save_history(history_path=history_path): import readline; readline.write_history_file(history_path)
+if os.path.exists(history_path): readline.read_history_file(history_path)
+atexit.register(save_history, history_path=history_path)

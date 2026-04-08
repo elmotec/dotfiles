@@ -1,0 +1,85 @@
+[user]
+    name = elmotec
+    email = 1107551+elmotec@users.noreply.github.com
+[alias]
+    br = branch -v
+    bl = blame -w -C -C -C
+    c = commit
+    changelog = log --format='* %s%n%w(,4,4)%+b' --no-merges
+    co = checkout
+    cp = cherry-pick
+    d = diff
+    fetchmain = fetch upstream main:main
+    l = log -10
+    patch = cherry-pick --no-commit
+    s = status --short
+    sm = submodule
+    sw = switch --recurse-submodule
+[blame]
+    ignoreRevsFile = .git-blame-ignore-revs
+[branch]
+    sort = -committerdate
+[core]
+    excludeFiles = ~/.config/git/ignore
+    filemode = false
+    eol = lf
+[commit]
+    verbose = true
+[credential "https://github.com"]
+    helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+    helper = !gh auth git-credential
+[diff]
+    tool = nvimdiff
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+[fetch]
+    prune = true
+    pruneTags = true
+[filter "lfs"]
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+[help]
+    autocorrect = 2  # run corrected command after 2s
+[format]
+    pretty = %C(auto,cyan)%h%C(auto,magenta)% G? %C(auto)%>(17,trunc)%ad %C(auto,green)%<(8,trunc)%al%C(auto,reset)%>(60,trunc)%s%C(auto)% gD% D
+[init]
+    defaultBranch = main
+[log]
+    date = human
+[maintenance]
+    repo = /home/jlecomte/dotfiles
+[merge]
+    tool = nvimdiff
+[mergetool "fugitive"]
+    cmd = vim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+    keepBackup = false
+[push]
+    default = simple
+    autoSetupRemote = true
+    followTags = true
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+[rerere]  # Reuse recorded resolutions prevents conflicts from showing up again.
+    enabled = true
+    autoupdate = true
+[submodule]  # automatically recuse submodule where it makes sense.
+    recurse = true
+[tag]
+    sort = version:refname
+
+[includeIf "gitdir/i:C:/"]
+    path = config-windows
+[includeIf "gitdir/i:/home/"]
+    path = config-unix
+[pull]
+    rebase = true
+[credential]
+	helper = 
+	helper = C:/Users/jlecomte/AppData/Local/Programs/Git\\ Credential\\ Manager/git-credential-manager.exe

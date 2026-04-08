@@ -1,0 +1,410 @@
+"VIM ressource file.  Edit as $MYVIMRC.
+"
+" From https://vimhelp.org/starting.txt.html#vimrc, place in:
+" Unix            $HOME/.vimrc or $HOME/.vim/vimrc
+" MS-Windows      $HOME/_vimrc, $HOME/vimfiles/vimrc
+"                 or $VIM/_vimrc
+
+set encoding=utf-8
+scriptencoding utf-8
+
+" For debugging purpose if needed.
+set verbose=0
+
+" Use Vim settings, rather then Vi settings.
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" Auto-source .vimrc when it is saved.
+autocmd! bufwritepost .vimrc source %
+
+" Adds vimfiles to the runtimepath (not by default for unix).
+set runtimepath+=~/.vim
+
+" Leaves leader as the default \
+" let g:mapleader = "\"
+" Set Leader as space
+let mapleader = " "
+
+" No need for backup.
+set nobackup
+" ... or swap file.
+set noswapfile
+
+" Set tabulation to 4 spaces
+set tabstop=4
+
+" Causes tab at the begining of a line to insert spaces.
+set expandtab
+set smarttab
+set shiftwidth=4
+
+" Auto indent program in a C-like fashion
+set autoindent
+
+set encoding=utf-8
+setglobal fileencodings=utf-8
+set fileencodings=ucs-bom,utf-8,latin1
+
+" Sets visual bell instead of the beep
+set vb
+
+" Instead of failing a command because of unsaved changes,
+" raise a dialogue asking if you wish to save changed files.
+set confirm
+
+" Add to the list the path where to look for files.
+set path+=${HOME}/etc,${HOME}/scripts,**
+
+" Always display line and column
+set ruler
+
+" Show status line of last command
+set laststatus=2
+
+" Hilight matching parenthesis
+set showmatch
+
+" Shows line number in the margin
+set number
+
+" Repeat last command and put cursor at the start of the changes
+nmap . .`[
+
+" Replace %% with the current file directory in command line.
+" See http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory
+cabbr <expr> %% expand('%:p:h')
+
+" Keep the cursor line at least 7 lines away from the top/bottom
+" the screen so we can have some context.
+set scrolloff=7
+
+"(*) There is a default policy is $VIM is not defined
+" please, refer to Vim documentation (www.vim.org)
+
+" Sets the shell to use (bash inherit variable in the
+" shell that started vim)
+"set shell=/bin/bash
+
+" Sets the location of tag files up to 5 levels up.
+set tag+=./tags,../tags,../../tags,../../../tags,../../../../tags,../../../../../tags,../../../../../../tags
+
+" Sets the number of command to remember in history (20 is default)
+set history=200
+
+" Turns syntax hiligting on and associate s to toggle hilight on/off.
+syntax on
+
+" Moves around between buffers with Ctrl+j and Ctrl+k.
+" We don't use c-Tab and c-s-Tab because it's pre-empted by windows terminal
+nmap <c-k> :bn<CR>
+nmap <c-j> :bp<CR>
+
+" Control-F4 closes the buffer.
+nmap <c-F4> :bd<CR>
+" nmap <c-w> :bd<CR>  # breaks compat with vim window default prefix <c-w>
+" Shortcut to see buffers and prepare switch to a different buffer
+" Note Ctrl+6 also switch to last used buffer (alternate)
+nmap <Leader>b :buffers<CR>:buffer<Space>
+
+" Train myself to not use arrow keys in Vim.
+noremap <Up> <NOP>
+noremap <Right> <NOP>
+noremap <Left> <NOP>
+noremap <Down> <NOP>
+
+" Wrap/unwrap lines
+nmap <Leader><Leader>w :set wrap!<CR>
+" Show/Hide line numbers (absolute)
+nmap <Leader><Leader>n :set number!<CR>
+" Show/Hide line numbers (relative), default to relative.
+nmap <Leader><Leader>r :set relativenumber!<CR>
+"set relativenumber
+" Show/Hide cursor line
+nmap <Leader><Leader>c :set cursorline!<CR>
+" Bind scrolling of windows
+nmap <Leader><Leader>s :set scrollbind!<CR>
+" Default sign to show only when there is something to show
+set signcolumn=auto
+set cursorline
+" Hilights searched terms on/off
+nmap <Leader><Leader>h :set hlsearch!<CR>
+" Center tags to the middle of the screen
+nmap <c-T> <c-T><z><z>
+" Go to next/previous error in quickfix (mirrors default nvim LSP settings)
+nmap [d :cprev<CR>
+nmap ]d :cnext<CR>
+" Find references to <word> in the same directory or subdirectory
+nmap <Leader>gr :grep -r -w <cword> %:h<CR>
+
+" From https://gist.github.com/atripes/15372281209daf5678cded1d410e6c16
+" URL encode buffer.
+function! UrlEncode(lines)
+let urlsafe = ""
+for char in split(a:lines, '.\zs')
+    if matchend(char, '[-_.~a-zA-Z0-9]') >= 0
+        let urlsafe = urlsafe . char
+    else
+        let decimal = char2nr(char)
+        let urlsafe = urlsafe . "%" . printf("%02X", decimal)
+    endif
+endfor
+return urlsafe
+endfunction
+
+nmap <Leader><Leader>u :s/\(.*\)/\=UrlEncode(submatch(1))/g<CR>
+
+" Set python3 provider to be python on windows, otherwise defaults to python3
+if has("win32")
+    let g:python3_host_prog = 'python'
+else
+    let g:python3_host_prog = 'python3'
+endif
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+  " Enable file type detection.
+  filetype on
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=99
+
+  " Auto load python specific extensions (bring in
+  " $VIMRUNTIME/ftplugin/python* files and directories).
+  autocmd BufNewFile,BufRead *.py set filetype=python
+  " Handles log files with special syntax hilighting.
+  autocmd BufNewFile,BufRead *.log set filetype=log
+  " Handles .build (nant) files as xml.
+  autocmd BufNewFile,BufRead *.build set filetype=xml
+  autocmd BufNewFile,BufRead *.config set filetype=xml
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+endif " has("autocmd")
+
+" Make tabs and trailing spaces visible...
+set list
+" ... as Unicode characters
+if has("multi_byte")
+    set ambiwidth=single  " Silence E834 on Sun
+    set listchars=tab:»\ ,trail:·  " U+00BB and U+00B7
+endif
+
+" Enhanced file choices.
+set wildmenu
+set wildignore+=*.pyc,*.o,*.obj,.svn,CVS,.git,NTUSER*
+
+" redraw only when needed
+set lazyredraw
+
+" Temp directory to default to $TEMP on Windows.
+if has("win32")
+    " Support for Python is needed for some plugins (e.g. deoplete, ultisnips).
+    let $PATH = $LOCALAPPDATA . "\\Programs\\Python\\Python310;" . $PATH
+    let nvimtmpdir = $TMP . "\\nvim"
+    if !isdirectory(nvimtmpdir)
+        call mkdir(nvimtmpdir, "p")
+    endif
+end
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                          Plugins with plug.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:vim_config_root = expand('<sfile>:p:h')
+let g:VIM_PLUG_PATH = expand(g:vim_config_root . '/autoload/plug.vim')
+if empty(glob(g:VIM_PLUG_PATH))
+    echoerr 'You have to install plug.vim in ' . g:vim_config_root . '/autoload/'
+    finish
+endif
+
+" Specify a directory for plugins
+" Avoid using standard Vim directory names like 'plugin'
+if has("nvim")
+    let g:vim_plugged_dir = stdpath('data') . '/plugged'
+else
+    let g:vim_plugged_dir = g:vim_config_root . '/plugged'
+endif
+call plug#begin(g:vim_plugged_dir)
+
+" Call :StartupTime to profile vim startup
+Plug 'tweekmonster/startuptime.vim'
+
+" Display tips on startup and on demand with <leader>t
+function! Vtip()
+  echomsg system('curl -s -m 3 https://vtip.43z.one')
+endfunction
+" :call Vtip()
+noremap <leader> :call Vtip()<CR>
+
+" Git in vim
+Plug 'tpope/vim-fugitive'
+" Show context in code
+Plug 'wellle/context.vim'
+
+" Startup screen with mru and cool quotes.
+Plug 'mhinz/vim-startify'
+
+let g:startify_skiplist = [
+        \ 'COMMIT_EDITMSG',
+        \ ]
+
+let g:startify_bookmarks = [
+        \ { 'c': '~/.vim/vimrc' },
+        \ { 'gc': '~/.vim/gvimrc' },
+        \ ]
+
+let g:startify_lists = [
+        \ { 'type': 'files',     'header': ['   MRU']            },
+        \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+        \ { 'type': 'sessions',  'header': ['   Sessions']       },
+        \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+        \ { 'type': 'commands',  'header': ['   Commands']       },
+        \ ]
+
+" Options for Startify. Left here for now in case they are needed.
+let g:startify_change_to_dir = 1
+let g:startify_change_to_vcs_root = 1
+let g:startify_relative_path = 1
+" let g:startify_enable_unsafe = 1
+
+" Add supports for editorconfig
+Plug 'editorconfig/editorconfig-vim'
+
+if has('win32')
+    " Powershell
+    Plug 'pprovost/vim-ps1'
+
+    " Markdown (.md) handling and wiki features
+    Plug 'vimwiki/vimwiki'
+    let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md', 'auto_tags': 1}]
+    let g:vimwiki_folding = 'list'
+    let g:vimwiki_global_ext = 0
+    let g:vimwiki_markdown_link_ext = 1
+    "let g:vimwiki_global_vars.web_schemes1 = join(['http', 'https', 'file', 'ftp', 'gopher',
+        "\ 'telnet', 'nntp', 'ldap', 'rsync', 'imap', 'pop', 'irc', 'ircs', 'cvs', 'svn', 'svn+ssh',
+        "\ 'git', 'ssh', 'fish', 'sftp', 'bbg'], '\|')
+    autocmd FileType vimwiki setlocal syntax=markdown
+    autocmd FileType vimwiki setlocal foldenable
+    nmap <C-X><C-X> :VimwikiToggleListItem<CR>
+endif
+
+if has("nvim")
+
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-lualine/lualine.nvim'
+    " If you want to have icons in your statusline choose one of these
+    Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'nvim-telescope/telescope.nvim'
+    " Auto install LSP servers
+    Plug 'mason-org/mason.nvim'
+    Plug 'mason-org/mason-lspconfig.nvim'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/nvim-cmp'
+
+    Plug 'skywind3000/asyncrun.vim'
+
+    " For vsnip users.
+    " Plug 'hrsh7th/cmp-vsnip'
+    " Plug 'hrsh7th/vim-vsnip'
+
+    " For luasnip users.
+    " Plug 'L3MON4D3/LuaSnip'
+    " Plug 'saadparwaiz1/cmp_luasnip'
+
+    " For ultisnips users.
+    " Plug 'SirVer/ultisnips'
+    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Python documentation style. 
+    " let g:ultisnips_python_style="sphinx"
+
+    " For snippy users.
+    " Plug 'dcampos/nvim-snippy'
+    " Plug 'dcampos/cmp-snippy'
+
+    " Plug 'github/copilot.vim'
+
+    Plug 'jose-elias-alvarez/null-ls.nvim'
+
+    " Needed for treesitter.
+    "if !has("win32")
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    "endif
+
+    " Access to ollama models
+    Plug 'David-Kunz/gen.nvim'
+
+    " Deps for Avante
+    Plug 'stevearc/dressing.nvim'
+    Plug 'MunifTanjim/nui.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+
+    " Yay, pass source=true if you want to build from source
+    " Plug 'yetone/avante.nvim', { 'branch': 'main', 'do': 'make' }
+
+    " Other setup occurs in $MYVIMRC
+
+else  " not nvim => regular vim
+
+    " Command line fuzzy finder
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'none' } }
+    " find files
+    nmap <leader>ff :Files<CR>
+    " find in git files
+    nmap <leader>fg :GFiles<CR>
+    " grep equivalent
+    nmap <leader>ft :Rg
+    " find in snippets
+    nmap <leader>fs :Snippets<CR>
+
+    " Asynchronous linter
+    Plug 'dense-analysis/ale'
+    let g:ale_fixers = { "python": ["black"], "cpp": [] }
+    let g:ale_linters = { "python": ["pylint"] }
+    "let g:ale_python_pylint_options = '-j 0 -r n --rcfile pylintrc'
+    "let g:ale_python_pylint_options = '--rcfile pylintrc'
+    let g:ale_sign_error = 'E'
+    let g:ale_sign_warning = 'W'
+    let g:airline#extensions#ale#enabled = 1
+    "let g:ale_fix_on_save = 1
+    nmap <silent> [d <Plug>(ale_previous_wrap)
+    nmap <silent> ]d <Plug>(ale_next_wrap)
+
+    " Airline status bar
+    Plug 'vim-airline/vim-airline'
+    " Controls which airline sections get truncated and at what width.
+    let g:airline#extensions#default#section_truncate_width = {'b': 90, 'y': 70,}
+    " Enable nerdfont.
+    let g:airline_powerline_fonts = 1
+    " Follow base16 theme. See .vim/autoload/airline/themes/base16.vim
+    let g:airline_theme='base16'
+
+endif  " nvim
+
+" Support for Jenkins pipeline files
+Plug 'martinda/Jenkinsfile-vim-syntax'
+
+" Leave the colorscheme alone with neovim
+if !has('nvim')
+  colorscheme cterm
+else
+  " don't use terminal's 256-colors => use 16/24 colors as defined already
+  set notermguicolors
+  colorscheme cterm
+endif
+
+" Complete the plugin section.
+call plug#end()

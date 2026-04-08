@@ -1,0 +1,46 @@
+# .bashrc
+# to test run (bash -euxv -c ". ~/.config/bashrc")
+
+# Default standard location for config files.
+export XDG_CONFIG_HOME=${HOME}/.config
+
+BASHRC_DIR=${XDG_CONFIG_HOME}/bashrc.d
+
+# Firm specific settings, see also firm-post below.
+[[ -f ${BASHRC_DIR}/firm-pre.bashrc ]] && . ${BASHRC_DIR}/firm-pre.bashrc
+
+# Unique Bash version check
+if ((BASH_VERSINFO[0] < 4))
+then
+  echo "sensible.bash: You need at least bash-4.0 or some options will not work correctly."
+fi
+
+. ${BASHRC_DIR}/opts.bashrc
+. ${BASHRC_DIR}/history.bashrc
+. ${BASHRC_DIR}/aliases.bashrc
+. ${BASHRC_DIR}/vars.bashrc
+. ${BASHRC_DIR}/vim.bashrc
+. ${BASHRC_DIR}/completion.bashrc
+
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWUPSTREAM="auto"
+export GIT_PS1_SHOWSTASHSTATE=true
+export GIT_PS1_DESCRIBE_STYLE="branch"
+export GIT_PS1_SHOWCOLORHINTS=true
+
+. ${BASHRC_DIR}/prompt.bashrc
+
+# Enable SSO via keychain and ssh-agent.
+[[ -f ${HOME}/.ssh/id_ecdsa ]] && eval `keychain -q --eval --agents ssh id_ecdsa`
+
+# Firm specific settings, see also firm-pre above.
+[[ -f ${BASHRC_DIR}/firm-post.bashrc ]] && . ${BASHRC_DIR}/firm-post.bashrc
+
+# Set the window title to the hostname by default so it shows in tmux. See
+# aliases.bashrc for the title alias (`title` or `__settitle`). Run only when
+# inside a tmux session and when `hostname` is available. Keep this compact.
+[[ -n ${TMUX:-} ]] && command -v hostname >/dev/null 2>&1 && { \
+  command -v set-title >/dev/null 2>&1 && set-title "@$(hostname)"
+}
+
+return 0

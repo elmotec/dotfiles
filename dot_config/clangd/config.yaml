@@ -1,0 +1,30 @@
+# See https://clangd.lvm.org/config
+CompileFlags:
+  # Treat code as C++, use C++17 standard, enable more warnings.
+  Add: [-xc++, -std=c++17, -Wall, -Wno-missing-prototypes, -Wunsequenced]
+  #Add: [-xc++, -std=c++17, -Wall, -Wno-missing-prototypes, -Wunsequenced, -I/opt/bb/include]
+  #Add: [-xc++, -Wall, -Wno-missing-prototypes]
+  # Remove extra warnings specified in compile commands.
+  # Single value is also acceptable, same as "Remove: [-mabi]"
+  #Remove: -mabi
+Diagnostics:
+  UnusedIncludes: Strict
+  # Tweak Clang-Tidy checks
+  ClangTidy:
+    Add: [performance*, modernize*, readability*, bugprone*]
+    Remove: [modernize-use-trailing-return-type]
+    CheckOptions:
+      readability-implicit-bool-conversion.AllowPointerConditions: true
+      readability-function-cognitive-complexity.Threshold: 15
+      readability-function-cognitive-complexity.IgnoreMacros: true
+      cppcoreguidelines-pro-bounds-array-to-pointer-decay: false
+
+      # See https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
+      # See also .clang-tidy
+      readability-identifier-naming.NamespaceCase:lower_case
+      readability-identifier-naming.ClassCase:CamelCase
+      readability-identifier-naming.StructCase:CamelCase
+      readability-identifier-naming.FunctionCase:camelBack
+      readability-identifier-naming.VariableCase:camelBack
+      readability-identifier-naming.PrivateMemberSuffix:_
+

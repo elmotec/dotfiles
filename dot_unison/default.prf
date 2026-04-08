@@ -1,0 +1,11 @@
+# roots
+# we need UNC path for compatibility with scheduled tasks
+root = \\synology\homes\jlecomte\backup
+root = C:\Users\jlecomte
+
+# Unison preferences file
+include common
+
+fastcheck = true
+perms = 0
+sshargs = -C
