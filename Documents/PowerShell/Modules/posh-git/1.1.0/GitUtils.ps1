@@ -59,7 +59,7 @@ function Get-GitDirectory {
     }
 }
 
-function Get-GitBranch($gitDir = $(Get-GitDirectory), [Diagnostics.Stopwatch]$sw) {
+function Get-GitBranch($branch = $null, $gitDir = $(Get-GitDirectory), [switch]$isDotGitOrBare, [Diagnostics.Stopwatch]$sw) {
     if (!$gitDir) { return }
 
     Invoke-Utf8ConsoleCommand {
@@ -114,16 +114,22 @@ function Get-GitBranch($gitDir = $(Get-GitDirectory), [Diagnostics.Stopwatch]$sw
                 $r = '|BISECTING'
             }
 
+            if ($step -and $total) {
+                $r += " $step/$total"
+            }
+
             $b = Invoke-NullCoalescing `
-                { dbg 'Trying symbolic-ref' $sw; git symbolic-ref HEAD -q 2>$null } `
+                $b `
+                $branch `
+                { dbg 'Trying symbolic-ref' $sw; git --no-optional-locks symbolic-ref HEAD -q 2>$null } `
                 { '({0})' -f (Invoke-NullCoalescing `
                     {
                         dbg 'Trying describe' $sw
                         switch ($Global:GitPromptSettings.DescribeStyle) {
-                            'contains' { git describe --contains HEAD 2>$null }
-                            'branch' { git describe --contains --all HEAD 2>$null }
-                            'describe' { git describe HEAD 2>$null }
-                            default { git tag --points-at HEAD 2>$null }
+                            'contains' { git --no-optional-locks describe --contains HEAD 2>$null }
+                            'branch' { git --no-optional-locks describe --contains --all HEAD 2>$null }
+                            'describe' { git --no-optional-locks describe HEAD 2>$null }
+                            default { git --no-optional-locks tag --points-at HEAD 2>$null }
                         }
                     } `
                     {
@@ -136,14 +142,14 @@ function Get-GitBranch($gitDir = $(Get-GitDirectory), [Diagnostics.Stopwatch]$sw
                         }
                         else {
                             dbg 'Trying rev-parse' $sw
-                            $ref = git rev-parse HEAD 2>$null
+                            $ref = git --no-optional-locks rev-parse HEAD 2>$null
                         }
 
                         if ($ref -match 'ref: (?<ref>.+)') {
                             return $Matches['ref']
                         }
                         elseif ($ref -and $ref.Length -ge 7) {
-                            return $ref.Substring(0,7)+'...'
+                            return $ref.Substring(0, 7) + '...'
                         }
                         else {
                             return 'unknown'
@@ -152,19 +158,19 @@ function Get-GitBranch($gitDir = $(Get-GitDirectory), [Diagnostics.Stopwatch]$sw
                 ) }
         }
 
-        dbg 'Inside git directory?' $sw
-        if ('true' -eq $(git rev-parse --is-inside-git-dir 2>$null)) {
-            dbg 'Inside git directory' $sw
-            if ('true' -eq $(git rev-parse --is-bare-repository 2>$null)) {
-                $c = 'BARE:'
+        if ($isDotGitOrBare -or !$b) {
+            dbg 'Inside git directory?' $sw
+            $revParseOut = git --no-optional-locks rev-parse --is-inside-git-dir 2>$null
+            if ('true' -eq $revParseOut) {
+                dbg 'Inside git directory' $sw
+                $revParseOut = git --no-optional-locks rev-parse --is-bare-repository 2>$null
+                if ('true' -eq $revParseOut) {
+                    $c = 'BARE:'
+                }
+                else {
+                    $b = 'GIT_DIR!'
+                }
             }
-            else {
-                $b = 'GIT_DIR!'
-            }
-        }
-
-        if ($step -and $total) {
-            $r += " $step/$total"
         }
 
         "$c$($b -replace 'refs/heads/','')$r"
@@ -187,16 +193,34 @@ $castStringSeq = [Linq.Enumerable].GetMethod("Cast").MakeGenericMethod([string])
 
 <#
 .SYNOPSIS
-    Gets a Git status object that is used by Write-GitStatus.
+    Gets a Git status object that is used by `Write-GitStatus`.
 .DESCRIPTION
-    Gets a Git status object that is used by Write-GitStatus.
-    The status object provides the information to be displayed in the various
-    sections of the posh-git prompt.
+    The `Get-GitStatus` cmdlet gets the status of the current Git repo.
+
+    The status object returned by this cmdlet provides the information
+    displayed in the various sections of the posh-git prompt. The following
+    properties in $GitPromptSettings control what information is returned in
+    the status object:
+
+    EnableFileStatus          = $true # Or $false if Git not installed
+    EnableFileStatusFromCache = <unset> # Or $true if GitStatusCachePoshClient installed
+    EnablePromptStatus        = $true
+    EnableStashStatus         = $false
+    UntrackedFilesMode        = Default # Other enum values: No, Normal, All
+
+    The `Force` parameter can be used to override the EnableFileStatus and
+    EnablePromptStatus properties to ensure that both file and prompt status
+    information is returned in the status object.
 .EXAMPLE
     PS C:\> $s = Get-GitStatus; Write-GitStatus $s
     Gets a Git status object. Then passes the object to Write-GitStatus which
     writes out a posh-git prompt (or returns a string in ANSI mode) with the
     information contained in the status object.
+.EXAMPLE
+    PS C:\> $s = Get-GitStatus -Force
+    Gets a Git status object that always returns all status information even
+    if $GitPromptSettings has disabled `EnableFileStatus` and/or
+    `EnablePromptStatus`.
 .INPUTS
     None
 .OUTPUTS
@@ -208,7 +232,7 @@ function Get-GitStatus {
     param(
         # The path of a directory within a Git repository that you want to get
         # the Git status.
-        [Parameter(Position=0)]
+        [Parameter(Position = 0)]
         $GitDir = (Get-GitDirectory),
 
         # If specified, overrides $GitPromptSettings.EnableFileStatus and
@@ -233,6 +257,8 @@ function Get-GitStatus {
         $aheadBy = 0
         $behindBy = 0
         $gone = $false
+        $upstream = $null
+
         $indexAdded = New-Object System.Collections.Generic.List[string]
         $indexModified = New-Object System.Collections.Generic.List[string]
         $indexDeleted = New-Object System.Collections.Generic.List[string]
@@ -244,7 +270,8 @@ function Get-GitStatus {
         $stashCount = 0
 
         $fileStatusEnabled = $Force -or $settings.EnableFileStatus
-        if ($fileStatusEnabled -and !$(InDotGitOrBareRepoDir $GitDir) -and !$(InDisabledRepository)) {
+        # Optimization: short-circuit to avoid InDotGitOrBareRepoDir and InDisabledRepository if !$fileStatusEnabled
+        if ($fileStatusEnabled -and !$($isDotGitOrBare = InDotGitOrBareRepoDir $GitDir) -and !$(InDisabledRepository)) {
             if ($null -eq $settings.EnableFileStatusFromCache) {
                 $settings.EnableFileStatusFromCache = $null -ne (Get-Module GitStatusCachePoshClient)
             }
@@ -252,44 +279,59 @@ function Get-GitStatus {
             if ($settings.EnableFileStatusFromCache) {
                 dbg 'Getting status from cache' $sw
                 $cacheResponse = Get-GitStatusFromCache
-                dbg 'Parsing status' $sw
 
-                $indexAdded.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.IndexAdded))))
-                $indexModified.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.IndexModified))))
-                foreach ($indexRenamed in $cacheResponse.IndexRenamed) {
-                    $indexModified.Add($indexRenamed.Old)
+                if ($cacheResponse.Error) {
+                    # git-status-cache failed; set $global:GitStatusCacheLoggingEnabled = $true, call Restart-GitStatusCache,
+                    # and check %temp%\GitStatusCache_[timestamp].log for details.
+                    dbg "Cache returned an error: $($cacheResponse.Error)" $sw
+                    $branch = "CACHE ERROR"
+                    $behindBy = 1
                 }
-                $indexDeleted.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.IndexDeleted))))
-                $indexUnmerged.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.Conflicted))))
+                else {
+                    dbg 'Parsing status' $sw
 
-                $filesAdded.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.WorkingAdded))))
-                $filesModified.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.WorkingModified))))
-                foreach ($workingRenamed in $cacheResponse.WorkingRenamed) {
-                    $filesModified.Add($workingRenamed.Old)
+                    $indexAdded.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.IndexAdded))))
+                    $indexModified.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.IndexModified))))
+                    foreach ($indexRenamed in $cacheResponse.IndexRenamed) {
+                        $indexModified.Add($indexRenamed.Old)
+                    }
+                    $indexDeleted.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.IndexDeleted))))
+                    $indexUnmerged.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.Conflicted))))
+
+                    $filesAdded.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.WorkingAdded))))
+                    $filesModified.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.WorkingModified))))
+                    foreach ($workingRenamed in $cacheResponse.WorkingRenamed) {
+                        $filesModified.Add($workingRenamed.Old)
+                    }
+                    $filesDeleted.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.WorkingDeleted))))
+                    $filesUnmerged.AddRange($castStringSeq.Invoke($null, (, @($cacheResponse.Conflicted))))
+
+                    $branch = $cacheResponse.Branch
+                    $upstream = $cacheResponse.Upstream
+                    $gone = $cacheResponse.UpstreamGone
+                    $aheadBy = $cacheResponse.AheadBy
+                    $behindBy = $cacheResponse.BehindBy
+
+                    if ($settings.EnableStashStatus -and $cacheResponse.Stashes) {
+                        $stashCount = $cacheResponse.Stashes.Length
+                    }
+
+                    if ($cacheResponse.State) {
+                        $branch += "|" + $cacheResponse.State
+                    }
                 }
-                $filesDeleted.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.WorkingDeleted))))
-                $filesUnmerged.AddRange($castStringSeq.Invoke($null, (,@($cacheResponse.Conflicted))))
-
-                $branch = $cacheResponse.Branch
-                $upstream = $cacheResponse.Upstream
-                $gone = $cacheResponse.UpstreamGone
-                $aheadBy = $cacheResponse.AheadBy
-                $behindBy = $cacheResponse.BehindBy
-
-                if ($cacheResponse.Stashes) { $stashCount = $cacheResponse.Stashes.Length }
-                if ($cacheResponse.State) { $branch += "|" + $cacheResponse.State }
             }
             else {
                 dbg 'Getting status' $sw
                 switch ($settings.UntrackedFilesMode) {
-                    "No"      { $untrackedFilesOption = "-uno" }
-                    "All"     { $untrackedFilesOption = "-uall" }
-                    "Normal"  { $untrackedFilesOption = "-unormal" }
+                    "No" { $untrackedFilesOption = "-uno" }
+                    "All" { $untrackedFilesOption = "-uall" }
+                    default { $untrackedFilesOption = "-unormal" }
                 }
-                $status = Invoke-Utf8ConsoleCommand { git -c core.quotepath=false -c color.status=false status $untrackedFilesOption --short --branch 2>$null }
+                $status = Invoke-Utf8ConsoleCommand { git --no-optional-locks -c core.quotepath=false -c color.status=false status $untrackedFilesOption --short --branch 2>$null }
                 if ($settings.EnableStashStatus) {
                     dbg 'Getting stash count' $sw
-                    $stashCount = $null | git stash list 2>$null | measure-object | Select-Object -expand Count
+                    $stashCount = $null | git --no-optional-locks stash list 2>$null | measure-object | Select-Object -expand Count
                 }
 
                 dbg 'Parsing status' $sw
@@ -297,20 +339,29 @@ function Get-GitStatus {
                     '^(?<index>[^#])(?<working>.) (?<path1>.*?)(?: -> (?<path2>.*))?$' {
                         if ($sw) { dbg "Status: $_" $sw }
 
+                        $path1 = $matches['path1']
+
+                        # Even with core.quotePath=false, paths with spaces are wrapped in ""
+                        # https://github.com/git/git/commit/dbfdc625a5aad10c47e3ffa446d0b92e341a7b44
+                        # https://github.com/git/git/commit/f3fc4a1b8680c114defd98ce6f2429f8946a5dc1
+                        if ($path1 -like '"*"') {
+                            $path1 = $path1.Substring(1, $path1.Length - 2)
+                        }
+
                         switch ($matches['index']) {
-                            'A' { $null = $indexAdded.Add($matches['path1']); break }
-                            'M' { $null = $indexModified.Add($matches['path1']); break }
-                            'R' { $null = $indexModified.Add($matches['path1']); break }
-                            'C' { $null = $indexModified.Add($matches['path1']); break }
-                            'D' { $null = $indexDeleted.Add($matches['path1']); break }
-                            'U' { $null = $indexUnmerged.Add($matches['path1']); break }
+                            'A' { $null = $indexAdded.Add($path1); break }
+                            'M' { $null = $indexModified.Add($path1); break }
+                            'R' { $null = $indexModified.Add($path1); break }
+                            'C' { $null = $indexModified.Add($path1); break }
+                            'D' { $null = $indexDeleted.Add($path1); break }
+                            'U' { $null = $indexUnmerged.Add($path1); break }
                         }
                         switch ($matches['working']) {
-                            '?' { $null = $filesAdded.Add($matches['path1']); break }
-                            'A' { $null = $filesAdded.Add($matches['path1']); break }
-                            'M' { $null = $filesModified.Add($matches['path1']); break }
-                            'D' { $null = $filesDeleted.Add($matches['path1']); break }
-                            'U' { $null = $filesUnmerged.Add($matches['path1']); break }
+                            '?' { $null = $filesAdded.Add($path1); break }
+                            'A' { $null = $filesAdded.Add($path1); break }
+                            'M' { $null = $filesModified.Add($path1); break }
+                            'D' { $null = $filesDeleted.Add($path1); break }
+                            'U' { $null = $filesUnmerged.Add($path1); break }
                         }
                         continue
                     }
@@ -338,41 +389,41 @@ function Get-GitStatus {
             }
         }
 
-        if (!$branch) { $branch = Get-GitBranch $GitDir $sw }
+        $branch = Get-GitBranch -Branch $branch -GitDir $GitDir -IsDotGitOrBare:$isDotGitOrBare -sw $sw
 
         dbg 'Building status object' $sw
 
         # This collection is used twice, so create the array just once
         $filesAdded = $filesAdded.ToArray()
 
-        $indexPaths = @(GetUniquePaths $indexAdded,$indexModified,$indexDeleted,$indexUnmerged)
-        $workingPaths = @(GetUniquePaths $filesAdded,$filesModified,$filesDeleted,$filesUnmerged)
-        $index = (,$indexPaths) |
+        $indexPaths = @(GetUniquePaths $indexAdded, $indexModified, $indexDeleted, $indexUnmerged)
+        $workingPaths = @(GetUniquePaths $filesAdded, $filesModified, $filesDeleted, $filesUnmerged)
+        $index = (, $indexPaths) |
             Add-Member -Force -PassThru NoteProperty Added    $indexAdded.ToArray() |
             Add-Member -Force -PassThru NoteProperty Modified $indexModified.ToArray() |
             Add-Member -Force -PassThru NoteProperty Deleted  $indexDeleted.ToArray() |
             Add-Member -Force -PassThru NoteProperty Unmerged $indexUnmerged.ToArray()
 
-        $working = (,$workingPaths) |
+        $working = (, $workingPaths) |
             Add-Member -Force -PassThru NoteProperty Added    $filesAdded |
             Add-Member -Force -PassThru NoteProperty Modified $filesModified.ToArray() |
             Add-Member -Force -PassThru NoteProperty Deleted  $filesDeleted.ToArray() |
             Add-Member -Force -PassThru NoteProperty Unmerged $filesUnmerged.ToArray()
 
         $result = New-Object PSObject -Property @{
-            GitDir          = $GitDir
-            RepoName        = Split-Path (Split-Path $GitDir -Parent) -Leaf
-            Branch          = $branch
-            AheadBy         = $aheadBy
-            BehindBy        = $behindBy
-            UpstreamGone    = $gone
-            Upstream        = $upstream
-            HasIndex        = [bool]$index
-            Index           = $index
-            HasWorking      = [bool]$working
-            Working         = $working
-            HasUntracked    = [bool]$filesAdded
-            StashCount      = $stashCount
+            GitDir       = $GitDir
+            RepoName     = Split-Path (Split-Path $GitDir -Parent) -Leaf
+            Branch       = $branch
+            AheadBy      = $aheadBy
+            BehindBy     = $behindBy
+            UpstreamGone = $gone
+            Upstream     = $upstream
+            HasIndex     = [bool]$index
+            Index        = $index
+            HasWorking   = [bool]$working
+            Working      = $working
+            HasUntracked = [bool]$filesAdded
+            StashCount   = $stashCount
         }
 
         dbg 'Finished' $sw
@@ -400,13 +451,14 @@ function InDotGitOrBareRepoDir([string][ValidateNotNullOrEmpty()]$GitDir) {
     # The latter is more desirable.
     $pathInfo = Microsoft.PowerShell.Management\Get-Location
     $currentPath = if ($pathInfo.Drive) { $pathInfo.Path } else { $pathInfo.ProviderPath }
-    $res = $currentPath.StartsWith($GitDir, (Get-PathStringComparison))
+    $separator = [System.IO.Path]::DirectorySeparatorChar
+    $res = "$currentPath$separator".StartsWith("$GitDir$separator", (Get-PathStringComparison))
     $res
 }
 
 function Get-AliasPattern($cmd) {
-    $aliases = @($cmd) + @(Get-Alias | Where-Object { $_.Definition -eq $cmd } | Select-Object -Exp Name)
-   "($($aliases -join '|'))"
+    $aliases = @($cmd) + @(Get-Alias | Where-Object { $_.Definition -match "^$cmd(\.exe)?$" } | Foreach-Object Name)
+    "($($aliases -join '|'))"
 }
 
 <#
@@ -484,16 +536,16 @@ function Get-AliasPattern($cmd) {
     Shows the branches, both merged and unmerged, that match the specified wildcard that would be deleted without actually deleting them. Once you've verified the list of branches looks correct, remove the WhatIf parameter to actually delete the branches.
 #>
 function Remove-GitBranch {
-    [CmdletBinding(DefaultParameterSetName="Wildcard", SupportsShouldProcess, ConfirmImpact="Medium")]
+    [CmdletBinding(DefaultParameterSetName = "Wildcard", SupportsShouldProcess, ConfirmImpact = "Medium")]
     param(
         # Specifies a regular expression pattern for the branches that will be deleted. Certain branches are always excluded from deletion e.g. the current branch as well as the develop and master branches. See the ExcludePattern parameter to modify that pattern.
-        [Parameter(Position=0, Mandatory, ParameterSetName="Wildcard")]
+        [Parameter(Position = 0, Mandatory, ParameterSetName = "Wildcard")]
         [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
         # Specifies a regular expression for the branches that will be deleted. Certain branches are always excluded from deletion e.g. the current branch as well as the develop and master branches. See the ExcludePattern parameter to modify that pattern.
-        [Parameter(Position=0, Mandatory, ParameterSetName="Pattern")]
+        [Parameter(Position = 0, Mandatory, ParameterSetName = "Pattern")]
         [ValidateNotNull()]
         [string]
         $Pattern,
@@ -532,7 +584,7 @@ function Remove-GitBranch {
         $branches = git branch --merged $Commit
     }
 
-    $filteredBranches = $branches | Where-Object {$_ -notmatch $ExcludePattern }
+    $filteredBranches = $branches | Where-Object { $_ -notmatch $ExcludePattern }
 
     if ($PSCmdlet.ParameterSetName -eq "Wildcard") {
         $branchesToDelete = $filteredBranches | Where-Object { $_.Trim() -like $Name }
@@ -541,15 +593,16 @@ function Remove-GitBranch {
         $branchesToDelete = $filteredBranches | Where-Object { $_ -match $Pattern }
     }
 
-    $action = if ($DeleteForce) { "delete with force"} else { "delete" }
+    $action = if ($DeleteForce) { "delete with force" } else { "delete" }
     $yesToAll = $noToAll = $false
 
     foreach ($branch in $branchesToDelete) {
         $targetBranch = $branch.Trim()
         if ($PSCmdlet.ShouldProcess($targetBranch, $action)) {
             if ($Force -or $yesToAll -or
-                $PSCmdlet.ShouldContinue("Are you REALLY sure you want to $action `"$targetBranch`"?",
-                                         "Confirm branch deletion", [ref]$yesToAll, [ref]$noToAll)) {
+                $PSCmdlet.ShouldContinue(
+                    "Are you REALLY sure you want to $action `"$targetBranch`"?",
+                    "Confirm branch deletion", [ref]$yesToAll, [ref]$noToAll)) {
 
                 if ($noToAll) { return }
 

@@ -1,4 +1,9 @@
-param([bool]$ForcePoshGitPrompt, [bool]$UseLegacyTabExpansion)
+param([bool]$ForcePoshGitPrompt, [bool]$UseLegacyTabExpansion, [bool]$EnableProxyFunctionExpansion)
+
+if (Test-Path Env:\POSHGIT_ENABLE_STRICTMODE) {
+    # Set strict mode to latest to help catch scripting errors in the module. This is done by the Pester tests.
+    Set-StrictMode -Version Latest
+}
 
 . $PSScriptRoot\CheckRequirements.ps1 > $null
 
@@ -16,8 +21,8 @@ param([bool]$ForcePoshGitPrompt, [bool]$UseLegacyTabExpansion)
 $IsAdmin = Test-Administrator
 
 # Get the default prompt definition.
-$initialSessionState = [Runspace]::DefaultRunspace.InitialSessionState
-if (!$initialSessionState.Commands -or !$initialSessionState.Commands['prompt']) {
+$initialSessionState = [System.Management.Automation.Runspaces.Runspace]::DefaultRunspace.InitialSessionState
+if (!$initialSessionState -or !$initialSessionState.PSObject.Properties.Match('Commands') -or !$initialSessionState.Commands['prompt']) {
     $defaultPromptDef = "`$(if (test-path variable:/PSDebugContext) { '[DBG]: ' } else { '' }) + 'PS ' + `$(Get-Location) + `$(if (`$nestedpromptlevel -ge 1) { '>>' }) + '> '"
 }
 else {
@@ -38,6 +43,7 @@ $GitPromptScriptBlock = {
     $global:GitPromptValues.IsAdmin = $IsAdmin
 
     $settings = $global:GitPromptSettings
+
     if (!$settings) {
         return "<`$GitPromptSettings not found> "
     }
@@ -60,20 +66,24 @@ $GitPromptScriptBlock = {
     # Get the current path - formatted correctly
     $promptPath = $settings.DefaultPromptPath.Expand()
 
-    # Write the path and Git status summary information
+    # Write the delimited path and Git status summary information
     if ($settings.DefaultPromptWriteStatusFirst) {
         $prompt += Write-VcsStatus
+        $prompt += Write-Prompt $settings.BeforePath.Expand()
         $prompt += Write-Prompt $promptPath
+        $prompt += Write-Prompt $settings.AfterPath.Expand()
     }
     else {
+        $prompt += Write-Prompt $settings.BeforePath.Expand()
         $prompt += Write-Prompt $promptPath
+        $prompt += Write-Prompt $settings.AfterPath.Expand()
         $prompt += Write-VcsStatus
     }
 
     # Write default prompt before suffix text
     $prompt += Write-Prompt $settings.DefaultPromptBeforeSuffix.Expand()
 
-    # If stopped in the debugger, the prompt needs to indicate that by writing default propmt debug
+    # If stopped in the debugger, the prompt needs to indicate that by writing default prompt debug
     if ((Test-Path Variable:/PSDebugContext) -or [runspace]::DefaultRunspace.Debugger.InBreakpoint) {
         $prompt += Write-Prompt $settings.DefaultPromptDebug.Expand()
     }
@@ -161,6 +171,7 @@ $exportModuleMemberParams = @{
         'Get-PromptPath',
         'New-GitPromptSettings',
         'Remove-GitBranch',
+        'Remove-PoshGitFromProfile',
         'Update-AllBranches',
         'Write-GitStatus',
         'Write-GitBranchName',

@@ -42,7 +42,7 @@ $shortGitParams = @{
 
 # Variable is used in GitTabExpansion.ps1
 $longGitParams = @{
-    add = 'dry-run verbose force interactive patch edit update all no-ignore-removal no-all ignore-removal intent-to-add refresh ignore-errors ignore-missing'
+    add = 'dry-run verbose force interactive patch edit update all no-ignore-removal no-all ignore-removal intent-to-add refresh ignore-errors ignore-missing renormalize'
     bisect = 'no-checkout term-old term-new'
     blame = 'root show-stats reverse porcelain line-porcelain incremental encoding= contents date score-debug show-name show-number show-email abbrev'
     branch = 'color no-color list abbrev= no-abbrev column no-column merged no-merged contains set-upstream track no-track set-upstream-to= unset-upstream edit-description delete create-reflog force move all verbose quiet'
@@ -150,8 +150,14 @@ $gitParamValues = @{
     log = @{
         decorate = 'short full no'
         'no-walk' = 'sorted unsorted'
-        pretty = 'oneline short medium full fuller email raw'
-        format = 'oneline short medium full fuller email raw'
+        pretty = {
+            param($format)
+            gitConfigKeys 'pretty' $format 'oneline short medium full fuller email raw'
+        }
+        format = {
+            param($format)
+            gitConfigKeys 'pretty' $format 'oneline short medium full fuller email raw'
+        }
         encoding = 'UTF-8'
         date = 'relative local default iso rfc short raw'
     }
@@ -189,8 +195,14 @@ $gitParamValues = @{
         strategy = 'resolve recursive octopus ours subtree'
     }
     show = @{
-        pretty = 'oneline short medium full fuller email raw'
-        format = 'oneline short medium full fuller email raw'
+        pretty = {
+            param($format)
+            gitConfigKeys 'pretty' $format 'oneline short medium full fuller email raw'
+        }
+        format = {
+            param($format)
+            gitConfigKeys 'pretty' $format 'oneline short medium full fuller email raw'
+        }
         encoding = 'utf-8'
     }
     status = @{

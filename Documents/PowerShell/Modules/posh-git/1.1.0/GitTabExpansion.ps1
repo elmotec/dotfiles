@@ -8,6 +8,7 @@ $Global:GitTabSettings = New-Object PSObject -Property @{
     }
     EnableLogging = $false
     LogPath = Join-Path ([System.IO.Path]::GetTempPath()) posh-git_tabexp.log
+    RegisteredCommands = ""
 }
 
 $subcommands = @{
@@ -35,7 +36,7 @@ $subcommands = @{
         branch
         info cleanup cleanup-workspaces help verify autotag subtree reset-remote checkout
         "
-    flow = "init feature release hotfix support help version"
+    flow = "init feature bugfix release hotfix support help version"
     worktree = "add list lock move prune remove unlock"
 }
 
@@ -69,6 +70,22 @@ $script:gitCommandsWithParamValues = $gitParamValues.Keys -join '|'
 $script:vstsCommandsWithShortParams = $shortVstsParams.Keys -join '|'
 $script:vstsCommandsWithLongParams = $longVstsParams.Keys -join '|'
 
+# The regular expression here is roughly follows this pattern:
+#
+# <begin anchor><whitespace>*<git>(<whitespace><parameter>)*<whitespace>+<$args><whitespace>*<end anchor>
+#
+# The delimiters inside the parameter list and between some of the elements are non-newline whitespace characters ([^\S\r\n]).
+# In those instances, newlines are only allowed if they preceded by a non-newline whitespace character.
+#
+# Begin anchor (^|[;`n])
+# Whitespace   (\s*)
+# Git Command  (?<cmd>$(GetAliasPattern git))
+# Parameters   (?<params>(([^\S\r\n]|[^\S\r\n]``\r?\n)+\S+)*)
+# $args Anchor (([^\S\r\n]|[^\S\r\n]``\r?\n)+\`$args)
+# Whitespace   (\s|``\r?\n)*
+# End Anchor   ($|[|;`n])
+$script:GitProxyFunctionRegex = "(^|[;`n])(\s*)(?<cmd>$(Get-AliasPattern git))(?<params>(([^\S\r\n]|[^\S\r\n]``\r?\n)+\S+)*)(([^\S\r\n]|[^\S\r\n]``\r?\n)+\`$args)(\s|``\r?\n)*($|[|;`n])"
+
 try {
     if ($null -ne (git help -a 2>&1 | Select-String flow)) {
         $script:someCommands += 'flow'
@@ -95,7 +112,7 @@ function script:gitCommands($filter, $includeAliases) {
     }
     else {
         $cmdList += git help --all |
-            Where-Object { $_ -match '^  \S.*' } |
+            Where-Object { $_ -match '^\s{2,}\S.*' } |
             ForEach-Object { $_.Split(' ', [StringSplitOptions]::RemoveEmptyEntries) } |
             Where-Object { $_ -like "$filter*" }
     }
@@ -119,7 +136,7 @@ function script:gitBranches($filter, $includeHEAD = $false, $prefix = '') {
         $filter = $matches['to']
     }
 
-    $branches = @(git branch --no-color | ForEach-Object { if (($_ -notmatch "^\* \(HEAD detached .+\)$") -and ($_ -match "^\*?\s*(?<ref>.*)")) { $matches['ref'] } }) +
+    $branches = @(git branch --no-color | ForEach-Object { if (($_ -notmatch "^\* \(HEAD detached .+\)$") -and ($_ -match "^[\*\+]?\s*(?<ref>\S+)(?: -> .+)?")) { $matches['ref'] } }) +
                 @(git branch --no-color -r | ForEach-Object { if ($_ -match "^  (?<ref>\S+)(?: -> .+)?") { $matches['ref'] } }) +
                 @(if ($includeHEAD) { 'HEAD','FETCH_HEAD','ORIG_HEAD','MERGE_HEAD' })
 
@@ -139,6 +156,18 @@ function script:gitRemoteUniqueBranches($filter) {
         quoteStringWithSpecialChars
 }
 
+function script:gitConfigKeys($section, $filter, $defaultOptions = '') {
+    $completions = @($defaultOptions -split ' ')
+
+    git config --name-only --get-regexp ^$section\..* |
+        ForEach-Object { $completions += ($_ -replace "$section\.","") }
+
+    return $completions |
+        Where-Object { $_ -like "$filter*" } |
+        Sort-Object |
+        quoteStringWithSpecialChars
+}
+
 function script:gitTags($filter, $prefix = '') {
     git tag |
         Where-Object { $_ -like "$filter*" } |
@@ -151,7 +180,7 @@ function script:gitFeatures($filter, $command) {
     $branches = @(git branch --no-color | ForEach-Object { if ($_ -match "^\*?\s*$featurePrefix(?<ref>.*)") { $matches['ref'] } })
     $branches |
         Where-Object { $_ -ne '(no branch)' -and $_ -like "$filter*" } |
-        ForEach-Object { $prefix + $_ } |
+        ForEach-Object { $featurePrefix + $_ } |
         quoteStringWithSpecialChars
 }
 
@@ -273,6 +302,7 @@ function script:expandParamValues($cmd, $param, $filter) {
 }
 
 function Expand-GitCommand($Command) {
+    # Parse all Git output as UTF8, including tab completion output - https://github.com/dahlbyk/posh-git/pull/359
     $res = Invoke-Utf8ConsoleCommand { GitTabExpansionInternal $Command $Global:GitStatus }
     $res
 }
@@ -390,9 +420,9 @@ function GitTabExpansionInternal($lastBlock, $GitStatus = $null) {
             gitCheckoutFiles $GitStatus $matches['files']
         }
 
-        # Handles git restore -s <ref> - must come before the next regex case
-        "^restore.* (?-i)-s\s*(?<ref>\S*)$" {
-            gitBranches $matches['ref'] $true
+        # Handles git restore -s <ref> / --source=<ref> - must come before the next regex case
+        "^restore.* (?-i)(-s\s*|(?<source>--source=))(?<ref>\S*)$" {
+            gitBranches $matches['ref'] $true $matches['source']
             gitTags $matches['ref']
             break
         }
@@ -472,6 +502,34 @@ function GitTabExpansionInternal($lastBlock, $GitStatus = $null) {
     }
 }
 
+function Expand-GitProxyFunction($command) {
+    # Make sure the incoming command matches: <Command> <Args>, so we can extract the alias/command
+    # name and the arguments being passed in.
+    if ($command -notmatch '^(?<command>\S+)([^\S\r\n]|[^\S\r\n]`\r?\n)+(?<args>([^\S\r\n]|[^\S\r\n]`\r?\n|\S)*)$') {
+        return $command
+    }
+
+    # Store arguments for replacement later
+    $arguments = $matches['args']
+
+    # Get the command name; if an alias exists, get the actual command name
+    $commandName = $matches['command']
+    if (Test-Path -Path Alias:\$commandName) {
+        $commandName = Get-Item -Path Alias:\$commandName | Select-Object -ExpandProperty 'ResolvedCommandName'
+    }
+
+    # Extract definition of git usage
+    if (Test-Path -Path Function:\$commandName) {
+        $definition = Get-Item -Path Function:\$commandName | Select-Object -ExpandProperty 'Definition'
+        if ($definition -match $script:GitProxyFunctionRegex) {
+            # Clean up the command by removing extra delimiting whitespace and backtick preceding newlines
+            return (("$($matches['cmd'].TrimStart()) $($matches['params']) $arguments") -replace '`\r?\n', ' ' -replace '\s+', ' ')
+        }
+    }
+
+    return $command
+}
+
 function WriteTabExpLog([string] $Message) {
     if (!$global:GitTabSettings.EnableLogging) { return }
 
@@ -480,7 +538,24 @@ function WriteTabExpLog([string] $Message) {
 }
 
 if (!$UseLegacyTabExpansion -and ($PSVersionTable.PSVersion.Major -ge 6)) {
-    Microsoft.PowerShell.Core\Register-ArgumentCompleter -CommandName git,tgit,gitk -Native -ScriptBlock {
+    $cmdNames = "git","tgit","gitk"
+
+    # Create regex pattern from $cmdNames: ^(git|git\.exe|tgit|tgit\.exe|gitk|gitk\.exe)$
+    $cmdNamesPattern = "^($($cmdNames -join '|'))(\.exe)?$"
+    $cmdNames += Get-Alias | Where-Object { $_.Definition -match $cmdNamesPattern } | Foreach-Object Name
+
+    if ($EnableProxyFunctionExpansion) {
+        $funcNames += Get-ChildItem -Path Function:\ | Where-Object { $_.Definition -match $script:GitProxyFunctionRegex } | Foreach-Object Name
+        $cmdNames += $funcNames
+
+        # Create regex pattern from $funcNames e.g.: ^(Git-Checkout|Git-Switch)$
+        $funcNamesPattern = "^($($funcNames -join '|'))$"
+        $cmdNames += Get-Alias | Where-Object { $_.Definition -match $funcNamesPattern } | Foreach-Object Name
+    }
+
+    $global:GitTabSettings.RegisteredCommands = $cmdNames -join ", "
+
+    Microsoft.PowerShell.Core\Register-ArgumentCompleter -CommandName $cmdNames -Native -ScriptBlock {
         param($wordToComplete, $commandAst, $cursorPosition)
 
         # The PowerShell completion has a habit of stripping the trailing space when completing:
@@ -488,6 +563,9 @@ if (!$UseLegacyTabExpansion -and ($PSVersionTable.PSVersion.Major -ge 6)) {
         # The Expand-GitCommand expects this trailing space, so pad with a space if necessary.
         $padLength = $cursorPosition - $commandAst.Extent.StartOffset
         $textToComplete = $commandAst.ToString().PadRight($padLength, ' ').Substring(0, $padLength)
+        if ($EnableProxyFunctionExpansion) {
+            $textToComplete = Expand-GitProxyFunction($textToComplete)
+        }
 
         WriteTabExpLog "Expand: command: '$($commandAst.Extent.Text)', padded: '$textToComplete', padlen: $padLength"
         Expand-GitCommand $textToComplete
@@ -501,6 +579,9 @@ else {
 
             $line = $Context.Line
             $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
+            if ($EnableProxyFunctionExpansion) {
+                $lastBlock = Expand-GitProxyFunction($lastBlock)
+            }
             $TabExpansionHasOutput.Value = $true
             WriteTabExpLog "PowerTab expand: '$lastBlock'"
             Expand-GitCommand $lastBlock
@@ -511,6 +592,9 @@ else {
 
     function TabExpansion($line, $lastWord) {
         $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
+        if ($EnableProxyFunctionExpansion) {
+            $lastBlock = Expand-GitProxyFunction($lastBlock)
+        }
         $msg = "Legacy expand: '$lastBlock'"
 
         switch -regex ($lastBlock) {
