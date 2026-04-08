@@ -23,25 +23,7 @@ $Env:Path += ";${Env:APPDATA}\Python\Scripts"
 # Set the virual editor for subversion, git, ...
 $Env:EDITOR="nvim.exe"
 
-# Set TMP variable to ram disk
-#if (-Not $(Test-Path "R:\")) {
-    # If you need to create the virtual temp drive
-    #Start-Process -Verb RunAs powershell.exe -Args "-executionpolicy bypass -command imdisk -a -t vm -m R: -s 2Gb -p '/fs:ntfs /q /y'"
-#}
-#if (Test-Path "R:\") {
-#    $Env:TMP="R:\"
-#    if (-Not $(Test-Path "R:\tmp")) {
-#        mkdir "R:\tmp" | Out-Null
-#    }
-#    if (Test-Path "R:\tmp") {
-#        $Env:TMP="R:\tmp"
-#    }
-#}
-#else {
-#    $Env:TMP=$HOME + "\tmp"
-#}
-#$Env:TEMP=$Env:TMP
-#$Env:TMPDIR=$Env:TMP
+
 
 # Quick access to terminal settings because .json is associated to Visual Studio.
 $VTSettings=$HOME + "\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
@@ -99,13 +81,13 @@ if (Get-Command uv -ErrorAction SilentlyContinue) {
 
 # Autocomplete chezmoi
 $chezmoiCompletionFile = Join-Path -Path $PSScriptRoot -ChildPath "chezmoi-completion.ps1"
-if (Get-Command uv -ErrorAction SilentlyContinue) {
+if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
     # Load the cached file if it exists
     if (Test-Path $chezmoiCompletionFile) {
         . $chezmoiCompletionFile
     } else {
         # Fallback: Generate it once if missing
-        uv generate-shell-completion powershell | Out-File -FilePath $chezmoiCompletionFile -Encoding utf8
+        chezmoi completion powershell | Out-File -FilePath $chezmoiCompletionFile -Encoding utf8
         . $chezmoiCompletionFile
     }
 }
