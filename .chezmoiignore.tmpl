@@ -1,0 +1,62 @@
+# GLOBAL EXCLUSIONS
+
+{{- if .is_work_device }}{{ printf "\n" }}
+# WORK EXCLUSIONS
+{{- end }}
+
+{{- if .is_mac }}{{ printf "\n" }}
+# MAC EXCLUSIONS
+{{- end }}
+
+{{- if .is_windows }}{{ printf "\n" }}
+# WINDOWS EXCLUSIONS
+.zshenv
+.hushlogin
+.bashrc
+.config/zsh
+.config/nvim
+.config/vim
+.config/ranger
+.config/tmux
+.config/bashrc
+.config/bashrc.d/
+.local/share
+.local/bin
+{{- end }}
+
+{{- if .is_linux }}{{ printf "\n" }}
+# LINUX EXCLUSIONS
+Documents/
+{{- end }}
+
+{{- if .is_wsl }}{{ printf "\n" }}
+# WSL EXCLUSIONS
+.config/alacritty
+.config/vivaldi
+.config/Code
+.config/Cursor
+.config/autostart
+{{- end }}
+
+{{- if not .is_mac }}{{ printf "\n" }}
+# MAC-ONLY CONFIGS
+Library
+.config/aerospace
+.config/karabiner
+.config/linearmouse
+{{- end }}
+
+{{- if not .is_windows }}{{ printf "\n" }}
+# WINDOWS-ONLY CONFIGS
+AppData
+Documents/PowerShell
+Documents/scripts
+{{- end }}
+
+{{- if not .is_linux }}{{ printf "\n" }}
+# LINUX-ONLY CONFIGS
+{{- end }}
+
+{{- if not .is_wsl }}{{ printf "\n" }}
+# WSL-ONLY CONFIGS
+{{- end }}
