@@ -1,2 +1,2 @@
 # dotfiles
-My dotfiles using chezmoi
+My dotfiles using [chezmoi](https://www.chezmoi.io/).
