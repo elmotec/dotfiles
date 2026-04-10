@@ -152,7 +152,7 @@ vim.diagnostic.config({
 
 -- Treesitter (Conditional for Windows)
 if vim.fn.has("win32") == 0 then
-    require('nvim-treesitter.configs').setup {
+    require('nvim-treesitter.config').setup {
         ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "markdown" },
         auto_install = true,
         highlight = { enable = true },
