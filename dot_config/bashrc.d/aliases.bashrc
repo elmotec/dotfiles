@@ -6,7 +6,6 @@ alias apt='sudo apt'
 alias bell='echo -e "\a"'
 alias ..='cd ..'
 alias ...='cd ../..'
-alias k=true
 alias grep='grep --color=auto'
 alias cz='python3 -m commitizen'
 alias reset-time='sudo hwclock --hctosys'
@@ -21,8 +20,10 @@ alias d='docker'
 alias dc='docker compose'
 
 # Alias for common commands
+alias cm='chezmoi'
 alias h='history'
 alias j='jobs -l'
+alias k=true
 alias p='ps -ef'
 alias r='fc -s'
 alias w='w -h'

@@ -1,5 +1,5 @@
 [cd]
-    command = "pwsh"
+    command = {{ if contains "windows" .chezmoi.os }}"pwsh"{{ else }}"bash"{{ end }}
 
 [diff]
     command = "nvim"
@@ -14,4 +14,4 @@
   is_windows = {{ if contains "windows" .chezmoi.os }}true{{ else }}false{{ end }}
   is_wsl = {{ if contains "WSL" (printf "%v" .chezmoi.kernel) }}true{{ else }}false{{ end }}
   is_linux = {{ if contains "linux" .chezmoi.os }}true{{ else }}false{{ end }}
-  is_nixos = {{ if and (contains "linux" .chezmoi.os) (or (contains "nixos" (lower .chezmoi.osRelease.name)) (contains "nixos" (lower .chezmoi.osRelease.vendorName)) (eq .chezmoi.osRelease.defaultHostname "nixos") (eq .chezmoi.osRelease.id "nixos")) }}true{{ else }}false{{ end }}
+  is_nixos = false

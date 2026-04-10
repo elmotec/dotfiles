@@ -8,7 +8,7 @@ USERPROFILE=/mnt/c/Users/$(whoami)
 [[ -z ${EDITOR:-} && -x $(which vim) ]] && export EDITOR=$(which vim)
 export VISUAL=$EDITOR
 
-PATH=${HOME}/bin:${HOME}/.local/bin:${HOME}/lib:${HOME}/.local/lib:${HOME}/.npm-global/bin:${PATH}
+PATH=${HOME}/.local/bin:${HOME}/.local/lib:${HOME}/.npm-global/bin:/snap/bin/:${PATH}
 
 CDPATH=${CDPATH}:${HOME}/dev:${HOME}/dev/tomscore
 
