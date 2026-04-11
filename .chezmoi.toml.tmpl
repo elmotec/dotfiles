@@ -14,6 +14,7 @@
     is_linux = {{ eq $osid "linux" }}
     is_windows = {{ eq $osid "windows" }}
     is_wsl = {{ $is_wsl }}
+    is_work_device = {{ promptBool "is_work_device" }}
 
 [diff]
     command = "nvim"
