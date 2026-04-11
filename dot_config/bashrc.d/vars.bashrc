@@ -9,7 +9,6 @@ USERPROFILE=/mnt/c/Users/$(whoami)
 export VISUAL=$EDITOR
 
 PATH=${HOME}/.local/bin:${HOME}/.local/lib:${HOME}/.npm-global/bin:/snap/bin/:${PATH}
-
 CDPATH=${CDPATH}:${HOME}/dev:${HOME}/dev/tomscore
 
 # Fix PATH variable dupes
@@ -19,5 +18,7 @@ else
     echo "WARNING: cannot clean PATH variable"
 fi
 export PATH
+
+export PAGER=less
 
 return 0
