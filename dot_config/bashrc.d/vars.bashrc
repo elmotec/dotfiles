@@ -20,5 +20,6 @@ fi
 export PATH
 
 export PAGER=less
+export OLLAMA_API_BASE=http://beelink1:11434
 
 return 0
