@@ -21,7 +21,7 @@ $Env:Path += ";C:\Program Files\WinMerge\"
 $Env:Path += ";${Env:APPDATA}\Python\Scripts"
 
 # Set the virual editor for subversion, git, ...
-$Env:EDITOR="nvim.exe"
+$Env:EDITOR="nvim"
 
 
 
