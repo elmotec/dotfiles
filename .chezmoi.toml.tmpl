@@ -1,0 +1,32 @@
+{{- $osid := .chezmoi.os -}}
+{{- $is_wsl := false -}}
+
+{{/* Detect WSL */}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+{{-     $is_wsl = true -}}
+{{-   end -}}
+{{- end -}}
+
+[data]
+    osid = {{ $osid | quote }}
+    is_mac = {{ eq $osid "darwin" }}
+    is_linux = {{ eq $osid "linux" }}
+    is_windows = {{ eq $osid "windows" }}
+    is_wsl = {{ $is_wsl }}
+
+    editor = "nvim"
+
+[diff]
+    command = "nvim"
+    args = ["-d"]
+
+[merge]
+    command = "nvim"
+
+{{/* Windows-specific configuration */}}
+{{- if eq $osid "windows" }}
+[cd]
+    command = "pwsh"
+{{- end }}
+
