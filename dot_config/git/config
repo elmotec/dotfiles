@@ -80,6 +80,3 @@
     path = config-unix
 [pull]
     rebase = true
-[credential]
-	helper = 
-	helper = C:/Users/jlecomte/AppData/Local/Programs/Git\\ Credential\\ Manager/git-credential-manager.exe
