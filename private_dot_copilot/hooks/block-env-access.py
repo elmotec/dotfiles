@@ -1,9 +1,3 @@
-#!/bin/bash
-set -euo pipefail
-
-input=$(cat)
-
-python3 - "$input" <<'PY'
 import json
 import re
 import sys
@@ -50,4 +44,3 @@ if re.search(r"\bgetenv\b", tool_args):
             }
         )
     )
-PY
