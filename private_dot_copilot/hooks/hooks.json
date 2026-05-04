@@ -4,7 +4,7 @@
     "preToolUse": [
       {
         "type": "command",
-        "bash": "./.copilot/hooks/block-env-access.sh",
+        "bash": "~/.copilot/hooks/block-env-access.sh",
         "cwd": "."
       }
     ]
