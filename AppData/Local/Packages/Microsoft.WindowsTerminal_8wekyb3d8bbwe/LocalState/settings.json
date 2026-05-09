@@ -49,10 +49,10 @@
     "autoHideWindow": false,
     "copyFormatting": "none",
     "copyOnSelect": true,
-    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-    "initialCols": 120,
+    "defaultProfile": "{963ff2f7-6aed-5ce3-9d91-90d99571f53a}",
+    "initialCols": 220,
     "initialPosition": "100,100",
-    "initialRows": 40,
+    "initialRows": 60,
     "keybindings": 
     [
         {
@@ -100,7 +100,7 @@
         {
             "backgroundImage": null,
             "backgroundImageOpacity": 0.81,
-            "backgroundImageStretchMode": "fill",
+            "backgroundImageStretchMode": "none",
             "bellStyle": 
             [
                 "audible",
@@ -115,6 +115,7 @@
             },
             "cursorColor": "#228822",
             "cursorShape": "vintage",
+            "experimental.retroTerminalEffect": false,
             "font": 
             {
                 "face": "Hack NF",
@@ -127,13 +128,13 @@
                     "subs": 0,
                     "sups": 0
                 },
-                "size": 14
+                "size": 12
             },
             "hidden": false,
             "intenseTextStyle": "all",
             "opacity": 100,
             "pathTranslationStyle": "wsl",
-            "useAcrylic": false
+            "useAcrylic": true
         },
         "list": 
         [
@@ -150,12 +151,6 @@
                 "source": "Windows.Terminal.Wsl"
             },
             {
-                "guid": "{51855cb2-8cce-5362-8f54-464b92b32386}",
-                "hidden": false,
-                "name": "Ubuntu",
-                "source": "CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc"
-            },
-            {
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt"
@@ -165,12 +160,6 @@
                 "hidden": false,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
-                "hidden": false,
-                "name": "Ubuntu",
-                "source": "Windows.Terminal.Wsl"
             },
             {
                 "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
