@@ -43,6 +43,10 @@ Library
 .config/linearmouse
 {{- end }}
 
+{{- if not .is_linux }}{{ printf "\n" }}
+# LINUX-ONLY CONFIGS
+{{- end }}
+
 {{- if not .is_windows }}{{ printf "\n" }}
 # WINDOWS-ONLY CONFIGS
 AppData
@@ -52,10 +56,14 @@ symlink_vimfiles
 packages.config
 {{- end }}
 
-{{- if not .is_linux }}{{ printf "\n" }}
-# LINUX-ONLY CONFIGS
-{{- end }}
-
 {{- if not .is_wsl }}{{ printf "\n" }}
 # WSL-ONLY CONFIGS
+Desktop
+Downloads
+Music
+Pictures
+Public
+Templates
+Videos
+# Documents is managed by dir_Documents.tmpl
 {{- end }}
