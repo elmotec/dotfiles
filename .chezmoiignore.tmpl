@@ -23,7 +23,6 @@
 
 {{- if .is_linux }}{{ printf "\n" }}
 # LINUX EXCLUSIONS
-Documents/
 {{- end }}
 
 {{- if .is_wsl }}{{ printf "\n" }}
@@ -50,8 +49,7 @@ Library
 {{- if not .is_windows }}{{ printf "\n" }}
 # WINDOWS-ONLY CONFIGS
 AppData
-Documents/PowerShell
-Documents/scripts
+Documents.powershell
 symlink_vimfiles
 packages.config
 {{- end }}
@@ -65,5 +63,5 @@ Pictures
 Public
 Templates
 Videos
-# Documents is managed by dir_Documents.tmpl
+Documents
 {{- end }}

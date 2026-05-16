@@ -1,0 +1,12 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+# Create standard XDG user directories by forcing a generation
+if command -v xdg-user-dirs-update &> /dev/null; then
+    echo "Creating missing XDG user directories..."
+    xdg-user-dirs-update --force
+else
+    echo "Warning: xdg-user-dirs-update not found. Creating fallbacks manually."
+    mkdir -p "$HOME/Downloads" "$HOME/Pictures" "$HOME/Desktop" "$HOME/Documents" "$HOME/Music" "$HOME/Videos" "$HOME/Public" "$HOME/Templates"
+fi
+{{ end -}}
+
