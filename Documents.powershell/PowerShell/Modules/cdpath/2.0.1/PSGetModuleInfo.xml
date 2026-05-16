@@ -141,7 +141,7 @@
           <S N="CompanyName">PowerCode</S>
         </MS>
       </Obj>
-      <S N="InstalledLocation">C:\Users\jlecomte\Documents\PowerShell\Modules\cdpath\2.0.1</S>
+      <S N="InstalledLocation">C:\Users\{{ .chezmoi.username }}\Documents\PowerShell\Modules\cdpath\2.0.1</S>
     </MS>
   </Obj>
 </Objs>

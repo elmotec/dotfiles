@@ -52,7 +52,7 @@
 [log]
     date = human
 [maintenance]
-    repo = /home/jlecomte/dotfiles
+    repo = /home/{{ .chezmoi.username }}/dotfiles
 [merge]
     tool = nvimdiff
 [mergetool "fugitive"]

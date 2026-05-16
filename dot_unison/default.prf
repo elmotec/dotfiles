@@ -1,7 +1,7 @@
 # roots
 # we need UNC path for compatibility with scheduled tasks
-root = \\synology\homes\jlecomte\backup
-root = C:\Users\jlecomte
+root = \\synology\homes\{{ .chezmoi.username }}\backup
+root = C:\Users\{{ .chezmoi.username }}
 
 # Unison preferences file
 include common

@@ -172,7 +172,7 @@
           <S N="CompanyName">Microsoft Corporation</S>
         </MS>
       </Obj>
-      <S N="InstalledLocation">C:\Users\jlecomte\Documents\PowerShell\Modules\PackageManagement\1.4.7</S>
+      <S N="InstalledLocation">C:\Users\{{ .chezmoi.username }}\Documents\PowerShell\Modules\PackageManagement\1.4.7</S>
     </MS>
   </Obj>
 </Objs>

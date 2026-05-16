@@ -150,7 +150,7 @@
           <S N="CompanyName">Unknown</S>
         </MS>
       </Obj>
-      <S N="InstalledLocation">C:\Users\jlecomte\Documents\PowerShell\Modules\PSFzf\2.0.0</S>
+      <S N="InstalledLocation">C:\Users\{{ .chezmoi.username }}\Documents\PowerShell\Modules\PSFzf\2.0.0</S>
     </MS>
   </Obj>
 </Objs>

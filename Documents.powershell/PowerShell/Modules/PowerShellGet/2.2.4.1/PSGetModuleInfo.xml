@@ -218,7 +218,7 @@
           <S N="CompanyName">Microsoft Corporation</S>
         </MS>
       </Obj>
-      <S N="InstalledLocation">C:\Users\jlecomte\Documents\PowerShell\Modules\PowerShellGet\2.2.4.1</S>
+      <S N="InstalledLocation">C:\Users\{{ .chezmoi.username }}\Documents\PowerShell\Modules\PowerShellGet\2.2.4.1</S>
     </MS>
   </Obj>
 </Objs>
