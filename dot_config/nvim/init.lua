@@ -152,11 +152,19 @@ vim.diagnostic.config({
 
 -- Treesitter (Conditional for Windows)
 if vim.fn.has("win32") == 0 then
-    require('nvim-treesitter.config').setup {
-        ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "markdown" },
-        auto_install = true,
-        highlight = { enable = true },
-    }
+    local ok, treesitter = pcall(require, "nvim-treesitter.configs")
+    if ok then
+        treesitter.setup {
+            ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "markdown" },
+            auto_install = true,
+            -- Makefile support has occasionally shipped a stale parser binary
+            -- in the local data dir, so keep Treesitter off for that filetype.
+            highlight = {
+                enable = true,
+                disable = { "make", "automake" },
+            },
+        }
+    end
 end
 
 -- 7. Completion (nvim-cmp)

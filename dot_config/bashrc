@@ -4,7 +4,7 @@
 # Default standard location for config files.
 export XDG_CONFIG_HOME=${HOME}/.config
 
-BASHRC_DIR=${XDG_CONFIG_HOME}/bashrc.d
+export BASHRC_DIR=${XDG_CONFIG_HOME}/bashrc.d
 
 # Firm specific settings, see also firm-post below.
 [[ -f ${BASHRC_DIR}/firm-pre.bashrc ]] && . ${BASHRC_DIR}/firm-pre.bashrc
