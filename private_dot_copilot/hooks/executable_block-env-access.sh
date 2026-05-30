@@ -12,7 +12,8 @@ import sys
 def reason(prefix):
     return (
         f"{prefix} is blocked by policy. Do *NOT* try to work around the policy. "
-        "Explain the problem and prompt the operator for another way"
+        "Explain the problem and prompt the operator for the information you need "
+        "or another way to get to it."
     )
 
 
