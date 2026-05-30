@@ -16,6 +16,7 @@ then
 fi
 
 . ${BASHRC_DIR}/opts.bashrc
+. ${BASHRC_DIR}/ssh.bashrc
 . ${BASHRC_DIR}/history.bashrc
 . ${BASHRC_DIR}/aliases.bashrc
 . ${BASHRC_DIR}/vars.bashrc
@@ -29,9 +30,6 @@ export GIT_PS1_DESCRIBE_STYLE="branch"
 export GIT_PS1_SHOWCOLORHINTS=true
 
 . ${BASHRC_DIR}/prompt.bashrc
-
-# Enable SSO via keychain and ssh-agent.
-[[ -f ${HOME}/.ssh/id_ecdsa ]] && eval "$(keychain -q --eval --agents ssh id_ecdsa)"
 
 # Firm specific settings, see also firm-pre above.
 [[ -f ${BASHRC_DIR}/firm-post.bashrc ]] && . ${BASHRC_DIR}/firm-post.bashrc
