@@ -1,7 +1,7 @@
 # ssh.bashrc
 
 # Look up all public ssh keys found in ~/.ssh
-keys=$(cd ~/.ssh && ls *.pub | sed 's|\.pub||g' 2> /dev/null)
+keys=$(cd ~/.ssh && ls *.pub 2>/dev/null| sed 's|\.pub||g')
 
 # Enable SSO via keychain and ssh-agent for those keys
 [[ -n $keys ]] && eval $(keychain -q --eval --agents ssh $keys)
