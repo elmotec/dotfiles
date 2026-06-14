@@ -49,7 +49,7 @@ Library
 {{- if not .is_windows }}{{ printf "\n" }}
 # WINDOWS-ONLY CONFIGS
 AppData
-Documents.powershell
+Documents/PowerShell
 symlink_vimfiles
 packages.config
 {{- end }}
@@ -63,5 +63,5 @@ Pictures
 Public
 Templates
 Videos
-Documents
+# Documents is managed by dir_Documents.tmpl
 {{- end }}

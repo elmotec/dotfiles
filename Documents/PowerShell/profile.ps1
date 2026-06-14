@@ -43,14 +43,14 @@ function prompt {
 }
 
 # Turn on fuzzy finder fzf at the command line.
-Import-Module PSFzf -ArgumentList 'Ctrl+f', 'Alt+r' -Force
+#Import-Module PSFzf -ArgumentList 'Ctrl+f', 'Alt+r' -Force
 
 # Quickly cd to preferred directories.
 Import-Module CDPath
 Set-CDPath -Path ~,~\Documents,~\Documents\Github,~\Documents\Gitlab,~\Documents\Python
 
 # Quickly navigate directories based on usage.
-Import-Module ZLocation
+#Import-Module ZLocation
 
 # Fix hard to read colors
 Set-PSReadLineOption -Colors @{
