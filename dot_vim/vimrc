@@ -403,7 +403,7 @@ if !has('nvim')
 else
   " don't use terminal's 256-colors => use 16/24 colors as defined already
   set notermguicolors
-  colorscheme cterm
+  colorscheme base16-default-light
 endif
 
 " Complete the plugin section.
