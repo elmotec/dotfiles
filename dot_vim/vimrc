@@ -168,8 +168,9 @@ if has("autocmd")
   " Also load indent files, to automatically do language-dependent indenting.
   filetype plugin indent on
 
-  " For all text files set 'textwidth' to 78 characters.
+  " For all text files set 'textwidth' to 99, gitcommit 79.
   autocmd FileType text setlocal textwidth=99
+  autocmd FileType gitcommit setlocal textwidth=79
 
   " Auto load python specific extensions (bring in
   " $VIMRUNTIME/ftplugin/python* files and directories).
