@@ -26,8 +26,9 @@ alias j='jobs -l'
 alias k=true
 alias p='ps -ef'
 alias r='fc -s'
-alias w='w -h'
-alias x='exit'
+
+# Alias for git
+alias gg='git ls-files | xargs grep'
 
 # Copy/Paste in wsl
 if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
