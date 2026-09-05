@@ -279,7 +279,9 @@ let g:startify_relative_path = 1
 " Add supports for editorconfig
 Plug 'editorconfig/editorconfig-vim'
 
-if has('win32')
+if has('nvim')
+    Plug 'jakewvincent/mkdnflow.nvim'
+else
     " Powershell
     Plug 'pprovost/vim-ps1'
 

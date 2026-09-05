@@ -73,6 +73,26 @@ require("lualine").setup {
     }
 }
 
+-- Markdown notebook navigation and backlink support.
+require('mkdnflow').setup({
+    modules = {
+        notebook = true,
+        backlinks = true,
+    },
+    filetypes = {
+        markdown = true,
+        rmd = false,
+    },
+    links = {
+        style = 'markdown',
+    },
+    path_resolution = {
+        primary = 'current',
+        fallback = 'current',
+        sync_cwd = false,
+    },
+})
+
 -- 4. LSP Configuration (The Native 0.11 Way)
 require("mason").setup()
 
