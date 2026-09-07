@@ -85,6 +85,7 @@ require('mkdnflow').setup({
     },
     links = {
         style = 'markdown',
+        transform_on_create = false,
     },
     path_resolution = {
         primary = 'current',
