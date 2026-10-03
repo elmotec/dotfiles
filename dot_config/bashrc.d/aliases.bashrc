@@ -29,6 +29,7 @@ alias r='fc -s'
 
 # Alias for git
 alias gg='git ls-files | xargs grep'
+alias gac='git add . && git c'
 
 # Copy/Paste in wsl
 if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
