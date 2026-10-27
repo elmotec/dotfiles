@@ -28,7 +28,9 @@ alias p='ps -ef'
 alias r='fc -s'
 
 # Alias for git
-alias gg='git ls-files | xargs grep'
+alias gg='git ls-files | xargs rg -n'
+alias ggf='git ls-files | rg -n'
+ggv() { nvim -q <(git ls-files | xargs rg -n --column "$@"); }
 alias gac='git add . && git c'
 
 # Copy/Paste in wsl
