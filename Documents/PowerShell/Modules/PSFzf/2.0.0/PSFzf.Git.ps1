@@ -15,10 +15,10 @@ function SetGitKeyBindings($enable)
         if ($null -eq $gitPath) {
             $gitInfo = Get-Command git.exe -ErrorAction SilentlyContinue
             if ($null -ne $gitInfo) {
-                $script:gitPathLong = Split-Path (Split-Path $gitInfo.Source -Parent) -Parent  
+                $script:gitPathLong = Split-Path (Split-Path $gitInfo.Source -Parent) -Parent
 
-                $a = New-Object -ComObject Scripting.FileSystemObject 
-                $f = $a.GetFolder($script:gitPathLong) 
+                $a = New-Object -ComObject Scripting.FileSystemObject
+                $f = $a.GetFolder($script:gitPathLong)
                 $script:gitPath = $f.ShortPath
             } else {
                 Write-Error "Failed to register git key bindings - git executable not found"
@@ -83,9 +83,9 @@ function Invoke-PsFzfGitFiles() {
 
     git status --short | `
         Invoke-Fzf -Border -Multi -Ansi `
-            -Preview "$previewCmd" -Header $headerStrings[0] -Bind $headerStrings[1] | foreach-object { 
-                $result += $_.Substring('?? '.Length) 
-            } 
+            -Preview "$previewCmd" -Header $headerStrings[0] -Bind $headerStrings[1] | foreach-object {
+                $result += $_.Substring('?? '.Length)
+            }
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
     if ($result.Length -gt 0) {
         $result = $result -join " "
@@ -122,7 +122,7 @@ function Invoke-PsFzfGitHashes() {
 
     $previewCmd = $(Join-Path $PsScriptRoot 'bat/PsFzfGitBranches-Preview.bat') + " ${script:gitPath}" + ' {}' + $(Get-ColorAlways)
     $result = @()
-    git branch -a | & "${script:gitPathLong}\usr\bin\grep.exe" -v '/HEAD\s' | 
+    git branch -a | & "${script:gitPathLong}\usr\bin\grep.exe" -v '/HEAD\s' |
         ForEach-Object { $_.Substring('* '.Length) } | Sort-Object | `
                 Invoke-Fzf -Ansi -Multi -PreviewWindow "right:70%" -Preview "$previewCmd" | ForEach-Object {
                         $result += $_

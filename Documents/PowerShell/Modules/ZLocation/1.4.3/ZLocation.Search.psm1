@@ -4,7 +4,7 @@ if ((Get-Variable IsWindows -ErrorAction Ignore) -eq $null) { $IsWindows = $true
 
 function Find-Matches {
     param (
-        [Parameter(Mandatory=$true)] [hashtable]$hash, 
+        [Parameter(Mandatory=$true)] [hashtable]$hash,
         [string[]]$query
     )
     $hash = $hash.Clone()
@@ -44,7 +44,7 @@ function Find-Matches {
 
 function Start-WithPrefix {
     param (
-        [Parameter(Mandatory=$true)] [string]$Path, 
+        [Parameter(Mandatory=$true)] [string]$Path,
         [Parameter(Mandatory=$true)] [string]$lowerPrefix
     )
     $lowerLeaf = (Split-Path -Leaf $Path).ToLower()
@@ -53,7 +53,7 @@ function Start-WithPrefix {
 
 function IsExactMatch {
     param (
-        [Parameter(Mandatory=$true)] [string]$Path, 
+        [Parameter(Mandatory=$true)] [string]$Path,
         [Parameter(Mandatory=$true)] [string]$lowerPrefix
     )
     $lowerLeaf = (Split-Path -Leaf $Path).ToLower()

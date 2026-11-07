@@ -33,7 +33,7 @@ Focus on the following aspects:
     - Are functions and classes modular and reusable?
     - Is there a clear separation of concerns?
     - Are dependencies managed properly?
-    - Are best practices followed for the programming language and framework used? See c++ core guidelines for c++ code, ruff rules for python code, etc. 
+    - Are best practices followed for the programming language and framework used? See c++ core guidelines for c++ code, ruff rules for python code, etc.
 4. **Performance**: Does the code perform well, or are there any obvious inefficiencies?
 5. **Security**: Are there any security vulnerabilities or best practices that are not followed?
 6. **Testing**: Are there sufficient tests, and do they cover edge cases?

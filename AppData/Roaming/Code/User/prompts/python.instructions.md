@@ -10,4 +10,3 @@ description: 'Guidance specific to Python code generation and modification tasks
 - Use `uv` and the project virtual environment when available.
 - Prefer Ruff-compatible style and lint-clean changes.
 - Keep docstrings consistent with nearby project patterns.
-

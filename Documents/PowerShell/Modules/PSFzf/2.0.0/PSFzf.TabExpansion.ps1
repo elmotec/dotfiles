@@ -34,7 +34,7 @@ function Expand-GitWithFzf($lastBlock) {
         }
     }
 
-    #HACK: workaround for fact that PSReadLine seems to clear screen 
+    #HACK: workaround for fact that PSReadLine seems to clear screen
     # after keyboard shortcut action is executed:
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
@@ -44,10 +44,10 @@ function Expand-FileDirectoryPath($lastWord) {
     $lastWord = $lastWord.Substring(0, $lastWord.Length - 2)
     if ($lastWord.EndsWith('\')) {
         $dir = $lastWord.Substring(0, $lastWord.Length - 1)
-        $file = $null    
+        $file = $null
     } elseif (-not [string]::IsNullOrWhiteSpace($lastWord)) {
         $dir = Split-Path $lastWord -Parent
-        $file = Split-Path $lastWord -Leaf    
+        $file = Split-Path $lastWord -Leaf
     }
     if (-not [System.IO.Path]::IsPathRooted($dir)) {
         $dir = Join-Path $PWD.Path $dir
@@ -68,7 +68,7 @@ function Expand-FileDirectoryPath($lastWord) {
         Set-Location $prevPath
     }
 
-    #HACK: workaround for fact that PSReadLine seems to clear screen 
+    #HACK: workaround for fact that PSReadLine seems to clear screen
     # after keyboard shortcut action is executed:
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
@@ -84,23 +84,23 @@ function SetTabExpansion($enable)
 
                 Register-ArgumentCompleter -CommandName git,tgit,gitk -Native -ScriptBlock {
                     param($wordToComplete, $commandAst, $cursorPosition)
-                
+
                     # The PowerShell completion has a habit of stripping the trailing space when completing:
                     # git checkout <tab>
                     # The Expand-GitCommand expects this trailing space, so pad with a space if necessary.
                     $padLength = $cursorPosition - $commandAst.Extent.StartOffset
                     $textToComplete = $commandAst.ToString().PadRight($padLength, ' ').Substring(0, $padLength)
-                
+
                     #WriteTabExpLog "Expand: command: '$($commandAst.Extent.Text)', padded: '$textToComplete', padlen: $padLength"
                     Expand-GitCommandPsFzf $textToComplete
                 }
-                
+
         }
     } else {
         if ($script:TabExpansionEnabled) {
             $script:TabExpansionEnabled = $false
         }
-    }   
+    }
 }
 
 function CheckFzfTrigger {
@@ -124,7 +124,7 @@ function GetServiceSelection() {
         $ResultAction
     )
     $header = [System.Environment]::NewLine + $("{0,-24} NAME" -f "DISPLAYNAME") + [System.Environment]::NewLine
-    $result = Get-Service | Where-Object { ![string]::IsNullOrEmpty($_.Name) } | ForEach-Object { 
+    $result = Get-Service | Where-Object { ![string]::IsNullOrEmpty($_.Name) } | ForEach-Object {
         "{0,-24} {1}" -f $_.DisplayName.Substring(0,[System.Math]::Min(24,$_.DisplayName.Length)),$_.Name } | Invoke-Fzf -Multi -Header $header
     $result | ForEach-Object {
         &$ResultAction $_
@@ -145,12 +145,12 @@ function RegisterBuiltinCompleters {
 
             $script:resultArr = @()
             GetProcessSelection -ResultAction {
-                param($result) 
+                param($result)
                 $script:resultArr += $result -replace "([0-9]+)\s*(.*)",$group
             }
 
             $script:resultArr -join ', '
-            #HACK: workaround for fact that PSReadLine seems to clear screen 
+            #HACK: workaround for fact that PSReadLine seems to clear screen
             # after keyboard shortcut action is executed:
             [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
         } else {
@@ -160,7 +160,7 @@ function RegisterBuiltinCompleters {
 
     'Get-Process','Stop-Process' | ForEach-Object {
         Register-ArgumentCompleter -CommandName $_ -ParameterName "Name" -ScriptBlock $processIdOrNameScriptBlock
-        Register-ArgumentCompleter -CommandName $_ -ParameterName "Id" -ScriptBlock $processIdOrNameScriptBlock            
+        Register-ArgumentCompleter -CommandName $_ -ParameterName "Id" -ScriptBlock $processIdOrNameScriptBlock
     }
 
     $serviceNameScriptBlock = {
@@ -176,12 +176,12 @@ function RegisterBuiltinCompleters {
 
             $script:resultArr = @()
             GetServiceSelection -ResultAction {
-                param($result) 
+                param($result)
                 $script:resultArr += $result.Substring(24+1)
             }
 
             $script:resultArr -join ', '
-            #HACK: workaround for fact that PSReadLine seems to clear screen 
+            #HACK: workaround for fact that PSReadLine seems to clear screen
             # after keyboard shortcut action is executed:
             [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
         } else {
@@ -191,7 +191,7 @@ function RegisterBuiltinCompleters {
 
     'Get-Service','Start-Service','Stop-Service' | ForEach-Object {
         Register-ArgumentCompleter -CommandName $_ -ParameterName "Name" -ScriptBlock $serviceNameScriptBlock
-        Register-ArgumentCompleter -CommandName $_ -ParameterName "DisplayName" -ScriptBlock $serviceNameScriptBlock            
+        Register-ArgumentCompleter -CommandName $_ -ParameterName "DisplayName" -ScriptBlock $serviceNameScriptBlock
     }
 }
 

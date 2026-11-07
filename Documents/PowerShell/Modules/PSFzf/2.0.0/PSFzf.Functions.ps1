@@ -17,7 +17,7 @@ function script:SetPsFzfAliasCheck {
 
     if (-not (Get-Command -Name $Name -ErrorAction Ignore)) {
         SetPsFzfAlias $Name $Function
-    }    
+    }
 
     # restore module auto loading
     $PSModuleAutoLoadingPreference=$script:PSModuleAutoLoadingPreferencePrev
@@ -63,9 +63,9 @@ function Invoke-FuzzyEdit()
             }
         }
     }
-    
+
     if ($null -ne $files) {
-        Invoke-Expression -Command ("$editor $editorOptions {0}" -f ($files -join ' ')) 
+        Invoke-Expression -Command ("$editor $editorOptions {0}" -f ($files -join ' '))
     }
 }
 
@@ -78,9 +78,9 @@ function Invoke-FuzzyFasd() {
             Get-Frecents | ForEach-Object { $_.FullPath } | Invoke-Fzf -ReverseInput -NoSort | ForEach-Object { $result = $_ }
         } elseif (Get-Command fasd -ErrorAction Ignore) {
             fasd -l | Invoke-Fzf -ReverseInput -NoSort | ForEach-Object { $result = $_ }
-        } 
+        }
     } catch {
-        
+
     }
     if ($null -ne $result) {
         # use cd in case it's aliased to something else:
@@ -113,8 +113,8 @@ function GetProcessSelection() {
 }
 function Invoke-FuzzyKillProcess() {
     GetProcessSelection -ResultAction {
-        param($result) 
-        $id = $result -replace "([0-9]+)(.*)",'$1' 
+        param($result)
+        $id = $result -replace "([0-9]+)(.*)",'$1'
         Stop-Process $id -Verbose
     }
 }
@@ -132,12 +132,12 @@ function Invoke-FuzzySetLocation() {
             Invoke-Fzf | ForEach-Object { $result = $_ }
         }
     } catch {
-        
+
     }
 
     if ($null -ne $result) {
         Set-Location $result
-    } 
+    }
 }
 
 if ((-not $IsLinux) -and (-not $IsMacOS)) {
@@ -154,7 +154,7 @@ if ((-not $IsLinux) -and (-not $IsMacOS)) {
         try {
             Search-Everything -Global:$Global -PathInclude $Directory -FolderInclude @('') | Invoke-Fzf | ForEach-Object { $result = $_ }
         } catch {
-            
+
         }
         if ($null -ne $result) {
             # use cd in case it's aliased to something else:
@@ -169,7 +169,7 @@ function Invoke-FuzzyZLocation() {
     try {
         (Get-ZLocation).GetEnumerator() | Sort-Object { $_.Value } -Descending | ForEach-Object{ $_.Key } | Invoke-Fzf -NoSort | ForEach-Object { $result = $_ }
     } catch {
-        
+
     }
     if ($null -ne $result) {
         # use cd in case it's aliased to something else:
@@ -184,9 +184,9 @@ function Invoke-FuzzyGitStatus() {
     try {
         $headerStrings = Get-HeaderStrings
         $gitRoot = git rev-parse --show-toplevel
-        git status --porcelain | 
-        Invoke-Fzf -Multi -Bind $headerStrings[1] -Header $headerStrings[0] | ForEach-Object { 
-            $result += Join-Path $gitRoot $('{0}' -f $_.Substring('?? '.Length)) 
+        git status --porcelain |
+        Invoke-Fzf -Multi -Bind $headerStrings[1] -Header $headerStrings[0] | ForEach-Object {
+            $result += Join-Path $gitRoot $('{0}' -f $_.Substring('?? '.Length))
         }
     } catch {
         # do nothing
@@ -206,9 +206,9 @@ function Enable-PsFzfAliases()
         SetPsFzfAliasCheck "fkill"   Invoke-FuzzyKillProcess
         SetPsFzfAliasCheck "fd"      Invoke-FuzzySetLocation
         if (${function:Set-LocationFuzzyEverything}) {
-            SetPsFzfAliasCheck "cde" Set-LocationFuzzyEverything 
+            SetPsFzfAliasCheck "cde" Set-LocationFuzzyEverything
         }
         SetPsFzfAliasCheck "fz"      Invoke-FuzzyZLocation
         SetPsFzfAliasCheck "fgs"     Invoke-FuzzyGitStatus
-    }     
+    }
 }

@@ -16,4 +16,3 @@ iabbrev pdb import pdb; pdb.set_trace()
 
 " Convert files to utf-8
 setlocal fileencoding=utf-8
-

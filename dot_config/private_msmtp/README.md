@@ -33,4 +33,3 @@ chmod 600 $XDG_CONFIG_HOME/msmtp/password $XDG_CONFIG_HOME/msmtp/config
 ```
 printf 'From: <user>@gmail.com\nTo: <recipient>\nSubject: msmtp test email\n\nThis is a test email.\n' | msmtp --account=<user>@gmail.com --read-recipient
 ```
-

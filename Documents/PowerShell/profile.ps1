@@ -94,6 +94,5 @@ if (Get-Command chezmoi -ErrorAction SilentlyContinue) {
 
 # Display import PS variables
 echo "`$VTSettings=$VTSettings"
-echo "`$PROFILE.CurrentUserAllHosts=$($PROFILE.CurrentUserAllHosts.ToString())" 
+echo "`$PROFILE.CurrentUserAllHosts=$($PROFILE.CurrentUserAllHosts.ToString())"
 echo ""
-

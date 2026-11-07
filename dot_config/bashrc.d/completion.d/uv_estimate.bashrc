@@ -17,4 +17,3 @@ _uv_with_estimate_completion() {
     fi
 }
 complete -o nosort -F _uv_with_estimate_completion uv
-

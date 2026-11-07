@@ -21,7 +21,7 @@ function Get-TargetResource
     <#
     .SYNOPSIS
 
-    This DSC resource provides a mechanism to download and install packages on a computer. 
+    This DSC resource provides a mechanism to download and install packages on a computer.
 
     Get-TargetResource returns the current state of the resource.
 
@@ -32,26 +32,26 @@ function Get-TargetResource
     Specifies the name of the package source where the package can be found.
     This can either be a URI or a source registered with Register-PackageSource cmdlet.
     The DSC resource MSFT_PackageManagementSource can also register a package source.
-    
+
     .PARAMETER RequiredVersion
-    Specifies the exact version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the exact version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the newest available version of the package that also satisfies any
     maximum version specified by the MaximumVersion parameter.
 
     .PARAMETER MaximumVersion
-    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the highest-numbered available version of the package.
 
     .PARAMETER MinimumVersion
-    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter, 
-    this DSC resource intalls the highest available version of the package that also satisfies any maximum 
+    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter,
+    this DSC resource intalls the highest available version of the package that also satisfies any maximum
     specified version specified by the MaximumVersion parameter.
 
     .PARAMETER SourceCredential
     Specifies a user account that has rights to install a package for a specified package provider or source.
 
     .PARAMETER ProviderName
-    Specifies a package provider name to which to scope your package search. You can get package provider names 
+    Specifies a package provider name to which to scope your package search. You can get package provider names
     by running the Get-PackageProvider cmdlet.
 
     .PARAMETER AdditionalParameters
@@ -70,7 +70,7 @@ function Get-TargetResource
         [Parameter()]
         [System.String]
         $RequiredVersion,
-        
+
         [Parameter()]
         [System.String]
         $MinimumVersion,
@@ -89,11 +89,11 @@ function Get-TargetResource
         [Parameter()]
         [System.String]
         $ProviderName,
-        
+
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters        
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters
     )
-    
+
     $ensure = "Absent"
     $null = $PSBoundParameters.Remove("Source")
     $null = $PSBoundParameters.Remove("SourceCredential")
@@ -107,11 +107,11 @@ function Get-TargetResource
          }
     }
     $null = $PSBoundParameters.Remove("AdditionalParameters")
-    
+
     $verboseMessage =$localizedData.StartGetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters),$env:PSModulePath
     Write-Verbose -Message $verboseMessage
     $result = PackageManagement\Get-Package @PSBoundParameters -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-        
+
 
     if ($result.count -eq 1)
     {
@@ -129,8 +129,8 @@ function Get-TargetResource
     }
 
     Write-Debug -Message "Source $($Name) is $($ensure)"
-                         
-    
+
+
     if ($ensure -eq 'Absent')
     {
         return @{
@@ -155,8 +155,8 @@ function Get-TargetResource
                 ProviderName       = $result.ProviderName
                 Source             = $result.source
                 RequiredVersion    = $result.Version
-            } 
-    } 
+            }
+    }
 }
 
 function Test-TargetResource
@@ -164,7 +164,7 @@ function Test-TargetResource
     <#
     .SYNOPSIS
 
-    This DSC resource provides a mechanism to download and install packages on a computer. 
+    This DSC resource provides a mechanism to download and install packages on a computer.
 
     Test-TargetResource returns a boolean which determines whether the resource is in
     desired state or not.
@@ -176,26 +176,26 @@ function Test-TargetResource
     Specifies the name of the package source where the package can be found.
     This can either be a URI or a source registered with Register-PackageSource cmdlet.
     The DSC resource MSFT_PackageManagementSource can also register a package source.
-    
+
     .PARAMETER RequiredVersion
-    Specifies the exact version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the exact version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the newest available version of the package that also satisfies any
     maximum version specified by the MaximumVersion parameter.
 
     .PARAMETER MaximumVersion
-    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the highest-numbered available version of the package.
 
     .PARAMETER MinimumVersion
-    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter, 
-    this DSC resource intalls the highest available version of the package that also satisfies any maximum 
+    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter,
+    this DSC resource intalls the highest available version of the package that also satisfies any maximum
     specified version specified by the MaximumVersion parameter.
 
     .PARAMETER SourceCredential
     Specifies a user account that has rights to install a package for a specified package provider or source.
 
     .PARAMETER ProviderName
-    Specifies a package provider name to which to scope your package search. You can get package provider names 
+    Specifies a package provider name to which to scope your package search. You can get package provider names
     by running the Get-PackageProvider cmdlet.
 
     .PARAMETER AdditionalParameters
@@ -214,7 +214,7 @@ function Test-TargetResource
         [Parameter()]
         [System.String]
         $RequiredVersion,
-        
+
         [Parameter()]
         [System.String]
         $MinimumVersion,
@@ -229,7 +229,7 @@ function Test-TargetResource
 
         [Parameter()]
         [PSCredential] $SourceCredential,
-                
+
         [ValidateSet("Present","Absent")]
         [System.String]
         $Ensure="Present",
@@ -237,27 +237,27 @@ function Test-TargetResource
         [Parameter()]
         [System.String]
         $ProviderName,
-        
+
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters         
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters
     )
 
-    
+
     Write-Verbose -Message ($localizedData.StartTestPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
     $null = $PSBoundParameters.Remove("Ensure")
-    
+
     $temp = Get-TargetResource @PSBoundParameters
 
     if ($temp.Ensure -eq $ensure)
     {
-        Write-Verbose -Message ($localizedData.InDesiredState -f $Name, $Ensure, $temp.Ensure)            
-        return $True 
+        Write-Verbose -Message ($localizedData.InDesiredState -f $Name, $Ensure, $temp.Ensure)
+        return $True
     }
     else
     {
-        Write-Verbose -Message ($localizedData.NotInDesiredState -f $Name,$ensure,$temp.ensure)            
+        Write-Verbose -Message ($localizedData.NotInDesiredState -f $Name,$ensure,$temp.ensure)
         return [bool] $False
-    }    
+    }
 }
 
 function Set-TargetResource
@@ -265,7 +265,7 @@ function Set-TargetResource
     <#
     .SYNOPSIS
 
-    This DSC resource provides a mechanism to download and install packages on a computer. 
+    This DSC resource provides a mechanism to download and install packages on a computer.
 
     Set-TargetResource either intalls or uninstall a package as defined by the vaule of Ensure parameter.
 
@@ -276,26 +276,26 @@ function Set-TargetResource
     Specifies the name of the package source where the package can be found.
     This can either be a URI or a source registered with Register-PackageSource cmdlet.
     The DSC resource MSFT_PackageManagementSource can also register a package source.
-    
+
     .PARAMETER RequiredVersion
-    Specifies the exact version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the exact version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the newest available version of the package that also satisfies any
     maximum version specified by the MaximumVersion parameter.
 
     .PARAMETER MaximumVersion
-    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter, 
+    Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter,
     this DSC resource installs the highest-numbered available version of the package.
 
     .PARAMETER MinimumVersion
-    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter, 
-    this DSC resource intalls the highest available version of the package that also satisfies any maximum 
+    Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter,
+    this DSC resource intalls the highest available version of the package that also satisfies any maximum
     specified version specified by the MaximumVersion parameter.
 
     .PARAMETER SourceCredential
     Specifies a user account that has rights to install a package for a specified package provider or source.
 
     .PARAMETER ProviderName
-    Specifies a package provider name to which to scope your package search. You can get package provider names 
+    Specifies a package provider name to which to scope your package search. You can get package provider names
     by running the Get-PackageProvider cmdlet.
 
     .PARAMETER AdditionalParameters
@@ -313,7 +313,7 @@ function Set-TargetResource
         [Parameter()]
         [System.String]
         $RequiredVersion,
-        
+
         [Parameter()]
         [System.String]
         $MinimumVersion,
@@ -336,13 +336,13 @@ function Set-TargetResource
         [Parameter()]
         [System.String]
         $ProviderName,
-        
+
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters        
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters
     )
 
     Write-Verbose -Message ($localizedData.StartSetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
-    
+
     $null = $PSBoundParameters.Remove("Ensure")
 
     if ($PSBoundParameters.ContainsKey("SourceCredential"))
@@ -350,7 +350,7 @@ function Set-TargetResource
         $PSBoundParameters.Add("Credential", $SourceCredential)
         $null = $PSBoundParameters.Remove("SourceCredential")
     }
-    
+
     if ($AdditionalParameters)
     {
          foreach($instance in $AdditionalParameters)
@@ -362,14 +362,14 @@ function Set-TargetResource
 
     $PSBoundParameters.Remove("AdditionalParameters")
 
-       
+
         # We do not want others to control the behavior of ErrorAction
         # while calling Install-Package/Uninstall-Package.
         $PSBoundParameters.Remove("ErrorAction")
         if ($Ensure -eq "Present")
         {
             PackageManagement\Install-Package @PSBoundParameters -ErrorAction Stop
-        }   
+        }
         else
         {
             # we dont source location for uninstalling an already
@@ -379,7 +379,7 @@ function Set-TargetResource
             PackageManagement\Uninstall-Package @PSBoundParameters -ErrorAction Stop
         }
  }
- 
+
  function GetMessageFromParameterDictionary
  {
     <#

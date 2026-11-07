@@ -442,4 +442,3 @@ unlet s:cterm00 s:cterm01 s:cterm02 s:cterm03  s:cterm04  s:cterm05  s:cterm06  
 "if has('nvim') && v:version >= 800
 set notermguicolors
 "endif
-

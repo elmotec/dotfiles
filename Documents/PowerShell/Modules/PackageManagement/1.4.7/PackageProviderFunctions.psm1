@@ -46,7 +46,7 @@ function Write-Debug {
 }
 
 function Write-Error {
-	param( 
+	param(
 		[Parameter(Mandatory=$true)][string] $Message,
 		[Parameter()][string] $Category,
 		[Parameter()][string] $ErrorId,
@@ -92,7 +92,7 @@ function Write-Progress {
         # This parameter is not supported by request object
         [Parameter()]
         [string]
-        $CurrentOperation,        
+        $CurrentOperation,
 
         [Parameter()]
         [ValidateRange(-1,[int]::MaxValue)]
@@ -138,7 +138,7 @@ function Write-Progress {
         $params.Add("Completed", $PSBoundParameters["Completed"])
     }
 
-	if( -not $request  ) {    
+	if( -not $request  ) {
 		if( -not $args  ) {
 			Microsoft.PowerShell.Utility\Write-Progress @params
 			return
@@ -327,7 +327,7 @@ function New-Entity {
 	# support role as a NMTOKENS string or an array of strings
 	if( $role ) {
 		$o.Role = $role
-	} 
+	}
 	if( $roles )  {
 		$o.Roles = $roles
 	}

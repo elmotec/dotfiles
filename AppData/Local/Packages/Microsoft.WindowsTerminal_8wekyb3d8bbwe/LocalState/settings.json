@@ -1,7 +1,7 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
             "command": "unbound",
@@ -36,7 +36,7 @@
             "keys": "ctrl+shift+v"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "auto",
@@ -47,14 +47,14 @@
             "command": "find"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "right"
             }
         },
         {
-            "command": 
+            "command":
             {
                 "action": "copy",
                 "singleLine": false
@@ -64,7 +64,7 @@
             "command": "paste"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "sendInput",
                 "input": "\u001b\r"
@@ -79,7 +79,7 @@
     "initialCols": 220,
     "initialPosition": "100,100",
     "initialRows": 60,
-    "keybindings": 
+    "keybindings":
     [
         {
             "id": "User.splitPane.A6751878",
@@ -114,27 +114,27 @@
             "keys": "ctrl+shift+v"
         }
     ],
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "backgroundImage": null,
             "backgroundImageOpacity": 0.81,
             "backgroundImageStretchMode": "none",
-            "bellStyle": 
+            "bellStyle":
             [
                 "audible",
                 "window",
                 "taskbar"
             ],
             "closeOnExit": "graceful",
-            "colorScheme": 
+            "colorScheme":
             {
                 "dark": "base16-nono-dark",
                 "light": "base16-solarized-light"
@@ -142,10 +142,10 @@
             "cursorColor": "#228822",
             "cursorShape": "vintage",
             "experimental.retroTerminalEffect": false,
-            "font": 
+            "font":
             {
                 "face": "Hack Nerd Font",
-                "features": 
+                "features":
                 {
                     "aalt": 0,
                     "frac": 0,
@@ -162,7 +162,7 @@
             "pathTranslationStyle": "wsl",
             "useAcrylic": true
         },
-        "list": 
+        "list":
         [
             {
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
@@ -191,7 +191,7 @@
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#0C0C0C",

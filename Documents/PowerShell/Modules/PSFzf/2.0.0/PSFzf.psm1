@@ -8,11 +8,11 @@ param(
 	[parameter(Position=3,Mandatory=$false)][string]$PSReadlineChordReverseHistoryArgs = 'Alt+a')
 
 $script:IsWindows = ($PSVersionTable.PSVersion.Major -le 5) -or $IsWindows
-if ($script:IsWindows) {	
-	$script:ShellCmd = 'cmd.exe /S /C {0}'	
+if ($script:IsWindows) {
+	$script:ShellCmd = 'cmd.exe /S /C {0}'
 	$script:DefaultFileSystemCmd = @"
 dir /s/b "{0}"
-"@ 
+"@
 } else {
 	$script:ShellCmd = '/bin/sh -c "{0}"'
 	$script:DefaultFileSystemCmd = @"
@@ -34,7 +34,7 @@ $script:FzfLocation = $null
 $script:PSReadlineHandlerChords = @()
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove =
 {
-	$PsReadlineShortcuts.Values | Where-Object Chord | ForEach-Object { 
+	$PsReadlineShortcuts.Values | Where-Object Chord | ForEach-Object {
 		Remove-PSReadlineKeyHandler $_.Chord
 	}
 	RemovePsFzfAliases
@@ -92,7 +92,7 @@ function Set-PsFzfOption{
 				}
 				$info.Chord = $newChord
 			}
-		}	
+		}
 	}
 
 	if ($EnableAliasFuzzyEdit) 			{ SetPsFzfAlias "fe"      Invoke-FuzzyEdit}
@@ -104,13 +104,13 @@ function Set-PsFzfOption{
 	if ($EnableAliasFuzzyGitStatus) 	{ SetPsFzfAlias "fgs"     Invoke-FuzzyGitStatus }
 	if ($EnableAliasFuzzySetEverything) {
         if (${function:Set-LocationFuzzyEverything}) {
-            SetPsFzfAlias "cde" Set-LocationFuzzyEverything 
+            SetPsFzfAlias "cde" Set-LocationFuzzyEverything
         }
 	}
 }
 
 function Invoke-Fzf {
-	param( 
+	param(
             # Search
 			[Alias("x")]
 			[switch]$Extended,
@@ -165,7 +165,7 @@ function Invoke-Fzf {
             # History
 			[string]$History,
 			[int]$HistorySize = -1,
-			
+
             #Preview
             [string]$Preview,
 			[string]$PreviewWindow,
@@ -180,13 +180,13 @@ function Invoke-Fzf {
 			[Alias('f')]
 			[string]$Filter,
 			[string]$Expect,
-			
+
 		  	[Parameter(ValueFromPipeline=$True)]
             [object[]]$Input
     )
 
 	Begin {
-		# process parameters: 
+		# process parameters:
 		$arguments = ''
 		if ($Extended) 										{ $arguments += '--extended '}
 		if ($Exact) 			        					{ $arguments += '--exact '}
@@ -228,17 +228,17 @@ function Invoke-Fzf {
 		if ($Exit0)											{ $arguments += '--exit-0 '}
 		if (![string]::IsNullOrEmpty($Filter))				{ $arguments += "--filter=$Filter " }
 		if (![string]::IsNullOrWhiteSpace($Expect)) 	    { $arguments += "--expect=""$Expect"" "}
-	 
+
 		if ($script:UseHeightOption -and [string]::IsNullOrWhiteSpace($Height)) {
 			$arguments += "--height=40% "
 		}
-		
+
 		if ($Border -eq $true -and -not [string]::IsNullOrWhiteSpace($BorderStyle)) {
 			throw '-Border and -BorderStyle are mutally exclusive'
 		}
 
 		$fileSystemCmd = Get-FileSystemCmd
-		  
+
 		# prepare to start process:
         $process = New-Object System.Diagnostics.Process
         $process.StartInfo.FileName = $script:FzfLocation
@@ -247,8 +247,8 @@ function Invoke-Fzf {
         $process.StartInfo.RedirectStandardInput = $true
         $process.StartInfo.RedirectStandardOutput = $true
 		$process.StartInfo.UseShellExecute = $false
-		$process.StartInfo.WorkingDirectory = $pwd.Path 
-        
+		$process.StartInfo.WorkingDirectory = $pwd.Path
+
         # Creating string builders to store stdout:
         $stdOutStr = New-Object -TypeName System.Text.StringBuilder
 
@@ -293,7 +293,7 @@ function Invoke-Fzf {
 			}
             $stdOutStr.ToString().Split([System.Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
 				Write-Output $_
-			}			
+			}
 		}
 	}
 
@@ -302,14 +302,14 @@ function Invoke-Fzf {
         $hasInput = $PSBoundParameters.ContainsKey('Input')
         $utf8Encoding = New-Object System.Text.UTF8Encoding -ArgumentList $false
         $utf8Stream = New-Object System.IO.StreamWriter -ArgumentList $process.StandardInput.BaseStream, $utf8Encoding
-        
+
         try {
 			# handle no piped input:
 			if (!$hasInput) {
                 # optimization for filesystem provider:
                 if ($PWD.Provider.Name -eq 'FileSystem') {
 					$cmd = $script:ShellCmd -f ($fileSystemCmd -f $PWD.Path)
-					Invoke-Expression $cmd | ForEach-Object { 
+					Invoke-Expression $cmd | ForEach-Object {
                         $utf8Stream.WriteLine($_)
                         if ($processHasExited.flag) {
                             throw "breaking inner pipeline"
@@ -318,7 +318,7 @@ function Invoke-Fzf {
                 }
                 else {
                     Get-ChildItem . -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
-                        $item = $_ 
+                        $item = $_
                         if ($item -is [System.String]) {
                             $str = $item
                         } else {
@@ -340,7 +340,7 @@ function Invoke-Fzf {
                         }
 				    }
                 }
-                 
+
 			} else {
                 foreach ($item in $Input) {
                     if ($item -is [System.String]) {
@@ -382,7 +382,7 @@ function Invoke-Fzf {
 
 function Find-CurrentPath {
 	param([string]$line,[int]$cursor,[ref]$leftCursor,[ref]$rightCursor)
-	
+
 	if ($line.Length -eq 0) {
 		$leftCursor.Value = $rightCursor.Value = 0
 		return $null
@@ -455,7 +455,7 @@ function Invoke-FzfPsReadlineHandlerProvider {
 	$fileSystemCmd = Get-FileSystemCmd
 
     $result = @()
-    try 
+    try
     {
         if (-not [System.String]::IsNullOrWhiteSpace($env:FZF_CTRL_T_COMMAND)) {
 			Invoke-Expression ($env:FZF_CTRL_T_COMMAND) | Invoke-Fzf -Multi | ForEach-Object { $result += $_ }
@@ -466,10 +466,10 @@ function Invoke-FzfPsReadlineHandlerProvider {
 				$resolvedPath = Resolve-Path $currentPath -ErrorAction SilentlyContinue
 				$providerName = $null
 				if ($null -ne $resolvedPath) {
-					$providerName = $resolvedPath.Provider.Name 
+					$providerName = $resolvedPath.Provider.Name
 				}
 				switch ($providerName) {
-					# Get-ChildItem is way too slow - we optimize for the FileSystem provider by 
+					# Get-ChildItem is way too slow - we optimize for the FileSystem provider by
 					# using batch commands:
 					'FileSystem'    { Invoke-Expression ($script:ShellCmd -f ($fileSystemCmd -f $resolvedPath.ProviderPath)) | Invoke-Fzf -Multi | ForEach-Object { $result += $_ } }
 					'Registry'      { Get-ChildItem $currentPath -Recurse -ErrorAction SilentlyContinue | Select-Object Name -ExpandProperty Name | Invoke-Fzf -Multi | ForEach-Object { $result += $_ } }
@@ -479,12 +479,12 @@ function Invoke-FzfPsReadlineHandlerProvider {
 			}
 		}
     }
-    catch 
+    catch
     {
         # catch custom exception
     }
-	
-	#HACK: workaround for fact that PSReadLine seems to clear screen 
+
+	#HACK: workaround for fact that PSReadLine seems to clear screen
 	# after keyboard shortcut action is executed:
 	[Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 
@@ -505,7 +505,7 @@ function Invoke-FzfPsReadlineHandlerProvider {
                 $result = $result.Replace("`r`n","")
             }
 		}
-		
+
 		$str = $result -join ','
 		if ($addSpace) {
 			$str = ' ' + $str
@@ -515,7 +515,7 @@ function Invoke-FzfPsReadlineHandlerProvider {
 			[Microsoft.PowerShell.PSConsoleReadLine]::Insert($str)
 		} else {
 			[Microsoft.PowerShell.PSConsoleReadLine]::Replace($leftCursor,$replaceLen+1,$str)
-		}		
+		}
 	}
 }
 function Invoke-FzfPsReadlineHandlerHistory {
@@ -536,13 +536,13 @@ function Invoke-FzfPsReadlineHandlerHistory {
 	{
 		# catch custom exception
 	}
-	finally 
+	finally
 	{
 		# ensure that stream is closed:
 		$reader.Dispose()
 	}
 
-	#HACK: workaround for fact that PSReadLine seems to clear screen 
+	#HACK: workaround for fact that PSReadLine seems to clear screen
 	# after keyboard shortcut action is executed:
 	[Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 
@@ -551,29 +551,29 @@ function Invoke-FzfPsReadlineHandlerHistory {
 	}
 }
 
-function Invoke-FzfPsReadlineHandlerHistoryArgs {	
-	try 
+function Invoke-FzfPsReadlineHandlerHistoryArgs {
+	try
     {
 		$line = $null
 		$cursor = $null
 		[Microsoft.PowerShell.PSConsoleReadline]::GetBufferState([ref]$line, [ref]$cursor)
 		$line = $line.Insert($cursor,"{}") # add marker for fzf
-        
+
         $contentTable = @{}
 		$reader = New-Object PSFzf.IO.ReverseLineReader -ArgumentList $((Get-PSReadlineOption).HistorySavePath)
-		
+
 		$fileHist = @{}
 		$reader.GetEnumerator() | ForEach-Object {
 			if (-not $fileHist.ContainsKey($_)) {
 				$fileHist.Add($_,$true)
-				[System.Management.Automation.PsParser]::Tokenize($_, [ref] $null) 
-			}  
-		} | Where-Object {$_.type -eq "commandargument" -or $_.type -eq "string"} | 
-				ForEach-Object { 
-					if (!$contentTable.ContainsKey($_.Content)) { $_.Content ; $contentTable[$_.Content] = $true } 
+				[System.Management.Automation.PsParser]::Tokenize($_, [ref] $null)
+			}
+		} | Where-Object {$_.type -eq "commandargument" -or $_.type -eq "string"} |
+				ForEach-Object {
+					if (!$contentTable.ContainsKey($_.Content)) { $_.Content ; $contentTable[$_.Content] = $true }
 				} | Invoke-Fzf -NoSort -Preview "echo $line" -PreviewWindow "up:20%" | ForEach-Object { $result = $_ }
 	}
-	catch 
+	catch
 	{
 		# catch custom exception
 	}
@@ -581,8 +581,8 @@ function Invoke-FzfPsReadlineHandlerHistoryArgs {
 	{
 		$reader.Dispose()
 	}
-	
-	#HACK: workaround for fact that PSReadLine seems to clear screen 
+
+	#HACK: workaround for fact that PSReadLine seems to clear screen
 	# after keyboard shortcut action is executed:
 	[Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 
@@ -597,15 +597,15 @@ function Invoke-FzfPsReadlineHandlerHistoryArgs {
 
 function Invoke-FzfPsReadlineHandlerSetLocation {
     $result = $null
-	try 
+	try
     {
 		if ($null -eq $env:FZF_ALT_C_COMMAND) {
 			Get-ChildItem . -Recurse -ErrorAction SilentlyContinue -Directory | Invoke-Fzf | ForEach-Object { $result = $_ }
 		} else {
 			Invoke-Expression ($env:FZF_ALT_C_COMMAND + ' ' + $env:FZF_ALT_C_OPTS) | Invoke-Fzf | ForEach-Object { $result = $_ }
 		}
-    } 
-	catch 
+    }
+	catch
 	{
 		# catch custom exception
 	}
@@ -613,7 +613,7 @@ function Invoke-FzfPsReadlineHandlerSetLocation {
         Set-Location $result
         [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 	} else {
-		#HACK: workaround for fact that PSReadLine seems to clear screen 
+		#HACK: workaround for fact that PSReadLine seems to clear screen
 		# after keyboard shortcut action is executed:
 		[Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 	}
@@ -629,7 +629,7 @@ function SetPsReadlineShortcut($Chord,[switch]$Override,$BriefDesc,$Desc,[script
 	} else {
 		Set-PSReadlineKeyHandler -Key $Chord -Description $Desc -BriefDescription $BriefDesc -ScriptBlock $scriptBlock
 		return $true
-	} 
+	}
 }
 
 
@@ -653,37 +653,37 @@ function FindFzf()
         if ($null -eq $script:FzfLocation) {
             $result = Get-Command $_ -ErrorAction SilentlyContinue
             $result | ForEach-Object {
-                $script:FzfLocation = Resolve-Path $_.Source   
+                $script:FzfLocation = Resolve-Path $_.Source
             }
         }
     }
-    
+
     if ($null -eq $script:FzfLocation) {
-        throw 'Failed to find fzf binary in PATH.  You can download a binary from this page: https://github.com/junegunn/fzf-bin/releases' 
+        throw 'Failed to find fzf binary in PATH.  You can download a binary from this page: https://github.com/junegunn/fzf-bin/releases'
     }
 }
 
 $PsReadlineShortcuts = @{
 	PSReadlineChordProvider = [PSCustomObject]@{
-		'Chord' = "$PSReadlineChordProvider" 
-		'BriefDesc' = 'Fzf Provider Select' 
-		'Desc' = 'Run fzf for current provider based on current token' 
+		'Chord' = "$PSReadlineChordProvider"
+		'BriefDesc' = 'Fzf Provider Select'
+		'Desc' = 'Run fzf for current provider based on current token'
 		'ScriptBlock' = { Invoke-FzfPsReadlineHandlerProvider } };
 	PSReadlineChordReverseHistory = [PsCustomObject]@{
-		'Chord' = "$PSReadlineChordReverseHistory" 
-		'BriefDesc' = 'Fzf Reverse History Select' 
-		'Desc' = 'Run fzf to search through PSReadline history' 
+		'Chord' = "$PSReadlineChordReverseHistory"
+		'BriefDesc' = 'Fzf Reverse History Select'
+		'Desc' = 'Run fzf to search through PSReadline history'
 		'ScriptBlock' = { Invoke-FzfPsReadlineHandlerHistory } };
 	PSReadlineChordSetLocation = @{
 		'Chord' = "$PSReadlineChordSetLocation"
 		'BriefDesc' = 'Fzf Set Location'
-		'Desc' = 'Run fzf to select directory to set current location' 
+		'Desc' = 'Run fzf to select directory to set current location'
 		'ScriptBlock' = { Invoke-FzfPsReadlineHandlerSetLocation } };
 	PSReadlineChordReverseHistoryArgs = @{
 		'Chord' = "$PSReadlineChordReverseHistoryArgs"
 		'BriefDesc' = 'Fzf Reverse History Arg Select'
-		'Desc' = 'Run fzf to search through command line arguments in PSReadline history' 
-		'ScriptBlock' = { Invoke-FzfPsReadlineHandlerHistoryArgs } };	
+		'Desc' = 'Run fzf to search through command line arguments in PSReadline history'
+		'ScriptBlock' = { Invoke-FzfPsReadlineHandlerHistoryArgs } };
 }
 if (Get-Module -ListAvailable -Name PSReadline) {
 	$PsReadlineShortcuts.GetEnumerator() | ForEach-Object {
@@ -693,22 +693,22 @@ if (Get-Module -ListAvailable -Name PSReadline) {
 		if (-not $result) {
 			$info.Chord = $null
 		}
-	} 
+	}
 } else {
-	Write-Warning "PSReadline module not found - keyboard handlers not installed" 
+	Write-Warning "PSReadline module not found - keyboard handlers not installed"
 }
 
 FindFzf
 
-try 
+try
 {
-	$fzfVersion = $(& $script:FzfLocation --version).Split('.') 
+	$fzfVersion = $(& $script:FzfLocation --version).Split('.')
 	$script:UseHeightOption = $fzfVersion.length -eq 3 -and `
 							  ([int]$fzfVersion[0] -gt 0 -or `
 							  [int]$fzfVersion[1] -ge 21) -and `
-							  $script:RunningInWindowsTerminal 	
+							  $script:RunningInWindowsTerminal
 }
-catch 
+catch
 {
 	# continue
 }
@@ -732,7 +732,7 @@ function script:SetPsFzfAliasCheck {
 
     if (-not (Get-Command -Name $Name -ErrorAction Ignore)) {
         SetPsFzfAlias $Name $Function
-    }    
+    }
 
     # restore module auto loading
     $PSModuleAutoLoadingPreference=$script:PSModuleAutoLoadingPreferencePrev
@@ -778,9 +778,9 @@ function Invoke-FuzzyEdit()
             }
         }
     }
-    
+
     if ($null -ne $files) {
-        Invoke-Expression -Command ("$editor $editorOptions {0}" -f ($files -join ' ')) 
+        Invoke-Expression -Command ("$editor $editorOptions {0}" -f ($files -join ' '))
     }
 }
 
@@ -793,9 +793,9 @@ function Invoke-FuzzyFasd() {
             Get-Frecents | ForEach-Object { $_.FullPath } | Invoke-Fzf -ReverseInput -NoSort | ForEach-Object { $result = $_ }
         } elseif (Get-Command fasd -ErrorAction Ignore) {
             fasd -l | Invoke-Fzf -ReverseInput -NoSort | ForEach-Object { $result = $_ }
-        } 
+        }
     } catch {
-        
+
     }
     if ($null -ne $result) {
         # use cd in case it's aliased to something else:
@@ -828,8 +828,8 @@ function GetProcessSelection() {
 }
 function Invoke-FuzzyKillProcess() {
     GetProcessSelection -ResultAction {
-        param($result) 
-        $id = $result -replace "([0-9]+)(.*)",'$1' 
+        param($result)
+        $id = $result -replace "([0-9]+)(.*)",'$1'
         Stop-Process $id -Verbose
     }
 }
@@ -847,12 +847,12 @@ function Invoke-FuzzySetLocation() {
             Invoke-Fzf | ForEach-Object { $result = $_ }
         }
     } catch {
-        
+
     }
 
     if ($null -ne $result) {
         Set-Location $result
-    } 
+    }
 }
 
 if ((-not $IsLinux) -and (-not $IsMacOS)) {
@@ -869,7 +869,7 @@ if ((-not $IsLinux) -and (-not $IsMacOS)) {
         try {
             Search-Everything -Global:$Global -PathInclude $Directory -FolderInclude @('') | Invoke-Fzf | ForEach-Object { $result = $_ }
         } catch {
-            
+
         }
         if ($null -ne $result) {
             # use cd in case it's aliased to something else:
@@ -884,7 +884,7 @@ function Invoke-FuzzyZLocation() {
     try {
         (Get-ZLocation).GetEnumerator() | Sort-Object { $_.Value } -Descending | ForEach-Object{ $_.Key } | Invoke-Fzf -NoSort | ForEach-Object { $result = $_ }
     } catch {
-        
+
     }
     if ($null -ne $result) {
         # use cd in case it's aliased to something else:
@@ -899,9 +899,9 @@ function Invoke-FuzzyGitStatus() {
     try {
         $headerStrings = Get-HeaderStrings
         $gitRoot = git rev-parse --show-toplevel
-        git status --porcelain | 
-        Invoke-Fzf -Multi -Bind $headerStrings[1] -Header $headerStrings[0] | ForEach-Object { 
-            $result += Join-Path $gitRoot $('{0}' -f $_.Substring('?? '.Length)) 
+        git status --porcelain |
+        Invoke-Fzf -Multi -Bind $headerStrings[1] -Header $headerStrings[0] | ForEach-Object {
+            $result += Join-Path $gitRoot $('{0}' -f $_.Substring('?? '.Length))
         }
     } catch {
         # do nothing
@@ -921,11 +921,11 @@ function Enable-PsFzfAliases()
         SetPsFzfAliasCheck "fkill"   Invoke-FuzzyKillProcess
         SetPsFzfAliasCheck "fd"      Invoke-FuzzySetLocation
         if (${function:Set-LocationFuzzyEverything}) {
-            SetPsFzfAliasCheck "cde" Set-LocationFuzzyEverything 
+            SetPsFzfAliasCheck "cde" Set-LocationFuzzyEverything
         }
         SetPsFzfAliasCheck "fz"      Invoke-FuzzyZLocation
         SetPsFzfAliasCheck "fgs"     Invoke-FuzzyGitStatus
-    }     
+    }
 }
 # PSFzf.Git.ps1
 
@@ -945,10 +945,10 @@ function SetGitKeyBindings($enable)
         if ($null -eq $gitPath) {
             $gitInfo = Get-Command git.exe -ErrorAction SilentlyContinue
             if ($null -ne $gitInfo) {
-                $script:gitPathLong = Split-Path (Split-Path $gitInfo.Source -Parent) -Parent  
+                $script:gitPathLong = Split-Path (Split-Path $gitInfo.Source -Parent) -Parent
 
-                $a = New-Object -ComObject Scripting.FileSystemObject 
-                $f = $a.GetFolder($script:gitPathLong) 
+                $a = New-Object -ComObject Scripting.FileSystemObject
+                $f = $a.GetFolder($script:gitPathLong)
                 $script:gitPath = $f.ShortPath
             } else {
                 Write-Error "Failed to register git key bindings - git executable not found"
@@ -1013,9 +1013,9 @@ function Invoke-PsFzfGitFiles() {
 
     git status --short | `
         Invoke-Fzf -Border -Multi -Ansi `
-            -Preview "$previewCmd" -Header $headerStrings[0] -Bind $headerStrings[1] | foreach-object { 
-                $result += $_.Substring('?? '.Length) 
-            } 
+            -Preview "$previewCmd" -Header $headerStrings[0] -Bind $headerStrings[1] | foreach-object {
+                $result += $_.Substring('?? '.Length)
+            }
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
     if ($result.Length -gt 0) {
         $result = $result -join " "
@@ -1052,7 +1052,7 @@ function Invoke-PsFzfGitHashes() {
 
     $previewCmd = $(Join-Path $PsScriptRoot 'bat/PsFzfGitBranches-Preview.bat') + " ${script:gitPath}" + ' {}' + $(Get-ColorAlways)
     $result = @()
-    git branch -a | & "${script:gitPathLong}\usr\bin\grep.exe" -v '/HEAD\s' | 
+    git branch -a | & "${script:gitPathLong}\usr\bin\grep.exe" -v '/HEAD\s' |
         ForEach-Object { $_.Substring('* '.Length) } | Sort-Object | `
                 Invoke-Fzf -Ansi -Multi -PreviewWindow "right:70%" -Preview "$previewCmd" | ForEach-Object {
                         $result += $_
@@ -1110,7 +1110,7 @@ function Expand-GitWithFzf($lastBlock) {
         }
     }
 
-    #HACK: workaround for fact that PSReadLine seems to clear screen 
+    #HACK: workaround for fact that PSReadLine seems to clear screen
     # after keyboard shortcut action is executed:
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
@@ -1120,10 +1120,10 @@ function Expand-FileDirectoryPath($lastWord) {
     $lastWord = $lastWord.Substring(0, $lastWord.Length - 2)
     if ($lastWord.EndsWith('\')) {
         $dir = $lastWord.Substring(0, $lastWord.Length - 1)
-        $file = $null    
+        $file = $null
     } elseif (-not [string]::IsNullOrWhiteSpace($lastWord)) {
         $dir = Split-Path $lastWord -Parent
-        $file = Split-Path $lastWord -Leaf    
+        $file = Split-Path $lastWord -Leaf
     }
     if (-not [System.IO.Path]::IsPathRooted($dir)) {
         $dir = Join-Path $PWD.Path $dir
@@ -1144,7 +1144,7 @@ function Expand-FileDirectoryPath($lastWord) {
         Set-Location $prevPath
     }
 
-    #HACK: workaround for fact that PSReadLine seems to clear screen 
+    #HACK: workaround for fact that PSReadLine seems to clear screen
     # after keyboard shortcut action is executed:
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
@@ -1160,23 +1160,23 @@ function SetTabExpansion($enable)
 
                 Register-ArgumentCompleter -CommandName git,tgit,gitk -Native -ScriptBlock {
                     param($wordToComplete, $commandAst, $cursorPosition)
-                
+
                     # The PowerShell completion has a habit of stripping the trailing space when completing:
                     # git checkout <tab>
                     # The Expand-GitCommand expects this trailing space, so pad with a space if necessary.
                     $padLength = $cursorPosition - $commandAst.Extent.StartOffset
                     $textToComplete = $commandAst.ToString().PadRight($padLength, ' ').Substring(0, $padLength)
-                
+
                     #WriteTabExpLog "Expand: command: '$($commandAst.Extent.Text)', padded: '$textToComplete', padlen: $padLength"
                     Expand-GitCommandPsFzf $textToComplete
                 }
-                
+
         }
     } else {
         if ($script:TabExpansionEnabled) {
             $script:TabExpansionEnabled = $false
         }
-    }   
+    }
 }
 
 function CheckFzfTrigger {
@@ -1200,7 +1200,7 @@ function GetServiceSelection() {
         $ResultAction
     )
     $header = [System.Environment]::NewLine + $("{0,-24} NAME" -f "DISPLAYNAME") + [System.Environment]::NewLine
-    $result = Get-Service | Where-Object { ![string]::IsNullOrEmpty($_.Name) } | ForEach-Object { 
+    $result = Get-Service | Where-Object { ![string]::IsNullOrEmpty($_.Name) } | ForEach-Object {
         "{0,-24} {1}" -f $_.DisplayName.Substring(0,[System.Math]::Min(24,$_.DisplayName.Length)),$_.Name } | Invoke-Fzf -Multi -Header $header
     $result | ForEach-Object {
         &$ResultAction $_
@@ -1221,12 +1221,12 @@ function RegisterBuiltinCompleters {
 
             $script:resultArr = @()
             GetProcessSelection -ResultAction {
-                param($result) 
+                param($result)
                 $script:resultArr += $result -replace "([0-9]+)\s*(.*)",$group
             }
 
             $script:resultArr -join ', '
-            #HACK: workaround for fact that PSReadLine seems to clear screen 
+            #HACK: workaround for fact that PSReadLine seems to clear screen
             # after keyboard shortcut action is executed:
             [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
         } else {
@@ -1236,7 +1236,7 @@ function RegisterBuiltinCompleters {
 
     'Get-Process','Stop-Process' | ForEach-Object {
         Register-ArgumentCompleter -CommandName $_ -ParameterName "Name" -ScriptBlock $processIdOrNameScriptBlock
-        Register-ArgumentCompleter -CommandName $_ -ParameterName "Id" -ScriptBlock $processIdOrNameScriptBlock            
+        Register-ArgumentCompleter -CommandName $_ -ParameterName "Id" -ScriptBlock $processIdOrNameScriptBlock
     }
 
     $serviceNameScriptBlock = {
@@ -1252,12 +1252,12 @@ function RegisterBuiltinCompleters {
 
             $script:resultArr = @()
             GetServiceSelection -ResultAction {
-                param($result) 
+                param($result)
                 $script:resultArr += $result.Substring(24+1)
             }
 
             $script:resultArr -join ', '
-            #HACK: workaround for fact that PSReadLine seems to clear screen 
+            #HACK: workaround for fact that PSReadLine seems to clear screen
             # after keyboard shortcut action is executed:
             [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
         } else {
@@ -1267,7 +1267,7 @@ function RegisterBuiltinCompleters {
 
     'Get-Service','Start-Service','Stop-Service' | ForEach-Object {
         Register-ArgumentCompleter -CommandName $_ -ParameterName "Name" -ScriptBlock $serviceNameScriptBlock
-        Register-ArgumentCompleter -CommandName $_ -ParameterName "DisplayName" -ScriptBlock $serviceNameScriptBlock            
+        Register-ArgumentCompleter -CommandName $_ -ParameterName "DisplayName" -ScriptBlock $serviceNameScriptBlock
     }
 }
 

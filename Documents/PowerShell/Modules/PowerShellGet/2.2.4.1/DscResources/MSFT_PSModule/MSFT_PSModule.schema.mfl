@@ -2,7 +2,7 @@
 instance of __namespace{ name="MS_409";};
 #pragma namespace("\\\\.\\root\\default\\MS_409")
 
-[AMENDMENT, LOCALE("MS_409")] 
+[AMENDMENT, LOCALE("MS_409")]
 class MSFT_PSModule : OMI_BaseResource
 {
   [Key,Description("Name of the module\n") : Amended] String Name;

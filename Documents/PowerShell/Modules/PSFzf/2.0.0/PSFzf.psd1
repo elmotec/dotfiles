@@ -69,11 +69,11 @@ RequiredAssemblies = 'PSFzf.dll'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Enable-PsFzfAliases', 'Invoke-PsFzfGitFiles', 
-               'Invoke-PsFzfGitHashes', 'Invoke-Fzf', 'Invoke-FuzzyEdit', 
-               'Invoke-FuzzyFasd', 'Invoke-FuzzyZLocation', 'Invoke-FuzzyGitStatus', 
-               'Invoke-FuzzyHistory', 'Invoke-FuzzyKillProcess', 
-               'Invoke-FuzzySetLocation', 'Set-LocationFuzzyEverything', 
+FunctionsToExport = 'Enable-PsFzfAliases', 'Invoke-PsFzfGitFiles',
+               'Invoke-PsFzfGitHashes', 'Invoke-Fzf', 'Invoke-FuzzyEdit',
+               'Invoke-FuzzyFasd', 'Invoke-FuzzyZLocation', 'Invoke-FuzzyGitStatus',
+               'Invoke-FuzzyHistory', 'Invoke-FuzzyKillProcess',
+               'Invoke-FuzzySetLocation', 'Set-LocationFuzzyEverything',
                'Set-PsFzfOption'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -134,4 +134,3 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
-

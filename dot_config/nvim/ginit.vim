@@ -3,4 +3,3 @@
 if exists('g:GuiLoaded')
     source ~/.vim/gvimrc
 endif
-

@@ -102,7 +102,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local bufnr = args.buf
         local bufopts = { noremap = true, silent = true, buffer = bufnr }
-        
+
         map("n", "gD", vim.lsp.buf.declaration, bufopts)
         map("n", "gd", vim.lsp.buf.definition, bufopts)
         map("n", "K", vim.lsp.buf.hover, bufopts)
@@ -151,7 +151,7 @@ vim.lsp.config('ty', {
             python = {
                 analysis = {
                     -- You can toggle specific strictness levels here
-                    typeCheckingMode = "standard", 
+                    typeCheckingMode = "standard",
             }
         }
     }

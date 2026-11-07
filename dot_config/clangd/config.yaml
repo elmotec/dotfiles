@@ -18,13 +18,11 @@ Diagnostics:
       readability-function-cognitive-complexity.Threshold: 15
       readability-function-cognitive-complexity.IgnoreMacros: true
       cppcoreguidelines-pro-bounds-array-to-pointer-decay: false
-
       # See https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
       # See also .clang-tidy
-      readability-identifier-naming.NamespaceCase:lower_case
-      readability-identifier-naming.ClassCase:CamelCase
-      readability-identifier-naming.StructCase:CamelCase
-      readability-identifier-naming.FunctionCase:camelBack
-      readability-identifier-naming.VariableCase:camelBack
-      readability-identifier-naming.PrivateMemberSuffix:_
-
+      readability-identifier-naming.NamespaceCase: lower_case
+      readability-identifier-naming.ClassCase: CamelCase
+      readability-identifier-naming.StructCase: CamelCase
+      readability-identifier-naming.FunctionCase: camelBack
+      readability-identifier-naming.VariableCase: camelBack
+      readability-identifier-naming.PrivateMemberSuffix: _
